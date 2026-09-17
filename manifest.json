@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Spades UX-Shield",
+  "version": "1.0.0",
+  "description": "Spades UX-Shield — zero-cost, deterministic dark pattern blocker.",
+  "permissions": ["storage", "unlimitedStorage", "scripting", "webNavigation", "alarms", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_title": "Spades UX-Shield",
+    "default_popup": "dist/popup/popup.html"
+  },
+  "background": {
+    "service_worker": "dist/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "run_at": "document_start",
+      "world": "ISOLATED",
+      "css": ["cosmetic-boot.css"],
+      "js": ["boot.js"],
+      "all_frames": true
+    }
+  ]
+}

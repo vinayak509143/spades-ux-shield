@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.env
+.env.*
+*.log
+.lean-ctx/cache/
+boot.js
+cosmetic-boot.css
+dist/
+scripts/.engine-bundle.cjs
+test/e2e/.user-data/
+spades-ux-shield-v1.zip

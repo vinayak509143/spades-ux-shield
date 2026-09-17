@@ -1,0 +1,9 @@
+! Title: Spades UX-Shield Base
+! Version: 202609172320
+scam-shop.example.com##.hurry-up-timer
+generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
+sneaky-news.example.com##button:has-text("I hate saving money")
+sketchy-airlines.example.com/checkout/*##input[name="travel_insurance"]:uncheck
+read-it-all.example.com##.signup-wall-close:click-dismiss
+read-it-all.example.com##body:unlock-scroll
+#@#legit.scam-shop.example.com##.hurry-up-timer

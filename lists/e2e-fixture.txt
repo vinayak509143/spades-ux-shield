@@ -1,0 +1,2 @@
+127.0.0.1##.fake-timer
+localhost##.fake-timer

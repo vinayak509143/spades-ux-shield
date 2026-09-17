@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spades UX-Shield</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 0;
+        padding: 12px 14px;
+        min-width: 240px;
+        color: #111;
+      }
+      h1 {
+        font-size: 14px;
+        margin: 0 0 12px;
+        font-weight: 600;
+      }
+      label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 8px 0;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      a.report {
+        display: inline-block;
+        margin-top: 12px;
+        font-size: 12px;
+        color: #0b57d0;
+        text-decoration: none;
+      }
+      a.report:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Spades UX-Shield</h1>
+    <label>
+      <input type="checkbox" id="tab-active" />
+      Active on this tab
+    </label>
+    <label>
+      <input type="checkbox" id="domain-active" />
+      Active on this domain
+    </label>
+    <a href="#" id="report" class="report" rel="noopener noreferrer">Report broken page</a>
+    <script type="module" src="./popup.js"></script>
+  </body>
+</html>
