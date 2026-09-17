@@ -42,7 +42,7 @@ Spades uses a custom DSL that extends standard cosmetic filtering. We support na
 * **Defeat Forced Continuity:** `sketchy-airlines.com/checkout/*##input[name="travel_insurance"]:uncheck`
 * **Bypass Roach Motels:** `read-it-all.com##.signup-wall:click-dismiss`
 
-Want to help us break dark patterns? Contribute to the official filter list in our [filters repository](https://github.com/spades-ux-shield/spades-ux-shield-filters)!
+Want to help us break dark patterns? Contribute to the official filter list in our [filters repository](https://github.com/vinayak509143/spades-ux-shield-filters)!
 
 ## 🛠️ Tech Stack
 

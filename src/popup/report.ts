@@ -2,7 +2,7 @@ import { getMetaSettings, registrableDomain } from '../background/storage.js';
 import { getTabRuleHits } from '../background/session-store.js';
 
 const REPORT_NEW_ISSUE =
-  'https://github.com/spades-ux-shield/spades-ux-shield-filters/issues/new';
+  'https://github.com/vinayak509143/spades-ux-shield-filters/issues/new';
 
 const EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
 const UUID_RE =
