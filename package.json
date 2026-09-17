@@ -10,12 +10,13 @@
     "zip": "bestzip spades-ux-shield-v1.zip manifest.json boot.js cosmetic-boot.css dist"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "vitest": "^1.0.0",
-    "esbuild": "^0.20.0",
-    "@types/node": "^20.0.0",
+    "@playwright/test": "^1.49.0",
     "@types/chrome": "^0.0.260",
+    "@types/node": "^20.0.0",
+    "bestzip": "^4.0.0",
+    "esbuild": "^0.20.0",
     "jsdom": "^24.0.0",
-    "@playwright/test": "^1.49.0"
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
   }
 }
