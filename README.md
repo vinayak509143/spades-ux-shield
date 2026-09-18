@@ -23,15 +23,23 @@ Spades UX-Shield takes a different approach:
 2. **The Index:** Rules are compiled into a memory-efficient Reversed-Label Trie, sharded in `chrome.storage.local`.
 3. **The Mutator:** A lightweight `MutationObserver` watches the DOM. It uses `requestIdleCallback` and `requestAnimationFrame` to safely uncheck sneaky checkboxes and hide modals without thrashing your CPU.
 
-## 🚀 Installation (Developer Mode)
+## 🚀 Installation
 
-Spades UX-Shield is currently in beta. To install it directly from source:
+Not on the Chrome Web Store yet. Load unpacked from a GitHub Release (no terminal).
 
-1. Download or clone this repository.
+### From a Release ZIP
+
+1. Download `spades-ux-shield-v1.0.0.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases).
+2. Extract the archive. You should see `manifest.json` in that folder (not a nested `dist/` only).
+3. Open `chrome://extensions/` (or `edge://extensions/`).
+4. Enable **Developer mode**.
+5. **Load unpacked** → select the extracted folder.
+
+### From source
+
+1. Clone this repository.
 2. Run `npm install` and `npm run build`.
-3. Open your browser and navigate to `chrome://extensions/` (or `edge://extensions/`).
-4. Enable **Developer mode** in the top right.
-5. Click **Load unpacked** and select this repository folder (the directory that contains `manifest.json`, not `dist/` alone).
+3. **Load unpacked** → this repository folder (the directory that contains `manifest.json`, not `dist/` alone).
 
 ## 🛡️ The Filter Syntax
 

@@ -9,7 +9,8 @@
     "test:stress": "npm run build && node test/scripts/stress-test.mjs",
     "update-filters": "node scripts/fetch-third-party.mjs",
     "build": "node scripts/build-extension.mjs",
-    "zip": "bestzip spades-ux-shield-v1.zip manifest.json boot.js host-mark.js host-mark-main.js cosmetic-critical.css cosmetic-boot.css dist"
+    "zip": "bestzip spades-ux-shield-v1.0.0.zip manifest.json boot.js host-mark.js host-mark-main.js cosmetic-critical.css cosmetic-boot.css ATTRIBUTION.md dist",
+    "package": "npm run build && npm run zip"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",
