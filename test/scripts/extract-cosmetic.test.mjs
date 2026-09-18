@@ -22,6 +22,13 @@ describe('extract-cosmetic', () => {
     expect(isExtractableCosmeticLine('example.com#$#hide-if-has-and-matches')).toBe(false);
   });
 
+  it('rejects checkout, payment, and auth cosmetics', () => {
+    expect(isExtractableCosmeticLine('shop.com/checkout##.upsell')).toBe(false);
+    expect(isExtractableCosmeticLine('pay.stripe.com##.modal')).toBe(false);
+    expect(isExtractableCosmeticLine('shop.com##input[name="cvv"]')).toBe(false);
+    expect(isExtractableCosmeticLine('shop.com##.cookie-banner')).toBe(true);
+  });
+
   it('dedupes extracted lines', () => {
     const text = [
       'example.com##.a',

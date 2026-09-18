@@ -7,6 +7,7 @@ sketchy-airlines.example.com/checkout/*##input[name="travel_insurance"]:uncheck
 read-it-all.example.com##.signup-wall-close:click-dismiss
 read-it-all.example.com##body:unlock-scroll
 #@#legit.scam-shop.example.com##.hurry-up-timer
+! Production rules: cosmetic nags / ATF only — no checkout, pay, or auth (CONTRIBUTING.md)
 ! Amazon India — homepage ATF promo (GWM first tile + legacy carousel)
 amazon.in,www.amazon.in###desktop-banner-stripe
 amazon.in,www.amazon.in###nav-app-banner-container

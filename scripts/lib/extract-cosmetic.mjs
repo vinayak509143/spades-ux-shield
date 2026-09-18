@@ -19,6 +19,35 @@ const PROCEDURAL_OR_ACTION_RE =
 
 const NETWORK_PREFIX = /^(?:@@?\|\||\|\||! )/;
 
+/** Checkout / pay / auth — never import from third-party lists. */
+const CRITICAL_HOST_RE =
+  /(?:^|,)(?:[\w.-]+\.)?(?:stripe|paypal|braintree|razorpay|square(?:up)?|adyen|checkout)\.com(?:[/,]|$)/i;
+
+const CRITICAL_PATH_RE =
+  /\/(?:checkout|cart|billing|payment|gp\/(?:buy|cart)|ap\/signin|signin|login|password|2fa|pay)\b/i;
+
+const CRITICAL_SELECTOR_RE =
+  /checkout|payment|billing|card-number|cardnumber|[\s"'`[=]cvv|[\s"'`[=]cvc|login-submit|amazon-?pay|razorpay|password-reset|two-factor|2fa/i;
+
+/**
+ * True when a cosmetic line would touch checkout, payment, or auth.
+ * Inspects hosts, URL path on the domain section, and the selector body.
+ */
+export function isCriticalFlowCosmetic(line) {
+  const trimmed = line.trim();
+  const markerAt = findCosmeticMarkerIndex(trimmed);
+  if (markerAt <= 0) {
+    return CRITICAL_HOST_RE.test(trimmed) || CRITICAL_SELECTOR_RE.test(trimmed);
+  }
+  const domainRaw = trimmed.slice(0, markerAt);
+  const markerLen = trimmed.startsWith('#@#', markerAt) ? 3 : 2;
+  const body = trimmed.slice(markerAt + markerLen);
+  if (CRITICAL_HOST_RE.test(domainRaw) || CRITICAL_PATH_RE.test(domainRaw)) {
+    return true;
+  }
+  return CRITICAL_SELECTOR_RE.test(body);
+}
+
 function isEscaped(source, index) {
   let slashes = 0;
   for (let i = index - 1; i >= 0 && source[i] === '\\'; i--) {
@@ -140,6 +169,9 @@ export function isExtractableCosmeticLine(line) {
   const markerLen = trimmed.startsWith('#@#', markerAt) ? 3 : 2;
   const body = trimmed.slice(markerAt + markerLen).trim();
   if (!body || PROCEDURAL_OR_ACTION_RE.test(body)) {
+    return false;
+  }
+  if (isCriticalFlowCosmetic(trimmed)) {
     return false;
   }
   return true;

@@ -42,7 +42,11 @@ Spades uses a custom DSL that extends standard cosmetic filtering. We support na
 * **Defeat Forced Continuity:** `sketchy-airlines.com/checkout/*##input[name="travel_insurance"]:uncheck`
 * **Bypass Roach Motels:** `read-it-all.com##.signup-wall:click-dismiss`
 
-Want to help us break dark patterns? Contribute to the official filter list in our [filters repository](https://github.com/vinayak509143/spades-ux-shield-filters)!
+Want to help us break dark patterns? Contribute to the official filter list in our [filters repository](https://github.com/vinayak509143/spades-ux-shield-filters)! See [CONTRIBUTING.md](CONTRIBUTING.md) (checkout/pay/auth are frozen).
+
+## Licenses & attribution
+
+Original engine source is intended as MIT when `LICENSE` is present. **`third-party-rules.txt` is not MIT** — it is a cosmetic extract of Fanboy/EasyList and AdGuard Annoyances (GPL-3.0 / CC BY-SA 3.0). See [ATTRIBUTION.md](ATTRIBUTION.md).
 
 ## 🛠️ Tech Stack
 
@@ -54,6 +58,8 @@ Want to help us break dark patterns? Contribute to the official filter list in o
 ## 🤝 Contributing
 
 Found a website using dark patterns? Click the **Report broken page** link in the extension popup to open a pre-filled GitHub issue for our community filter list (no telemetry, no DOM dumps).
+
+Quality holdout (manual): [docs/HOLDOUT_PROTOCOL.md](docs/HOLDOUT_PROTOCOL.md).
 
 ```bash
 npm test          # unit tests

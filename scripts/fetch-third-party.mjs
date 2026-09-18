@@ -36,6 +36,7 @@ async function main() {
     '! Title: Spades UX-Shield Third-Party Cosmetic (extracted)',
     `! Version: ${new Date().toISOString().replace(/[-:]/g, '').slice(0, 12)}`,
     '! Sources: Fanboy Annoyance + AdGuard Annoyances (hostname ## rules only)',
+    '! Licenses: GPL-3.0 / CC BY-SA 3.0 — see ATTRIBUTION.md',
     '! Run: npm run update-filters',
     '',
   ];
