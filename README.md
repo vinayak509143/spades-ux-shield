@@ -29,7 +29,7 @@ Not on the Chrome Web Store yet. Load unpacked from a GitHub Release (no termina
 
 ### From a Release ZIP
 
-1. Download `spades-ux-shield-v1.0.2.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest).
+1. Download `spades-ux-shield-v1.0.3.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest).
 2. Extract the archive. You should see `manifest.json` in that folder (not a nested `dist/` only).
 3. Open `chrome://extensions/` (or `edge://extensions/`).
 4. Enable **Developer mode**.

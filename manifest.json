@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Spades UX-Shield",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Spades UX-Shield — zero-cost, deterministic dark pattern blocker.",
   "homepage_url": "https://github.com/vinayak509143/spades-ux-shield",
   "icons": {
@@ -13,7 +13,12 @@
   "host_permissions": ["<all_urls>"],
   "action": {
     "default_title": "Spades UX-Shield",
-    "default_popup": "dist/popup/popup.html"
+    "default_popup": "dist/popup/popup.html",
+    "default_icon": {
+      "16": "store/icon-16.png",
+      "48": "store/icon-48.png",
+      "128": "store/icon-128.png"
+    }
   },
   "background": {
     "service_worker": "dist/service-worker.js",
