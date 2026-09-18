@@ -1,3 +1,11 @@
+# AI and Workflow Context (local agents only)
+.cursor/
+.kiro/
+LEAN-CTX.md
+.cursorrules
+AGENTS.md
+.lean-ctx.toml
+
 node_modules/
 dist/
 coverage/
