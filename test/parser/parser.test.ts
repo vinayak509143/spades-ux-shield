@@ -14,7 +14,7 @@ describe('parseList', () => {
     expect(errors).toHaveLength(0);
     expect(directives.Title).toBe('Spades UX-Shield Base');
     expect(directives.Version).toBe('202609172320');
-    expect(rules).toHaveLength(7);
+    expect(rules).toHaveLength(23);
 
     const timerHide = rules.find((r) => r.hosts.includes('scam-shop.example.com'));
     expect(timerHide?.kind).toBe('cosmetic');

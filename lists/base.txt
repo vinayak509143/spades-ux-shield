@@ -7,3 +7,21 @@ sketchy-airlines.example.com/checkout/*##input[name="travel_insurance"]:uncheck
 read-it-all.example.com##.signup-wall-close:click-dismiss
 read-it-all.example.com##body:unlock-scroll
 #@#legit.scam-shop.example.com##.hurry-up-timer
+! Amazon India — homepage ATF promo (GWM first tile + legacy carousel)
+amazon.in,www.amazon.in###desktop-banner-stripe
+amazon.in,www.amazon.in###nav-app-banner-container
+amazon.in,www.amazon.in##.a-carousel-card:has(#desktop-banner-stripe)
+amazon.in,www.amazon.in##.a-carousel-card:has(a[href*="/hz/mobile/mission"])
+amazon.in,www.amazon.in##.a-carousel-card:has(a[href*="amazonnow"])
+amazon.in,www.amazon.in##.a-carousel-card:has-text(/cashback/i)
+amazon.in,www.amazon.in##.a-carousel-card:has-text(/orders above/i)
+amazon.in,www.amazon.in##a[href*="/alm/storefront"]:upward(.a-carousel-card)
+amazon.in,www.amazon.in###gwm-window > li.gwm-window-tile:first-of-type
+amazon.in,www.amazon.in###gwm-window > .gwm-window-tile:first-of-type
+amazon.in,www.amazon.in##.gwm-window-tile:has([data-cel-widget="card-wd-01"])
+amazon.in,www.amazon.in##.gwm-window-tile:has(#wd-shoppable-1)
+amazon.in,www.amazon.in##.gwm-window-tile:has(a[href*="amazon-bazaar"])
+amazon.in,www.amazon.in##.gwm-window-tile:has(a[href*="/hz/mobile/mission"])
+amazon.in,www.amazon.in##.gwm-window-tile:has([class*="single-video-card"])
+amazon.in,www.amazon.in##.gwm-window-tile:has(.gwm-window-skeleton-content)
+

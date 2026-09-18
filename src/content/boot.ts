@@ -1,13 +1,11 @@
-import { hostSuffixes } from '../engine/util.js';
-import { bindEngine, setPageActive } from './lifecycle.js';
+import { bindEngine, isPageActive, setPageActive } from './lifecycle.js';
 import { ProceduralEngine } from './dom-mutator.js';
+import { applyHostMark } from './host-mark.js';
 import { revivePackagedRules } from './packaged-rules.js';
 import { initSpaRouting } from './spa.js';
 
 (function boot(): void {
-  const suffixes = hostSuffixes(location.hostname).join(' ');
-  document.documentElement.setAttribute('data-op-h', suffixes);
-  document.documentElement.setAttribute('data-op', '1');
+  applyHostMark();
 
   const rules = revivePackagedRules();
   const engine = new ProceduralEngine();
@@ -22,27 +20,28 @@ import { initSpaRouting } from './spa.js';
 
   bindEngine(engine, rules);
 
-  const startIfActive = (): void => {
-    chrome.runtime.sendMessage({ type: 'op:query-state' }, (response) => {
-      if (chrome.runtime.lastError || !response) {
-        engine.start(rules, engineOpts);
-        initSpaRouting(engine);
-        return;
-      }
-      if (response.active === false) {
-        setPageActive(false);
-      } else {
-        engine.start(rules, engineOpts);
-      }
-      initSpaRouting(engine);
-    });
+  const startProceduralIfNeeded = (): void => {
+    if (rules.length === 0) {
+      return;
+    }
+    engine.start(rules, engineOpts);
+    initSpaRouting(engine);
   };
 
   if (typeof requestIdleCallback === 'function') {
-    requestIdleCallback(startIfActive, { timeout: 200 });
+    requestIdleCallback(startProceduralIfNeeded, { timeout: 200 });
   } else {
-    requestAnimationFrame(startIfActive);
+    requestAnimationFrame(startProceduralIfNeeded);
   }
+
+  chrome.runtime.sendMessage({ type: 'op:query-state' }, (response) => {
+    if (chrome.runtime.lastError || !response) {
+      return;
+    }
+    if (response.active === false) {
+      setPageActive(false);
+    }
+  });
 
   chrome.runtime.onMessage.addListener((message) => {
     if (!message || typeof message !== 'object') {
@@ -50,6 +49,13 @@ import { initSpaRouting } from './spa.js';
     }
     if (message.type === 'op:set-active' && typeof message.active === 'boolean') {
       setPageActive(message.active);
+    }
+  });
+
+  window.addEventListener('pageshow', () => {
+    applyHostMark();
+    if (isPageActive() && rules.length > 0) {
+      engine.start(rules, engineOpts);
     }
   });
 })();

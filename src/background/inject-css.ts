@@ -1,6 +1,5 @@
 import { hostBucketToCss } from '../engine/compiler.js';
 import {
-  getGenericCss,
   matchingHostsInShard,
   readHostShard,
   reviveHostBucket,
@@ -12,7 +11,6 @@ export async function buildUserCssForHostname(
   hostname: string,
   shardCache: Map<string, HostShardRecord>,
 ): Promise<string> {
-  const generic = await getGenericCss();
   const shardKey = shardKeyForHost(hostname);
   let shard = shardCache.get(shardKey);
   if (!shard) {
@@ -21,9 +19,6 @@ export async function buildUserCssForHostname(
   }
 
   const chunks: string[] = [];
-  if (generic.trim()) {
-    chunks.push(generic);
-  }
 
   for (const host of matchingHostsInShard(hostname, shard)) {
     const bucket = shard[host];

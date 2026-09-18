@@ -89,6 +89,20 @@ describe('ProceduralEngine', () => {
     observerSpy.mockRestore();
   });
 
+  it('re-hides when a site restores display on the same node', () => {
+    document.body.innerHTML = '<div class="widget">spam</div>';
+    const widget = document.querySelector('.widget') as HTMLElement;
+
+    const engine = new ProceduralEngine();
+    engine.start([hideRule('.widget', /spam/)], { pierceShadow: false });
+    engine.flush();
+    widget.style.display = 'block';
+
+    engine.flush();
+
+    expect(widget.style.display).toBe('none');
+  });
+
   it('skips payment-like checkbox names for :uncheck', () => {
     document.body.innerHTML =
       '<input type="checkbox" name="payment_method" checked />';

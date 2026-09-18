@@ -11,6 +11,15 @@ mkdirSync(distDir, { recursive: true });
 await import('./build-packaged-rules.mjs');
 
 await esbuild.build({
+  entryPoints: [resolve(root, 'src/content/host-mark-entry.ts')],
+  bundle: true,
+  format: 'iife',
+  target: 'es2022',
+  outfile: resolve(root, 'host-mark.js'),
+  logLevel: 'info',
+});
+
+await esbuild.build({
   entryPoints: [resolve(root, 'src/content/boot.ts')],
   bundle: true,
   format: 'iife',

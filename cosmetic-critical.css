@@ -1,0 +1,20 @@
+/* Amazon.in ATF dark-pattern slot — gated on host-mark (pause = strip data-op). */
+html[data-op="1"][data-op-h~="amazon.in"] #desktop-banner-stripe,
+html[data-op="1"][data-op-h~="amazon.in"] #nav-app-banner-container,
+html[data-op="1"][data-op-h~="amazon.in"] .a-carousel-card:has(#desktop-banner-stripe),
+html[data-op="1"][data-op-h~="amazon.in"] .a-carousel-card:has(a[href*="/hz/mobile/mission"]),
+html[data-op="1"][data-op-h~="amazon.in"] .a-carousel-card:has(a[href*="amazonnow"]),
+html[data-op="1"][data-op-h~="amazon.in"] .a-carousel-card:has(a[href*="/alm/storefront"]),
+html[data-op="1"][data-op-h~="amazon.in"] #gwm-window > li.gwm-window-tile:first-of-type,
+html[data-op="1"][data-op-h~="amazon.in"] #gwm-window > .gwm-window-tile:first-child,
+html[data-op="1"][data-op-h~="amazon.in"] #gwm-window > .gwm-window-tile:first-of-type,
+html[data-op="1"][data-op-h~="amazon.in"] .gwm-window-tile:has([data-cel-widget="card-wd-01"]),
+html[data-op="1"][data-op-h~="amazon.in"] .gwm-window-tile:has(#wd-shoppable-1),
+html[data-op="1"][data-op-h~="amazon.in"] .gwm-window-tile:has(a[href*="amazon-bazaar"]),
+html[data-op="1"][data-op-h~="amazon.in"] .gwm-window-tile:has(a[href*="/hz/mobile/mission"]),
+html[data-op="1"][data-op-h~="amazon.in"] .gwm-window-tile:has(a[href*="amazonnow"]),
+html[data-op="1"][data-op-h~="amazon.in"] .gwm-window-tile:has(#desktop-banner-stripe),
+html[data-op="1"][data-op-h~="amazon.in"] .gwm-window-tile:has([class*="single-video-card"]),
+html[data-op="1"][data-op-h~="amazon.in"] .gwm-window-tile:has(.gwm-window-skeleton-content) {
+  display: none !important;
+}

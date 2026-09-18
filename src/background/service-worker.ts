@@ -55,6 +55,14 @@ async function injectUserCss(tabId: number, frameId: number, url: string): Promi
       return;
     }
     const css = await buildUserCssForHostname(hostname, shardMemory);
+    const amazon = /(^|\.)amazon\.in$/i.test(hostname);
+    if (amazon) {
+      await chrome.scripting.insertCSS({
+        target: { tabId, frameIds: [frameId] },
+        files: ['cosmetic-critical.css'],
+        origin: 'USER',
+      });
+    }
     if (!css.trim()) {
       return;
     }

@@ -1,5 +1,5 @@
 import type { CompiledProc } from '../engine/types.js';
-import { hostSuffixes } from '../engine/util.js';
+import { applyHostMark } from './host-mark.js';
 import type { ProceduralEngine } from './dom-mutator.js';
 
 let engine: ProceduralEngine | null = null;
@@ -25,9 +25,7 @@ export function setPageActive(active: boolean): void {
     return;
   }
 
-  const suffixes = hostSuffixes(location.hostname).join(' ');
-  root.setAttribute('data-op-h', suffixes);
-  root.setAttribute('data-op', '1');
+  applyHostMark();
   if (engine) {
     engine.start(rules, { pierceShadow: true });
   }

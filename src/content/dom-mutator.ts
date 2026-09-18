@@ -5,7 +5,7 @@ import {
   filterRulesForPage,
   pathAndSearch,
 } from './procedural-match.js';
-import { queryAll } from './shadow.js';
+import { getShadowRoot, queryAll } from './shadow.js';
 
 const MAX_NODES_PER_FRAME = 200;
 const UNCHECK_MAX_RETRIES = 3;
@@ -49,6 +49,9 @@ export class ProceduralEngine {
   private readonly actedOther = new WeakSet<Element>();
   private readonly uncheckAttempts = new WeakMap<Element, number>();
   private readonly clickedSelectors = new Set<string>();
+  private readonly observedShadowRoots = new Set<ShadowRoot>();
+  private mutationHandler: MutationCallback | null = null;
+  private mutationAttrFilter: string[] = [];
 
   start(rules: CompiledProc[], opts: ProceduralEngineOptions): void {
     this.rules = rules;
@@ -92,6 +95,8 @@ export class ProceduralEngine {
     this.disconnectObservers();
     const attrFilter = collectWatchAttributes(this.activeRules);
     const handler = (records: MutationRecord[]) => this.onMutations(records);
+    this.mutationHandler = handler;
+    this.mutationAttrFilter = attrFilter;
 
     this.observer = new MutationObserver(handler);
     this.observer.observe(document.documentElement, {
@@ -102,21 +107,23 @@ export class ProceduralEngine {
     });
 
     if (this.pierceShadow) {
-      this.observeShadowRoots(document.documentElement, handler, attrFilter);
+      this.observeShadowRoots(document.documentElement);
     }
   }
 
-  private observeShadowRoots(
-    root: ParentNode,
-    handler: MutationCallback,
-    attrFilter: string[],
-  ): void {
+  private observeShadowRoots(root: ParentNode): void {
+    const handler = this.mutationHandler;
+    const attrFilter = this.mutationAttrFilter;
+    if (!handler || !this.pierceShadow) {
+      return;
+    }
     const hosts = root.querySelectorAll('*');
     for (const host of hosts) {
-      const shadow = host.shadowRoot;
-      if (!shadow) {
+      const shadow = getShadowRoot(host);
+      if (!shadow || this.observedShadowRoots.has(shadow)) {
         continue;
       }
+      this.observedShadowRoots.add(shadow);
       const obs = new MutationObserver(handler);
       obs.observe(shadow, {
         subtree: true,
@@ -128,6 +135,15 @@ export class ProceduralEngine {
     }
   }
 
+  private observeShadowForAddedNodes(nodes: NodeList): void {
+    for (const node of nodes) {
+      if (!(node instanceof Element)) {
+        continue;
+      }
+      this.observeShadowRoots(node);
+    }
+  }
+
   private disconnectObservers(): void {
     this.observer?.disconnect();
     this.observer = null;
@@ -135,6 +151,7 @@ export class ProceduralEngine {
       obs.disconnect();
     }
     this.shadowObservers = [];
+    this.observedShadowRoots.clear();
   }
 
   private onMutations(records: MutationRecord[]): void {
@@ -142,6 +159,9 @@ export class ProceduralEngine {
       return;
     }
     for (const record of records) {
+      if (record.type === 'childList' && record.addedNodes.length > 0) {
+        this.observeShadowForAddedNodes(record.addedNodes);
+      }
       const target = record.target;
       if (target instanceof Element) {
         if (target.id === OVERLAY_ID) {
@@ -253,9 +273,18 @@ export class ProceduralEngine {
     }
   }
 
+  private isEffectivelyHidden(el: Element): boolean {
+    const style = getComputedStyle(el);
+    return style.display === 'none' || style.visibility === 'hidden';
+  }
+
   private exec(el: Element, action: Action, rule: CompiledProc): boolean {
     const acted = this.actedSetFor(action);
     if (acted.has(el)) {
+      if (action.type === 'hide' && !this.isEffectivelyHidden(el)) {
+        this.hide(el);
+        return true;
+      }
       return false;
     }
 

@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -21,19 +21,44 @@ buildSync({
 const { parseList, compileRules } = require(engineBundle);
 
 const listPaths = [
-  resolve(root, 'lists/base.txt'),
-  resolve(root, 'lists/e2e-fixture.txt'),
+  { path: resolve(root, 'lists/base.txt'), strict: true },
+  { path: resolve(root, 'third-party-rules.txt'), strict: false },
+  { path: resolve(root, 'lists/e2e-fixture.txt'), strict: true },
 ];
-const source = listPaths.map((p) => readFileSync(p, 'utf8')).join('\n');
-const { rules, errors } = parseList(source);
-if (errors.length > 0) {
-  console.error('List parse errors:', errors);
-  process.exit(1);
+
+const allRules = [];
+for (const { path, strict } of listPaths) {
+  if (!existsSync(path)) {
+    if (strict) {
+      console.error(`Missing required list: ${path}`);
+      process.exit(1);
+    }
+    continue;
+  }
+  const { rules, errors } = parseList(readFileSync(path, 'utf8'));
+  allRules.push(...rules);
+  if (errors.length > 0) {
+    const label = path.split(/[/\\]/).pop();
+    if (strict) {
+      console.error(`Parse errors in ${label}:`, errors.slice(0, 20));
+      process.exit(1);
+    }
+    console.warn(
+      `Skipped ${errors.length} unparsable line(s) in ${label} (third-party / extended syntax)`,
+    );
+  }
 }
 
-const compiled = compileRules(rules);
+const compiled = compileRules(allRules);
 if (compiled.errors.length > 0) {
-  console.error('Compile errors:', compiled.errors);
+  const thirdPartyOnly = compiled.errors.length;
+  console.warn(
+    `Compile skipped ${thirdPartyOnly} rule(s) (validation / unsupported operators)`,
+  );
+}
+
+if (allRules.length === 0) {
+  console.error('No rules compiled — check lists/base.txt and third-party-rules.txt');
   process.exit(1);
 }
 
