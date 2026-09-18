@@ -1,41 +1,41 @@
 # Privacy policy — Spades UX-Shield
 
-**Effective:** 18 September 2026  
-**Product:** Spades UX-Shield browser extension  
-**Contact:** GitHub issues on [vinayak509143/spades-ux-shield](https://github.com/vinayak509143/spades-ux-shield/issues)
+Effective: 18 September 2026  
+Product: Spades UX-Shield browser extension  
+Contact: GitHub issues on [vinayak509143/spades-ux-shield](https://github.com/vinayak509143/spades-ux-shield/issues)
 
-This policy is what you should paste into the Chrome Web Store “Privacy policy” URL field (this file on GitHub):
+Paste this URL into the Chrome Web Store privacy policy field:
 
 https://github.com/vinayak509143/spades-ux-shield/blob/main/PRIVACY.md
 
 ## Summary
 
-Spades UX-Shield does **not** collect, sell, or transmit browsing history, page content, or personal data to the developer. There is no account, no analytics SDK, and no crash reporter.
+I don't collect, sell, or send your browsing history, page content, or personal data anywhere. There is no account, no analytics SDK, and no crash reporter.
 
 ## What stays on your device
 
 - Filter lists and compiled CSS shards in `chrome.storage.local`
-- Per-tab / per-domain on/off flags
-- Cosmetic CSS and a small procedural engine running in the page’s isolated world
+- Per-tab and per-domain on/off flags in `chrome.storage.session`
+- Cosmetic CSS and a small procedural engine in the page's isolated world
 
-The developer cannot see which sites you visit.
+I cannot see which sites you visit.
 
 ## What leaves your device (only if you choose, or for list updates)
 
 ### Optional breakage report
 
-If you click **Report broken page** in the popup, Chrome opens a GitHub issue form. The extension fills:
+If you click Report broken page in the popup, Chrome opens a GitHub issue form. The extension fills:
 
 - Registrable domain (e.g. `amazon.in`)
-- An anonymized path template (IDs/tokens stripped)
+- An anonymized path template (IDs and tokens stripped)
 - Extension version
 - Rule IDs that hit on that tab (if any)
 
-It does **not** attach cookies, HTML, screenshots, or query strings. Submitting the issue is a GitHub action you control.
+It does not attach cookies, HTML, screenshots, or query strings. Submitting the issue is up to you.
 
 ### Filter list refresh
 
-The service worker may fetch public filter text from GitHub / jsDelivr (see `dist/subscriptions.json`). Those hosts see a normal HTTPS download (IP, User-Agent). We do not send a browsing log with that request.
+The service worker may fetch public filter text from GitHub or jsDelivr (see `dist/subscriptions.json`). Those hosts see a normal HTTPS download (IP, User-Agent). I do not send a browsing log with that request.
 
 Packaged cosmetics are also compiled into the extension at build time.
 
@@ -46,22 +46,22 @@ Packaged cosmetics are also compiled into the extension at build time.
 | `storage` / `unlimitedStorage` | Store compiled lists and settings on device |
 | `scripting` | Inject host-specific cosmetic CSS after navigation |
 | `webNavigation` | Know when a document commits so CSS can be applied |
-| `alarms` | Periodic list sync |
-| `tabs` | Popup “this tab” toggle and the optional GitHub report URL |
-| `<all_urls>` | Cosmetic hide on sites that match hostname-scoped rules. The engine does not read page content for analytics. |
+| `alarms` | Periodic list sync (about every 12 hours) |
+| `<all_urls>` | Apply cosmetic CSS on any site that has a matching rule |
 
 `document_start` content scripts stamp a host marker and apply a small boot stylesheet so listed cosmetic hides can run before first paint. The MAIN-world script only sets `data-op` attributes; procedural mutations run in the isolated world.
 
-## What we do not do
+Requires Chrome 111 or newer (`minimum_chrome_version` in the manifest).
 
-- No advertising ID, no fingerprinting for ads
+## What I do not do
+
 - No remote code besides the listed public filter URLs and Chrome APIs
-- No “improve the product” telemetry
-- Checkout, payment, and login surfaces are **out of scope** for rules (see CONTRIBUTING.md)
+- No product telemetry
+- Checkout, payment, and login surfaces are out of scope for rules (see [CONTRIBUTING.md](CONTRIBUTING.md))
 
 ## Third-party lists
 
-Imported Fanboy/EasyList and AdGuard cosmetics are licensed separately (GPL-3 / CC BY-SA 3.0). See [ATTRIBUTION.md](ATTRIBUTION.md). Those maintainers’ privacy policies apply to **their** websites, not to data from this extension (we do not send them your browsing).
+Imported Fanboy/EasyList and AdGuard cosmetics are licensed separately (GPL-3 / CC BY-SA 3.0). See [ATTRIBUTION.md](ATTRIBUTION.md). Those maintainers' privacy policies apply to their websites, not to data from this extension.
 
 ## Changes
 

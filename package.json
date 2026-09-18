@@ -1,6 +1,6 @@
 {
   "name": "spades-ux-shield",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Spades UX-Shield — zero-cost, deterministic dark pattern blocker.",
   "scripts": {
     "test": "vitest run",
@@ -9,7 +9,7 @@
     "test:stress": "npm run build && node test/scripts/stress-test.mjs",
     "update-filters": "node scripts/fetch-third-party.mjs",
     "build": "node scripts/build-extension.mjs",
-    "zip": "bestzip spades-ux-shield-v1.0.3.zip manifest.json boot.js host-mark.js host-mark-main.js cosmetic-critical.css cosmetic-boot.css ATTRIBUTION.md LICENSE PRIVACY.md store/icon-16.png store/icon-48.png store/icon-128.png dist",
+    "zip": "bestzip spades-ux-shield-v1.0.4.zip manifest.json boot.js host-mark.js host-mark-main.js cosmetic-critical.css cosmetic-boot.css ATTRIBUTION.md LICENSE PRIVACY.md store/icon-16.png store/icon-48.png store/icon-128.png dist",
     "package": "npm run build && npm run zip"
   },
   "devDependencies": {

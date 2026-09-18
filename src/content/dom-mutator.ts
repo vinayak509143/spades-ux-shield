@@ -36,7 +36,7 @@ export class ProceduralEngine {
   private rules: CompiledProc[] = [];
   private activeRules: CompiledProc[] = [];
   private observer: MutationObserver | null = null;
-  private shadowObservers: MutationObserver[] = [];
+  private readonly shadowObserverByRoot = new Map<ShadowRoot, MutationObserver>();
   private writing = 0;
   private scheduled = false;
   private dirty = false;
@@ -133,7 +133,7 @@ export class ProceduralEngine {
       attributes: observeAttrs,
       attributeFilter: observeAttrs ? attrFilter : undefined,
     });
-    this.shadowObservers.push(obs);
+    this.shadowObserverByRoot.set(shadow, obs);
   }
 
   private observeShadowRoots(root: ParentNode): void {
@@ -161,10 +161,10 @@ export class ProceduralEngine {
   private disconnectObservers(): void {
     this.observer?.disconnect();
     this.observer = null;
-    for (const obs of this.shadowObservers) {
+    for (const obs of this.shadowObserverByRoot.values()) {
       obs.disconnect();
     }
-    this.shadowObservers = [];
+    this.shadowObserverByRoot.clear();
     this.observedShadowRoots.clear();
     this.pendingShadowHosts.length = 0;
   }
@@ -237,7 +237,20 @@ export class ProceduralEngine {
     requestAnimationFrame(run);
   }
 
+  private pruneDisconnectedShadowObservers(): void {
+    for (const shadow of [...this.observedShadowRoots]) {
+      const host = shadow.host;
+      if (host && host.isConnected) {
+        continue;
+      }
+      this.shadowObserverByRoot.get(shadow)?.disconnect();
+      this.shadowObserverByRoot.delete(shadow);
+      this.observedShadowRoots.delete(shadow);
+    }
+  }
+
   private drainPendingShadows(): void {
+    this.pruneDisconnectedShadowObservers();
     if (!this.pierceShadow || this.pendingShadowHosts.length === 0) {
       return;
     }
@@ -302,7 +315,7 @@ export class ProceduralEngine {
     } finally {
       this.writing--;
       this.observer?.takeRecords();
-      for (const obs of this.shadowObservers) {
+      for (const obs of this.shadowObserverByRoot.values()) {
         obs.takeRecords();
       }
     }

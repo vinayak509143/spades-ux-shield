@@ -16,6 +16,8 @@ describe('storage shards', () => {
     expect(a).toBe(b);
     expect(a).toMatch(/^host:[0-9a-f]{4}$/);
     expect(registrableDomain('www.shop.example.com')).toBe('example.com');
+    expect(registrableDomain('www.amazon.co.uk')).toBe('amazon.co.uk');
+    expect(registrableDomain('shop.amazon.co.uk')).toBe('amazon.co.uk');
   });
 
   it('groups compiled buckets into shard records', () => {

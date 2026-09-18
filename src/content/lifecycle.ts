@@ -1,14 +1,20 @@
 import type { CompiledProc } from '../engine/types.js';
 import { applyHostMark } from './host-mark.js';
-import type { ProceduralEngine } from './dom-mutator.js';
+import type { ProceduralEngine, ProceduralEngineOptions } from './dom-mutator.js';
 
 let engine: ProceduralEngine | null = null;
 let rules: CompiledProc[] = [];
+let engineOpts: ProceduralEngineOptions | null = null;
 let pageActive = true;
 
-export function bindEngine(instance: ProceduralEngine, compiled: CompiledProc[]): void {
+export function bindEngine(
+  instance: ProceduralEngine,
+  compiled: CompiledProc[],
+  opts: ProceduralEngineOptions,
+): void {
   engine = instance;
   rules = compiled;
+  engineOpts = opts;
 }
 
 export function isPageActive(): boolean {
@@ -26,7 +32,7 @@ export function setPageActive(active: boolean): void {
   }
 
   applyHostMark();
-  if (engine && rules.length > 0) {
-    engine.start(rules, { pierceShadow: true });
+  if (engine && rules.length > 0 && engineOpts) {
+    engine.start(rules, engineOpts);
   }
 }

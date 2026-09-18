@@ -33,29 +33,37 @@ async function loadState(): Promise<void> {
 
 tabToggle.addEventListener('change', () => {
   void (async () => {
-    const tab = await getActiveTab();
-    const hostname = new URL(tab.url!).hostname;
-    await chrome.runtime.sendMessage({
-      type: 'op:set-tab-active',
-      tabId: tab.id,
-      active: tabToggle.checked,
-      hostname,
-    });
+    try {
+      const tab = await getActiveTab();
+      const hostname = new URL(tab.url!).hostname;
+      await chrome.runtime.sendMessage({
+        type: 'op:set-tab-active',
+        tabId: tab.id,
+        active: tabToggle.checked,
+        hostname,
+      });
+    } catch {
+      // Tab gone or message failed.
+    }
   })();
 });
 
 domainToggle.addEventListener('change', () => {
   void (async () => {
-    const tab = await getActiveTab();
-    const hostname = new URL(tab.url!).hostname;
-    await chrome.runtime.sendMessage({
-      type: 'op:set-domain-active',
-      tabId: tab.id,
-      active: domainToggle.checked,
-      hostname,
-    });
-    if (!domainToggle.checked) {
-      tabToggle.checked = false;
+    try {
+      const tab = await getActiveTab();
+      const hostname = new URL(tab.url!).hostname;
+      await chrome.runtime.sendMessage({
+        type: 'op:set-domain-active',
+        tabId: tab.id,
+        active: domainToggle.checked,
+        hostname,
+      });
+      if (!domainToggle.checked) {
+        tabToggle.checked = false;
+      }
+    } catch {
+      // Tab gone or message failed.
     }
   })();
 });
@@ -63,9 +71,13 @@ domainToggle.addEventListener('change', () => {
 reportLink.addEventListener('click', (event) => {
   event.preventDefault();
   void (async () => {
-    const tab = await getActiveTab();
-    const url = await buildBreakageReportUrl(tab.id!, tab.url!);
-    await chrome.tabs.create({ url, active: true });
+    try {
+      const tab = await getActiveTab();
+      const url = await buildBreakageReportUrl(tab.id!, tab.url!);
+      await chrome.tabs.create({ url, active: true });
+    } catch {
+      // Tab gone or report URL failed.
+    }
   })();
 });
 

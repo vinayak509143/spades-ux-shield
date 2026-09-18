@@ -1,5 +1,4 @@
 import { registerMessageHandlers } from './messages.js';
-import { ensureSessionAccessForContent } from './session-store.js';
 import { buildUserCssForHostname } from './inject-css.js';
 import {
   ensureSyncAlarm,
@@ -15,11 +14,27 @@ import {
   type HostShardRecord,
 } from './storage.js';
 
+const SHARD_MEMORY_CAP = 256;
+
 const shardMemory = new Map<string, HostShardRecord>();
+
+export function clearShardMemoryCache(): void {
+  shardMemory.clear();
+}
+
+function capShardMemory(): void {
+  if (shardMemory.size > SHARD_MEMORY_CAP) {
+    shardMemory.clear();
+  }
+}
 
 async function prefetchShardForUrl(url: string): Promise<void> {
   try {
-    const hostname = new URL(url).hostname;
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return;
+    }
+    const hostname = parsed.hostname;
     if (!hostname) {
       return;
     }
@@ -29,6 +44,7 @@ async function prefetchShardForUrl(url: string): Promise<void> {
     }
     const record = await readHostShard(shardKey);
     shardMemory.set(shardKey, record);
+    capShardMemory();
   } catch {
     // Invalid URL — ignore.
   }
@@ -50,7 +66,11 @@ async function shouldInject(tabId: number, hostname: string): Promise<boolean> {
 
 async function injectUserCss(tabId: number, frameId: number, url: string): Promise<void> {
   try {
-    const hostname = new URL(url).hostname;
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return;
+    }
+    const hostname = parsed.hostname;
     if (!hostname || !(await shouldInject(tabId, hostname))) {
       return;
     }
@@ -79,6 +99,9 @@ async function injectUserCss(tabId: number, frameId: number, url: string): Promi
 function sendRouteMessage(tabId: number, url: string): void {
   try {
     const parsed = new URL(url);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return;
+    }
     chrome.tabs
       .sendMessage(tabId, {
         type: 'op:route',
@@ -93,20 +116,35 @@ function sendRouteMessage(tabId: number, url: string): void {
   }
 }
 
+async function runSyncAndClearShardCache(): Promise<void> {
+  try {
+    await syncAllSubscriptions();
+    clearShardMemoryCache();
+  } catch {
+    // Sync failed — keep existing shards until next alarm.
+  }
+}
+
 registerMessageHandlers();
 
 chrome.runtime.onInstalled.addListener(() => {
   void (async () => {
-    await ensureSessionAccessForContent();
-    await ensureSyncAlarm();
-    await syncAllSubscriptions();
+    try {
+      await ensureSyncAlarm();
+      await runSyncAndClearShardCache();
+    } catch {
+      // Alarm or sync setup failed.
+    }
   })();
 });
 
 chrome.runtime.onStartup.addListener(() => {
   void (async () => {
-    await ensureSessionAccessForContent();
-    await ensureSyncAlarm();
+    try {
+      await ensureSyncAlarm();
+    } catch {
+      // Alarm setup failed.
+    }
   })();
 });
 
@@ -114,7 +152,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name !== SYNC_ALARM) {
     return;
   }
-  void syncAllSubscriptions();
+  void runSyncAndClearShardCache();
 });
 
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {

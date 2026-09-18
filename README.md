@@ -1,89 +1,63 @@
-# ♠️ Spades UX-Shield
+# Spades UX-Shield
 
-**A zero-cost, purely deterministic, client-side shield against deceptive UX and dark patterns.**
+A small Chrome extension that hides cookie walls, newsletter pop-ups, app-install nags and a few other interruptive bits of web design. It works from plain-text filter lists, the same way uBlock Origin's cosmetic filters do. There is no AI in it, no server, and nothing is sent anywhere.
 
-Spades UX-Shield is a Manifest V3 browser extension that neutralizes manipulative web design—like fake countdown timers, confirmshaming, forced continuity traps, and roach motels—before they even render on your screen.
+## What it does
 
-Unlike other dark pattern detectors that rely on heavy machine learning, slow DOM heuristics, or local LLMs, Spades relies on a **deterministic, community-driven filter list architecture** (inspired by uBlock Origin). It is blisteringly fast, perfectly private, and costs $0 to host.
+- Hides elements with CSS. A rule looks like `example.com##.newsletter-overlay`. If the site and selector are on the list, the element is hidden before the page paints. If they aren't, nothing happens.
+- Ships with a cosmetic-only extract of Fanboy's Annoyance List, EasyList Cookie List and AdGuard Annoyances, plus a short list of my own for things like the first promo tile on the Amazon.in homepage.
+- Pulls updates to my list from GitHub about twice a day. The third-party extract is baked in at build time.
+- Has a popup with two switches (this tab, this domain) and a "Report broken page" link that opens a pre-filled GitHub issue.
 
-## ✨ Why This Architecture?
+## What it doesn't do
 
-Academic researchers and startups have tried to build AI to "detect" dark patterns, resulting in massive CPU overhead and high false-positive rates that break legitimate checkout flows.
+- It does not block network requests or ads.
+- It does not read page content for anything except matching selectors.
+- It stays away from checkout, payment and login pages. Rules for those are dropped when the list is built and refused again at runtime.
+- It does not guess. If a pattern isn't on the list, it stays on the page.
 
-Spades UX-Shield takes a different approach:
+## Install
 
-* **Zero AI, Zero Heuristics:** We use strict CSS selectors and procedural DOM mutation rules. If a fake timer is on the filter list, it dies. If it's not, it lives. Zero guesswork.
-* **First-Paint Execution:** Cosmetic rules are injected synchronously via `document_start`. Dark patterns are hidden *before* the page flashes white, resulting in 0 Cumulative Layout Shift (CLS).
-* **Pure Client-Side:** No telemetry, no backend servers, no API keys.
-* **$0 Infrastructure:** Filter lists are plain text files fetched directly from GitHub via ETags.
+Not in the Chrome Web Store yet.
 
-## ⚙️ How It Works
+From a release zip:
 
-1. **The Engine:** A highly optimized TypeScript parser reads raw text rules (e.g., `scam-shop.com##.fake-timer`).
-2. **The Index:** Rules are compiled into a memory-efficient Reversed-Label Trie, sharded in `chrome.storage.local`.
-3. **The Mutator:** A lightweight `MutationObserver` watches the DOM. It uses `requestIdleCallback` and `requestAnimationFrame` to safely uncheck sneaky checkboxes and hide modals without thrashing your CPU.
+1. Download `spades-ux-shield-v1.0.4.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest).
+2. Unzip it. `manifest.json` should be at the top level of the folder.
+3. Open `chrome://extensions`, turn on Developer mode, click Load unpacked and pick that folder.
 
-## 🚀 Installation
-
-Not on the Chrome Web Store yet. Load unpacked from a GitHub Release (no terminal). Listing copy for when it is: [store/LISTING.md](store/LISTING.md).
-
-### From a Release ZIP
-
-1. Download `spades-ux-shield-v1.0.3.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest).
-2. Extract the archive. You should see `manifest.json` in that folder (not a nested `dist/` only).
-3. Open `chrome://extensions/` (or `edge://extensions/`).
-4. Enable **Developer mode**.
-5. **Load unpacked** → select the extracted folder.
-
-### From source
-
-1. Clone this repository.
-2. Run `npm install`, `npm run update-filters`, and `npm run build`.
-3. **Load unpacked** → this repository folder (the directory that contains `manifest.json`, not `dist/` alone).
-
-## 🛡️ The Filter Syntax
-
-Spades uses a custom DSL that extends standard cosmetic filtering. We support native CSS hiding alongside powerful procedural actions:
-
-* **Hide a fake timer:** `scam-site.com##.urgency-banner`
-* **Confirmshaming (Text Match):** `sneaky-news.com##button:has-text("No thanks, I hate saving money")`
-* **Defeat Forced Continuity:** `sketchy-airlines.com/checkout/*##input[name="travel_insurance"]:uncheck`
-* **Bypass Roach Motels:** `read-it-all.com##.signup-wall:click-dismiss`
-
-Want to help us break dark patterns? Contribute to the official filter list in our [filters repository](https://github.com/vinayak509143/spades-ux-shield-filters)! See [CONTRIBUTING.md](CONTRIBUTING.md) (checkout/pay/auth are frozen).
-
-## Licenses & attribution
-
-Original engine source is [MIT](LICENSE). **`third-party-rules.txt` is not MIT** — it is a cosmetic extract of Fanboy/EasyList and AdGuard Annoyances (GPL-3.0 / CC BY-SA 3.0). See [ATTRIBUTION.md](ATTRIBUTION.md).
-
-Privacy: [PRIVACY.md](PRIVACY.md) (no telemetry).
-
-## 🛠️ Tech Stack
-
-* **TypeScript** (Strict Mode)
-* **Manifest V3** (Service Workers, Isolated Worlds)
-* **esbuild** (Bundling)
-* **Vitest & Playwright** (Testing)
-
-## 🤝 Contributing
-
-Found a website using dark patterns? Click the **Report broken page** link in the extension popup to open a pre-filled GitHub issue for our community filter list (no telemetry, no DOM dumps).
-
-Quality holdout (manual): [docs/HOLDOUT_PROTOCOL.md](docs/HOLDOUT_PROTOCOL.md).
+From source:
 
 ```bash
-npm test          # unit tests
-npm run test:e2e  # extension + CLS fixture (builds first)
+git clone https://github.com/vinayak509143/spades-ux-shield.git
+cd spades-ux-shield
+npm install
+npm run update-filters
+npm run build
 ```
 
-## Support this project
+Then Load unpacked on the repository folder (the one with `manifest.json`).
 
-Spades UX-Shield is free, open-source, and client-side only. There is no paid tier, no ads, and no telemetry.
+## How it works
 
-Ways to help without paying:
+Three content scripts run at `document_start` on every page. The first stamps `<html>` with the hostname and its parents (`data-op-h="www.amazon.in amazon.in in"`), so bundled CSS can be scoped as `html[data-op-h~="amazon.in"] .selector`. The second is a couple of kilobytes of CSS for the most common hides. The third starts a `MutationObserver`, but only if the current site has procedural rules (`:has-text`, `:uncheck` and so on). Most sites never start it.
 
-- Star [spades-ux-shield](https://github.com/vinayak509143/spades-ux-shield) and [spades-ux-shield-filters](https://github.com/vinayak509143/spades-ux-shield-filters)
-- Contribute hostname-scoped cosmetic rules (checkout / pay / auth stay frozen — see [CONTRIBUTING.md](CONTRIBUTING.md))
-- Use **Report broken page** in the popup
+The service worker keeps my list in `chrome.storage.local`, split into shards by domain, and injects the matching CSS with `chrome.scripting.insertCSS` when a page commits.
 
-To fund list extraction and the Chrome Web Store fee: **[Buy me a coffee on Ko-fi](https://ko-fi.com/spadesxx)**.
+Filter syntax is the usual `host##selector` with a few procedural extras. Details in [ARCHITECTURE.md](ARCHITECTURE.md).
+
+## Contributing
+
+Site rules go in [spades-ux-shield-filters](https://github.com/vinayak509143/spades-ux-shield-filters), either as an issue or a PR to `lists/base.txt`. Engine changes go here; run `npm test` first, and `npm run test:e2e` if you touch injection.
+
+[CONTRIBUTING.md](CONTRIBUTING.md) lists what is off limits: checkout, payment, login and account-cancellation flows. Before calling a site fixed, go through [docs/HOLDOUT_PROTOCOL.md](docs/HOLDOUT_PROTOCOL.md).
+
+## Licence
+
+Engine code is MIT. `third-party-rules.txt` is an extract of GPL-3.0 / CC BY-SA 3.0 lists and keeps those licences. See [ATTRIBUTION.md](ATTRIBUTION.md).
+
+Privacy: [PRIVACY.md](PRIVACY.md). Short version: nothing leaves your browser unless you click the report link.
+
+## Support
+
+It's free and there is no paid tier. If you'd like to cover the Web Store fee or a coffee: [ko-fi.com/spadesxx](https://ko-fi.com/spadesxx). Starring the repo or sending in a rule helps just as much.

@@ -8,15 +8,6 @@ export function tabHitsKey(tabId: number): string {
   return `tab:${tabId}:hits`;
 }
 
-export async function ensureSessionAccessForContent(): Promise<void> {
-  if (!chrome.storage.session.setAccessLevel) {
-    return;
-  }
-  await chrome.storage.session.setAccessLevel({
-    accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS',
-  });
-}
-
 export async function isTabDisabled(tabId: number): Promise<boolean> {
   const key = tabOffKey(tabId);
   const result = await chrome.storage.session.get(key);

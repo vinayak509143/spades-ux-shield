@@ -31,9 +31,9 @@ Hide manipulative or interruptive cosmetic UI on the web using static CSS and a 
 - storage / unlimitedStorage: compiled filter lists and on/off flags, on device only
 - scripting: inject per-host cosmetic CSS
 - webNavigation: apply CSS when a document commits
-- alarms: refresh community filter list
-- tabs: popup tab toggle and optional user-initiated GitHub breakage report
+- alarms: refresh community filter list (about every 12 hours)
 - Host permission all sites: cosmetic selectors are hostname-scoped; the list covers many sites so the extension matches broadly, then CSS gates on html[data-op-h]
+- minimum_chrome_version 111: MAIN-world host marker and modern CSS selectors
 
 ## Screenshots you must take (cannot be generated here)
 

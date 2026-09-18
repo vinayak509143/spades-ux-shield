@@ -63,7 +63,11 @@ async function fetchList(url: string, etag: string | null, lastModified: string 
   if (lastModified) {
     headers['If-Modified-Since'] = lastModified;
   }
-  const response = await fetch(url, { headers, cache: 'no-store' });
+  const response = await fetch(url, {
+    headers,
+    cache: 'no-store',
+    signal: AbortSignal.timeout(15_000),
+  });
   const responseEtag = response.headers.get('etag');
   const responseModified = response.headers.get('last-modified');
   if (response.status === 304) {
@@ -154,51 +158,6 @@ async function persistCompiledRules(rules: Rule[], compiledRev: number): Promise
   });
 
   return compiled.errors.length;
-}
-
-export async function syncSubscription(
-  entry: SubscriptionManifest['lists'][0],
-  meta: SubscriptionMeta,
-): Promise<SubscriptionMeta> {
-  if (!meta.enabled) {
-    return meta;
-  }
-
-  const result = await fetchFromMirrors(listUrls(entry), meta.etag, meta.lastModified);
-  if (!result) {
-    return meta;
-  }
-
-  const now = Date.now();
-  if (result.status === 304) {
-    return {
-      ...meta,
-      etag: result.etag,
-      lastModified: result.lastModified,
-      fetchedAt: now,
-    };
-  }
-
-  if (result.status !== 200 || result.body === null) {
-    return meta;
-  }
-
-  const parsed = parseList(result.body);
-  const gitSha = parseGitSha(parsed.directives);
-  const parseErrors = parsed.errors.length;
-  const compiledRev = Number(parsed.directives.Version?.replace(/\D/g, '').slice(0, 12)) || now;
-
-  await persistCompiledRules(parsed.rules, compiledRev);
-
-  return {
-    ...meta,
-    etag: result.etag,
-    lastModified: result.lastModified,
-    gitSha,
-    fetchedAt: now,
-    bytes: result.body.length,
-    parseErrors,
-  };
 }
 
 export async function syncAllSubscriptions(): Promise<void> {

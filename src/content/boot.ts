@@ -18,7 +18,7 @@ import { initSpaRouting } from './spa.js';
     },
   };
 
-  bindEngine(engine, rules);
+  bindEngine(engine, rules, engineOpts);
 
   const startProceduralIfNeeded = (): void => {
     if (rules.length === 0) {

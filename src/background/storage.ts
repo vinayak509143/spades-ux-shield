@@ -78,10 +78,17 @@ function serValue(value: string | RegExp): string | SerializedRegex {
   return value instanceof RegExp ? serRegex(value) : value;
 }
 
+const TWO_PART_PUBLIC_SUFFIX = /^(co|com|net|org|gov|edu|ac)$/;
+
 export function registrableDomain(hostname: string): string {
   const parts = hostname.toLowerCase().split('.').filter(Boolean);
   if (parts.length <= 2) {
     return parts.join('.');
+  }
+  const tld = parts[parts.length - 1];
+  const sld = parts[parts.length - 2];
+  if (tld.length === 2 && TWO_PART_PUBLIC_SUFFIX.test(sld) && parts.length >= 3) {
+    return parts.slice(-3).join('.');
   }
   return parts.slice(-2).join('.');
 }
