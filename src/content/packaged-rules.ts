@@ -58,6 +58,19 @@ const SERIALIZED = [
     }
   },
   {
+    "ruleId": 2746467523,
+    "hosts": [
+      "consent.example.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "input[name=\"marketing_opt_in\"]",
+    "procedural": [],
+    "action": {
+      "type": "uncheck"
+    }
+  },
+  {
     "ruleId": 3770666557,
     "hosts": [
       "read-it-all.example.com"
@@ -81,69 +94,6 @@ const SERIALIZED = [
     "procedural": [],
     "action": {
       "type": "unlock-scroll"
-    }
-  },
-  {
-    "ruleId": 2282359013,
-    "hosts": [
-      "amazon.in",
-      "www.amazon.in"
-    ],
-    "entity": false,
-    "pathRe": null,
-    "selector": ".a-carousel-card",
-    "procedural": [
-      {
-        "type": "has-text",
-        "needle": {
-          "source": "cashback",
-          "flags": "i"
-        }
-      }
-    ],
-    "action": {
-      "type": "hide"
-    }
-  },
-  {
-    "ruleId": 3499420505,
-    "hosts": [
-      "amazon.in",
-      "www.amazon.in"
-    ],
-    "entity": false,
-    "pathRe": null,
-    "selector": ".a-carousel-card",
-    "procedural": [
-      {
-        "type": "has-text",
-        "needle": {
-          "source": "orders above",
-          "flags": "i"
-        }
-      }
-    ],
-    "action": {
-      "type": "hide"
-    }
-  },
-  {
-    "ruleId": 2587038438,
-    "hosts": [
-      "amazon.in",
-      "www.amazon.in"
-    ],
-    "entity": false,
-    "pathRe": null,
-    "selector": "a[href*=\"/alm/storefront\"]",
-    "procedural": [
-      {
-        "type": "upward",
-        "steps": ".a-carousel-card"
-      }
-    ],
-    "action": {
-      "type": "hide"
     }
   },
   {

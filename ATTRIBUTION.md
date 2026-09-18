@@ -16,6 +16,25 @@ Spades UX-Shield’s **engine, DSL, and original lists** (`lists/base.txt`, Amaz
 
 EasyList-family lists require **attribution** and **share-alike** when you redistribute derived filter text. Shipping `third-party-rules.txt` in this repo is that redistribution.
 
+### EasyList Cookie List
+
+- **Maintainer:** EasyList contributors  
+- **Source:** [https://easylist-downloads.adblockplus.org/fanboy-cookiemonster.txt](https://easylist-downloads.adblockplus.org/fanboy-cookiemonster.txt)  
+  (`easylistcookie.txt` is not a live EasyList URL; Cookie List is published as Fanboy Cookie Monster.)  
+- **Project:** [https://easylist.to/](https://easylist.to/)  
+- **License:** GNU GPL v3 **and** CC BY-SA 3.0 (same EasyList terms as Fanboy)
+
+Hostname-scoped cosmetic `##` extract only. This list targets consent / cookie walls; it is not a legal determination that a given banner is unlawful.
+
+### EasyList Adblock Warning Removal List
+
+- **Maintainer:** EasyList contributors  
+- **Source:** [https://easylist-downloads.adblockplus.org/antiadblockfilters.txt](https://easylist-downloads.adblockplus.org/antiadblockfilters.txt)  
+- **Project:** [https://easylist.to/](https://easylist.to/)  
+- **License:** GNU GPL v3 **and** CC BY-SA 3.0 (same EasyList terms as Fanboy)
+
+Cosmetic `##` extract only. Network anti-adblock filters are not imported.
+
 ### AdGuard Annoyances
 
 - **Maintainer:** AdGuard Software Ltd  

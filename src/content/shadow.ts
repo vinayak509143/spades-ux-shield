@@ -1,16 +1,31 @@
-type ChromeDom = {
-  dom?: {
-    openOrClosedShadowRoot?: (element: Element) => ShadowRoot | null;
+type ChromeGlobal = {
+  chrome?: {
+    dom?: {
+      openOrClosedShadowRoot?: (element: HTMLElement) => ShadowRoot | null;
+    };
   };
 };
 
-export function getShadowRoot(host: Element): ShadowRoot | null {
-  const chromeDom = (globalThis as ChromeDom).chrome?.dom?.openOrClosedShadowRoot;
-  if (chromeDom) {
-    const closed = chromeDom(host as HTMLElement);
-    if (closed) {
-      return closed;
+const ELEMENT_NODE = 1;
+
+export function isHtmlElement(node: Node): node is HTMLElement {
+  return node.nodeType === ELEMENT_NODE && node instanceof HTMLElement;
+}
+
+export function getShadowRoot(host: Node): ShadowRoot | null {
+  if (host.nodeType !== ELEMENT_NODE || !(host instanceof HTMLElement)) {
+    return null;
+  }
+  try {
+    const chromeDom = (globalThis as ChromeGlobal).chrome?.dom?.openOrClosedShadowRoot;
+    if (chromeDom) {
+      const closed = chromeDom(host);
+      if (closed) {
+        return closed;
+      }
     }
+  } catch {
+    return null;
   }
   return host.shadowRoot;
 }
@@ -41,6 +56,9 @@ export function queryAll(
       return;
     }
     for (const el of node.querySelectorAll('*')) {
+      if (!isHtmlElement(el)) {
+        continue;
+      }
       const shadow = getShadowRoot(el);
       if (shadow) {
         scan(shadow);

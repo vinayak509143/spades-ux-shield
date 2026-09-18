@@ -26,7 +26,7 @@ export function setPageActive(active: boolean): void {
   }
 
   applyHostMark();
-  if (engine) {
+  if (engine && rules.length > 0) {
     engine.start(rules, { pierceShadow: true });
   }
 }

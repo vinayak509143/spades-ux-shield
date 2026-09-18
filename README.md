@@ -29,7 +29,7 @@ Not on the Chrome Web Store yet. Load unpacked from a GitHub Release (no termina
 
 ### From a Release ZIP
 
-1. Download `spades-ux-shield-v1.0.0.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases).
+1. Download `spades-ux-shield-v1.0.1.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest).
 2. Extract the archive. You should see `manifest.json` in that folder (not a nested `dist/` only).
 3. Open `chrome://extensions/` (or `edge://extensions/`).
 4. Enable **Developer mode**.
@@ -38,7 +38,7 @@ Not on the Chrome Web Store yet. Load unpacked from a GitHub Release (no termina
 ### From source
 
 1. Clone this repository.
-2. Run `npm install` and `npm run build`.
+2. Run `npm install`, `npm run update-filters`, and `npm run build`.
 3. **Load unpacked** → this repository folder (the directory that contains `manifest.json`, not `dist/` alone).
 
 ## 🛡️ The Filter Syntax

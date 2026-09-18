@@ -15,7 +15,7 @@ const BANNED_SUBSTRINGS = [
 
 /** uBO / AdGuard procedural or action suffixes — Spades packs static hide in CSS only at bootstrap. */
 const PROCEDURAL_OR_ACTION_RE =
-  /:(?:has-text|contains|matches-css|matches-attr|matches-path|upward|watch-attr|min-text-length|remove-attr|remove-class|remove|click-dismiss|unlock-scroll|style)\(/i;
+  /:(?:has-text|contains|matches-css|matches-attr|matches-path|upward|watch-attr|min-text-length|remove-attr|remove-class|remove|click-dismiss|unlock-scroll|style|uncheck)\b/i;
 
 const NETWORK_PREFIX = /^(?:@@?\|\||\|\||! )/;
 

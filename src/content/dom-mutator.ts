@@ -1,16 +1,20 @@
 import type { Action, CompiledProc } from '../engine/types.js';
+import { isUncheckFrozen } from '../engine/critical-flow.js';
 import {
   collectWatchAttributes,
   elementMatchesProcedural,
   filterRulesForPage,
   pathAndSearch,
 } from './procedural-match.js';
-import { getShadowRoot, queryAll } from './shadow.js';
+import { getShadowRoot, isHtmlElement, queryAll } from './shadow.js';
 
 const MAX_NODES_PER_FRAME = 200;
 const UNCHECK_MAX_RETRIES = 3;
 const HIDE_CLASS = 'op-hide';
 const OVERLAY_ID = 'op-overlay';
+const ELEMENT_NODE = 1;
+const MAX_SYNC_MUTATION_RECORDS = 64;
+const SHADOW_DRAIN_PER_PASS = 32;
 
 const SCROLL_LOCK_CLASSES = new Set([
   'modal-open',
@@ -19,7 +23,6 @@ const SCROLL_LOCK_CLASSES = new Set([
   'is-locked',
 ]);
 
-const PAYMENT_UNCHECK_DENY = /payment|card|cvv|cvc|billing/i;
 const DISMISS_LABEL = /close|dismiss|no.?thanks|not now|reject|decline/i;
 
 export interface ProceduralEngineOptions {
@@ -52,6 +55,7 @@ export class ProceduralEngine {
   private readonly observedShadowRoots = new Set<ShadowRoot>();
   private mutationHandler: MutationCallback | null = null;
   private mutationAttrFilter: string[] = [];
+  private readonly pendingShadowHosts: HTMLElement[] = [];
 
   start(rules: CompiledProc[], opts: ProceduralEngineOptions): void {
     this.rules = rules;
@@ -59,6 +63,10 @@ export class ProceduralEngine {
     this.onRuleApplied = opts.onRuleApplied;
     this.stopped = false;
     this.rebindRoute(this.path);
+    if (this.activeRules.length === 0) {
+      this.disconnectObservers();
+      return;
+    }
     this.attachObserver();
     this.schedule();
   }
@@ -83,6 +91,7 @@ export class ProceduralEngine {
     if (this.stopped) {
       return;
     }
+    this.drainPendingShadows();
     const batch = this.collectCandidates();
     this.writeBatch(batch);
   }
@@ -99,49 +108,54 @@ export class ProceduralEngine {
     this.mutationAttrFilter = attrFilter;
 
     this.observer = new MutationObserver(handler);
+    const observeAttrs = attrFilter.length > 0;
     this.observer.observe(document.documentElement, {
       subtree: true,
       childList: true,
-      attributes: true,
-      attributeFilter: attrFilter,
+      attributes: observeAttrs,
+      attributeFilter: observeAttrs ? attrFilter : undefined,
     });
+    // Do not querySelectorAll('*') here — Amazon-scale DOMs lock the main thread.
+  }
 
-    if (this.pierceShadow) {
-      this.observeShadowRoots(document.documentElement);
+  private watchShadow(shadow: ShadowRoot): void {
+    const handler = this.mutationHandler;
+    const attrFilter = this.mutationAttrFilter;
+    if (!handler || this.observedShadowRoots.has(shadow)) {
+      return;
     }
+    this.observedShadowRoots.add(shadow);
+    const obs = new MutationObserver(handler);
+    const observeAttrs = attrFilter.length > 0;
+    obs.observe(shadow, {
+      subtree: true,
+      childList: true,
+      attributes: observeAttrs,
+      attributeFilter: observeAttrs ? attrFilter : undefined,
+    });
+    this.shadowObservers.push(obs);
   }
 
   private observeShadowRoots(root: ParentNode): void {
-    const handler = this.mutationHandler;
-    const attrFilter = this.mutationAttrFilter;
-    if (!handler || !this.pierceShadow) {
+    if (!this.pierceShadow) {
       return;
     }
-    const hosts = root.querySelectorAll('*');
-    for (const host of hosts) {
-      const shadow = getShadowRoot(host);
-      if (!shadow || this.observedShadowRoots.has(shadow)) {
-        continue;
+    if (isHtmlElement(root)) {
+      const shadow = getShadowRoot(root);
+      if (shadow) {
+        this.watchShadow(shadow);
       }
-      this.observedShadowRoots.add(shadow);
-      const obs = new MutationObserver(handler);
-      obs.observe(shadow, {
-        subtree: true,
-        childList: true,
-        attributes: true,
-        attributeFilter: attrFilter,
-      });
-      this.shadowObservers.push(obs);
     }
   }
 
-  private observeShadowForAddedNodes(nodes: NodeList): void {
-    for (const node of nodes) {
-      if (!(node instanceof Element)) {
-        continue;
-      }
-      this.observeShadowRoots(node);
+  private queueAddedElement(node: Node): boolean {
+    if (node.nodeType !== ELEMENT_NODE || !isHtmlElement(node)) {
+      return false;
     }
+    if (this.pierceShadow) {
+      this.pendingShadowHosts.push(node);
+    }
+    return true;
   }
 
   private disconnectObservers(): void {
@@ -152,15 +166,33 @@ export class ProceduralEngine {
     }
     this.shadowObservers = [];
     this.observedShadowRoots.clear();
+    this.pendingShadowHosts.length = 0;
   }
 
   private onMutations(records: MutationRecord[]): void {
-    if (this.writing > 0 || this.stopped) {
+    if (this.writing > 0 || this.stopped || this.activeRules.length === 0) {
       return;
     }
+
+    // Huge SPA batches: mark dirty and yield. Do not walk the payload here.
+    if (records.length > MAX_SYNC_MUTATION_RECORDS) {
+      this.dirty = true;
+      this.schedule();
+      return;
+    }
+
+    let relevant = false;
     for (const record of records) {
-      if (record.type === 'childList' && record.addedNodes.length > 0) {
-        this.observeShadowForAddedNodes(record.addedNodes);
+      if (record.type === 'childList') {
+        for (const node of record.addedNodes) {
+          if (this.queueAddedElement(node)) {
+            relevant = true;
+          }
+        }
+        continue;
+      }
+      if (record.target.nodeType !== ELEMENT_NODE) {
+        continue;
       }
       const target = record.target;
       if (target instanceof Element) {
@@ -174,11 +206,13 @@ export class ProceduralEngine {
           }
         }
       }
-      this.dirty = true;
+      relevant = true;
     }
-    if (this.dirty) {
-      this.schedule();
+    if (!relevant) {
+      return;
     }
+    this.dirty = true;
+    this.schedule();
   }
 
   private schedule(): void {
@@ -203,10 +237,24 @@ export class ProceduralEngine {
     requestAnimationFrame(run);
   }
 
+  private drainPendingShadows(): void {
+    if (!this.pierceShadow || this.pendingShadowHosts.length === 0) {
+      return;
+    }
+    const batch = this.pendingShadowHosts.splice(0, SHADOW_DRAIN_PER_PASS);
+    for (const host of batch) {
+      this.observeShadowRoots(host);
+    }
+    if (this.pendingShadowHosts.length > 0) {
+      this.schedule();
+    }
+  }
+
   private pass(): void {
     if (this.stopped) {
       return;
     }
+    this.drainPendingShadows();
     this.dirty = false;
     const candidates = this.collectCandidates();
     requestAnimationFrame(() => this.writeBatch(candidates));
@@ -215,21 +263,25 @@ export class ProceduralEngine {
   private collectCandidates(): Array<{ el: Element; rule: CompiledProc }> {
     const out: Array<{ el: Element; rule: CompiledProc }> = [];
     const seen = new Set<Element>();
+    const roots: ParentNode[] = [document, ...this.observedShadowRoots];
 
     for (const rule of this.activeRules) {
       if (!rule.selector) {
         continue;
       }
-      const nodes = queryAll(rule.selector, document, this.pierceShadow);
-      for (const el of nodes) {
-        if (seen.has(el) || out.length >= MAX_NODES_PER_FRAME) {
-          continue;
+      for (const root of roots) {
+        // Never pierce via querySelectorAll('*') — CSS handles static ## hides.
+        const nodes = queryAll(rule.selector, root, false);
+        for (const el of nodes) {
+          if (el.nodeType !== ELEMENT_NODE || seen.has(el) || out.length >= MAX_NODES_PER_FRAME) {
+            continue;
+          }
+          if (!elementMatchesProcedural(el, rule.procedural)) {
+            continue;
+          }
+          seen.add(el);
+          out.push({ el, rule });
         }
-        if (!elementMatchesProcedural(el, rule.procedural)) {
-          continue;
-        }
-        seen.add(el);
-        out.push({ el, rule });
       }
     }
     return out;
@@ -239,7 +291,6 @@ export class ProceduralEngine {
     if (this.stopped || batch.length === 0) {
       return;
     }
-    this.disconnectObservers();
     this.writing++;
     try {
       for (const { el, rule } of batch.slice(0, MAX_NODES_PER_FRAME)) {
@@ -254,7 +305,6 @@ export class ProceduralEngine {
       for (const obs of this.shadowObservers) {
         obs.takeRecords();
       }
-      this.attachObserver();
     }
   }
 
@@ -294,7 +344,7 @@ export class ProceduralEngine {
         acted.add(el);
         return true;
       case 'uncheck':
-        if (this.uncheck(el)) {
+        if (this.uncheck(el, rule)) {
           acted.add(el);
           return true;
         }
@@ -342,12 +392,18 @@ export class ProceduralEngine {
     (el as HTMLElement).style.setProperty('display', 'none', 'important');
   }
 
-  private uncheck(el: Element): boolean {
+  private uncheck(el: Element, rule: CompiledProc): boolean {
     if (!(el instanceof HTMLInputElement) || (el.type !== 'checkbox' && el.type !== 'radio')) {
       return false;
     }
-    const name = el.name ?? '';
-    if (PAYMENT_UNCHECK_DENY.test(name)) {
+    if (
+      isUncheckFrozen({
+        hostname: location.hostname,
+        path: this.path,
+        selector: rule.selector,
+        inputName: el.name ?? '',
+      })
+    ) {
       return false;
     }
     const attempts = this.uncheckAttempts.get(el) ?? 0;

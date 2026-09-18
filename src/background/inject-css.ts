@@ -1,4 +1,5 @@
 import { hostBucketToCss } from '../engine/compiler.js';
+import { hostSuffixes } from '../engine/util.js';
 import {
   matchingHostsInShard,
   readHostShard,
@@ -6,6 +7,31 @@ import {
   shardKeyForHost,
   type HostShardRecord,
 } from './storage.js';
+
+let packagedHostCss: Record<string, string> | null = null;
+let packagedHostCssPromise: Promise<Record<string, string>> | null = null;
+
+async function loadPackagedHostCss(): Promise<Record<string, string>> {
+  if (packagedHostCss) {
+    return packagedHostCss;
+  }
+  if (!packagedHostCssPromise) {
+    packagedHostCssPromise = (async () => {
+      try {
+        const url = chrome.runtime.getURL('dist/packaged-host-css.json');
+        const response = await fetch(url);
+        if (!response.ok) {
+          return {};
+        }
+        return (await response.json()) as Record<string, string>;
+      } catch {
+        return {};
+      }
+    })();
+  }
+  packagedHostCss = await packagedHostCssPromise;
+  return packagedHostCss;
+}
 
 export async function buildUserCssForHostname(
   hostname: string,
@@ -19,6 +45,13 @@ export async function buildUserCssForHostname(
   }
 
   const chunks: string[] = [];
+  const packaged = await loadPackagedHostCss();
+  for (const host of hostSuffixes(hostname)) {
+    const css = packaged[host];
+    if (css) {
+      chunks.push(css);
+    }
+  }
 
   for (const host of matchingHostsInShard(hostname, shard)) {
     const bucket = shard[host];

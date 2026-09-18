@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,55 +18,89 @@ buildSync({
   logLevel: 'silent',
 });
 
-const { parseList, compileRules } = require(engineBundle);
+const { parseList, compileRules, hostBucketToCss } = require(engineBundle);
 
-const listPaths = [
+const bootListPaths = [
   { path: resolve(root, 'lists/base.txt'), strict: true },
-  { path: resolve(root, 'third-party-rules.txt'), strict: false },
   { path: resolve(root, 'lists/e2e-fixture.txt'), strict: true },
 ];
+const thirdPartyPath = resolve(root, 'third-party-rules.txt');
 
-const allRules = [];
-for (const { path, strict } of listPaths) {
-  if (!existsSync(path)) {
-    if (strict) {
-      console.error(`Missing required list: ${path}`);
-      process.exit(1);
+function loadRules(listPaths) {
+  const allRules = [];
+  for (const { path, strict } of listPaths) {
+    if (!existsSync(path)) {
+      if (strict) {
+        console.error(`Missing required list: ${path}`);
+        process.exit(1);
+      }
+      continue;
     }
-    continue;
-  }
-  const { rules, errors } = parseList(readFileSync(path, 'utf8'));
-  allRules.push(...rules);
-  if (errors.length > 0) {
-    const label = path.split(/[/\\]/).pop();
-    if (strict) {
-      console.error(`Parse errors in ${label}:`, errors.slice(0, 20));
-      process.exit(1);
+    const { rules, errors } = parseList(readFileSync(path, 'utf8'));
+    allRules.push(...rules);
+    if (errors.length > 0) {
+      const label = path.split(/[/\\]/).pop();
+      if (strict) {
+        console.error(`Parse errors in ${label}:`, errors.slice(0, 20));
+        process.exit(1);
+      }
+      console.warn(
+        `Skipped ${errors.length} unparsable line(s) in ${label} (third-party / extended syntax)`,
+      );
     }
-    console.warn(
-      `Skipped ${errors.length} unparsable line(s) in ${label} (third-party / extended syntax)`,
-    );
   }
+  return allRules;
 }
 
-const compiled = compileRules(allRules);
-if (compiled.errors.length > 0) {
-  const thirdPartyOnly = compiled.errors.length;
-  console.warn(
-    `Compile skipped ${thirdPartyOnly} rule(s) (validation / unsupported operators)`,
-  );
-}
+const bootRules = loadRules(bootListPaths);
+const thirdPartyRules = loadRules([{ path: thirdPartyPath, strict: false }]);
 
-if (allRules.length === 0) {
-  console.error('No rules compiled — check lists/base.txt and third-party-rules.txt');
+if (bootRules.length === 0) {
+  console.error('No rules compiled — check lists/base.txt');
   process.exit(1);
 }
 
-writeFileSync(resolve(root, 'cosmetic-boot.css'), compiled.genericCss, 'utf8');
+const bootCompiled = compileRules(bootRules);
+const thirdCompiled = compileRules(thirdPartyRules);
+if (bootCompiled.errors.length > 0) {
+  console.error('Parse/compile errors in boot lists:', bootCompiled.errors.slice(0, 20));
+  process.exit(1);
+}
+if (thirdCompiled.errors.length > 0) {
+  console.warn(
+    `Compile skipped ${thirdCompiled.errors.length} third-party rule(s) (validation / unsupported operators)`,
+  );
+}
+
+writeFileSync(resolve(root, 'cosmetic-boot.css'), bootCompiled.genericCss, 'utf8');
+
+mkdirSync(resolve(root, 'dist'), { recursive: true });
+
+const hostCss = {};
+for (const [host, bucket] of thirdCompiled.hostBuckets) {
+  const css = hostBucketToCss(host, bucket);
+  if (css) {
+    hostCss[host] = css;
+  }
+}
+writeFileSync(
+  resolve(root, 'dist/packaged-host-css.json'),
+  JSON.stringify(hostCss),
+  'utf8',
+);
 
 const procedural = [];
-for (const bucket of compiled.hostBuckets.values()) {
-  procedural.push(...bucket.procedural);
+const seenProc = new Set();
+for (const compiled of [bootCompiled, thirdCompiled]) {
+  for (const bucket of compiled.hostBuckets.values()) {
+    for (const rule of bucket.procedural) {
+      if (seenProc.has(rule.ruleId)) {
+        continue;
+      }
+      seenProc.add(rule.ruleId);
+      procedural.push(rule);
+    }
+  }
 }
 
 function serRegex(re) {
@@ -211,4 +245,6 @@ export function revivePackagedRules(): CompiledProc[] {
 `;
 
 writeFileSync(resolve(root, 'src/content/packaged-rules.ts'), out, 'utf8');
-console.log('Wrote cosmetic-boot.css and src/content/packaged-rules.ts');
+console.log(
+  `Wrote cosmetic-boot.css (${bootCompiled.genericCss.length} bytes), dist/packaged-host-css.json (${Object.keys(hostCss).length} hosts), ${procedural.length} procedural rules`,
+);

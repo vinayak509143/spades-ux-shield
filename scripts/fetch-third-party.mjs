@@ -15,9 +15,17 @@ const SOURCES = [
     name: 'AdGuard Annoyances',
     url: 'https://filters.adtidy.org/extension/chromium/filters/14.txt',
   },
+  {
+    name: 'EasyList Cookie List',
+    url: 'https://easylist-downloads.adblockplus.org/fanboy-cookiemonster.txt',
+  },
+  {
+    name: 'EasyList Adblock Warning Removal List',
+    url: 'https://easylist-downloads.adblockplus.org/antiadblockfilters.txt',
+  },
 ];
 
-const MAX_LINES = Number(process.env.THIRD_PARTY_MAX_LINES || '30000');
+const MAX_LINES = Number(process.env.THIRD_PARTY_MAX_LINES || '60000');
 
 async function fetchText(url) {
   const response = await fetch(url, {
@@ -35,7 +43,7 @@ async function main() {
   const header = [
     '! Title: Spades UX-Shield Third-Party Cosmetic (extracted)',
     `! Version: ${new Date().toISOString().replace(/[-:]/g, '').slice(0, 12)}`,
-    '! Sources: Fanboy Annoyance + AdGuard Annoyances (hostname ## rules only)',
+    '! Sources: Fanboy Annoyance + AdGuard Annoyances + EasyList Cookie + EasyList Adblock Warning Removal (hostname ## rules only)',
     '! Licenses: GPL-3.0 / CC BY-SA 3.0 — see ATTRIBUTION.md',
     '! Run: npm run update-filters',
     '',
@@ -43,25 +51,32 @@ async function main() {
 
   for (const source of SOURCES) {
     console.log(`Fetching ${source.name}…`);
-    const text = await fetchText(source.url);
-    const { lines, stats } = extractCosmeticLines(text);
-    console.log(
-      `  ${source.name}: scanned ${stats.scanned}, kept ${stats.kept} cosmetic lines`,
-    );
-    for (const line of lines) {
-      merged.add(line);
+    try {
+      const text = await fetchText(source.url);
+      const { lines, stats } = extractCosmeticLines(text);
+      console.log(
+        `  ${source.name}: scanned ${stats.scanned}, kept ${stats.kept} cosmetic lines`,
+      );
+      for (const line of lines) {
+        merged.add(line);
+      }
+    } catch (err) {
+      console.error(`  ${source.name}: FAILED (${err instanceof Error ? err.message : err})`);
     }
   }
 
+  if (merged.size === 0) {
+    throw new Error('No third-party cosmetics extracted from any source');
+  }
+
   let allLines = [...merged];
+  allLines.sort();
   if (allLines.length > MAX_LINES) {
     console.warn(
       `Capping third-party rules at ${MAX_LINES} (set THIRD_PARTY_MAX_LINES to override)`,
     );
     allLines = allLines.slice(0, MAX_LINES);
   }
-
-  allLines.sort();
   const body = [...header, ...allLines].join('\n') + '\n';
   writeFileSync(outPath, body, 'utf8');
   console.log(`Wrote ${allLines.length} rules to ${outPath}`);

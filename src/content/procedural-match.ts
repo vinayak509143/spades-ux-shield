@@ -1,4 +1,5 @@
 import type { CompiledProc, ProcOp } from '../engine/types.js';
+import { isUncheckFrozen } from '../engine/critical-flow.js';
 import { hostSuffixes } from '../engine/util.js';
 
 export function pathAndSearch(): string {
@@ -22,7 +23,18 @@ export function filterRulesForPage(
   hostname: string,
   path: string,
 ): CompiledProc[] {
-  return rules.filter((rule) => ruleMatchesHost(rule, hostname) && ruleMatchesPath(rule, path));
+  return rules.filter((rule) => {
+    if (!ruleMatchesHost(rule, hostname) || !ruleMatchesPath(rule, path)) {
+      return false;
+    }
+    if (
+      rule.action.type === 'uncheck' &&
+      isUncheckFrozen({ hostname, path, selector: rule.selector })
+    ) {
+      return false;
+    }
+    return true;
+  });
 }
 
 function textMatches(needle: string | RegExp, text: string): boolean {
@@ -110,13 +122,19 @@ export function elementMatchesProcedural(el: Element, ops: ProcOp[]): boolean {
 }
 
 export function collectWatchAttributes(rules: CompiledProc[]): string[] {
-  const attrs = new Set<string>(['class', 'style', 'open', 'checked', 'hidden', 'aria-hidden']);
+  const attrs = new Set<string>();
   for (const rule of rules) {
+    if (rule.action.type === 'uncheck') {
+      attrs.add('checked');
+    }
     for (const op of rule.procedural) {
       if (op.type === 'watch-attr') {
         for (const name of op.names) {
           attrs.add(name);
         }
+      }
+      if (op.type === 'matches-attr') {
+        attrs.add(op.name);
       }
     }
   }

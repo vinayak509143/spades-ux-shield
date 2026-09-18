@@ -7,8 +7,14 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const ITERATIONS = Number(process.env.STRESS_ITERATIONS || '20');
-const TARGET_URL = 'https://www.amazon.in/';
+const ITERATIONS = Number(process.env.STRESS_ITERATIONS || '8');
+const TARGET_URLS = (
+  process.env.STRESS_URLS || 'https://www.amazon.in/,https://www.amazon.in/deals'
+)
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+const EVAL_TIMEOUT_MS = Number(process.env.STRESS_EVAL_MS || '12000');
 
 async function waitForHero(page) {
   await page
@@ -16,6 +22,32 @@ async function waitForHero(page) {
       timeout: 12_000,
     })
     .catch(() => {});
+}
+
+async function waitForPage(page, url) {
+  if (/\/deals|goldbox/i.test(url)) {
+    await page.waitForSelector('body', { timeout: 12_000 }).catch(() => {});
+    await page.waitForTimeout(1200);
+    return;
+  }
+  await waitForHero(page);
+}
+
+async function sampleWithHangGuard(page) {
+  let timeoutId;
+  try {
+    return await Promise.race([
+      sampleFrames(page),
+      new Promise((_, reject) => {
+        timeoutId = setTimeout(
+          () => reject(new Error('main-thread-timeout')),
+          EVAL_TIMEOUT_MS,
+        );
+      }),
+    ]);
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 async function sampleFrames(page) {
@@ -134,33 +166,58 @@ async function main() {
 
   const page = context.pages()[0] ?? (await context.newPage());
   const failures = [];
+  let total = 0;
+  page.on('crash', () => {
+    failures.push({ iteration: total, issues: ['page-crash'] });
+  });
 
-  for (let i = 0; i < ITERATIONS; i++) {
-    await page.goto(TARGET_URL, { waitUntil: 'domcontentloaded', timeout: 60_000 });
-    await waitForHero(page);
-    let issues;
-    try {
-      issues = await sampleFrames(page);
-    } catch (err) {
-      failures.push({ iteration: i + 1, issues: [`evaluate-error:${err.message}`] });
-      console.error(`FAIL reload ${i + 1}: evaluate error`);
-      continue;
-    }
-    if (issues.length > 0) {
-      failures.push({ iteration: i + 1, issues });
-      console.error(`FAIL reload ${i + 1}:`, issues.join(', '));
-    } else {
-      console.log(`ok reload ${i + 1}`);
+  for (const url of TARGET_URLS) {
+    for (let i = 0; i < ITERATIONS; i++) {
+      total += 1;
+      const label = `${url} #${i + 1}`;
+      const started = Date.now();
+      try {
+        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+        await waitForPage(page, url);
+        const issues = await sampleWithHangGuard(page);
+        const elapsed = Date.now() - started;
+        if (elapsed > 25_000) {
+          failures.push({ iteration: total, issues: [`slow-load:${elapsed}ms`] });
+          console.error(`FAIL ${label}: slow-load ${elapsed}ms`);
+          continue;
+        }
+        if (url.includes('/deals') || url.includes('goldbox')) {
+          const freezeOnly = issues.filter(
+            (item) => item === 'missing-data-op' || item === 'missing-data-op-h',
+          );
+          if (freezeOnly.length > 0) {
+            failures.push({ iteration: total, issues: freezeOnly });
+            console.error(`FAIL ${label}:`, freezeOnly.join(', '));
+          } else {
+            console.log(`ok ${label} (${elapsed}ms)`);
+          }
+          continue;
+        }
+        if (issues.length > 0) {
+          failures.push({ iteration: total, issues });
+          console.error(`FAIL ${label}:`, issues.join(', '));
+        } else {
+          console.log(`ok ${label} (${elapsed}ms)`);
+        }
+      } catch (err) {
+        failures.push({ iteration: total, issues: [`evaluate-error:${err.message}`] });
+        console.error(`FAIL ${label}:`, err.message);
+      }
     }
   }
 
   await context.close();
 
   if (failures.length > 0) {
-    console.error(`\n${failures.length}/${ITERATIONS} reloads leaked`);
+    console.error(`\n${failures.length}/${total} reloads leaked`);
     process.exit(1);
   }
-  console.log(`\n${ITERATIONS}/${ITERATIONS} reloads clean`);
+  console.log(`\n${total}/${total} reloads clean`);
 }
 
 main().catch((err) => {

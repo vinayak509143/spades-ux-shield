@@ -1,6 +1,7 @@
 /**
- * MAIN world — runs before extension CSS (separate manifest entry).
- * Sets kill-switch + host gate synchronously (no imports, minimal parse).
+ * MAIN world — stamp only. Must stay MAIN so page JS cannot wrap our isolated
+ * world, and so data-op lands before author CSS. Procedural engine / :uncheck
+ * live in boot.js (ISOLATED), not here.
  */
 (function markHost() {
   var labels = location.hostname.toLowerCase().split('.').filter(Boolean);

@@ -27,6 +27,9 @@ describe('extract-cosmetic', () => {
     expect(isExtractableCosmeticLine('pay.stripe.com##.modal')).toBe(false);
     expect(isExtractableCosmeticLine('shop.com##input[name="cvv"]')).toBe(false);
     expect(isExtractableCosmeticLine('shop.com##.cookie-banner')).toBe(true);
+    expect(
+      isExtractableCosmeticLine('news.com##input[name="opt_in"]:uncheck'),
+    ).toBe(false);
   });
 
   it('dedupes extracted lines', () => {
