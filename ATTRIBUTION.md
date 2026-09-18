@@ -50,7 +50,7 @@ The extract also **drops** generic (`##` with no host), HTML filters (`##^`), sn
 
 ## This engine (not the extract)
 
-Original Spades source in this repository is intended to be licensed separately (MIT when `LICENSE` is present). **MIT does not replace GPL/CC-BY-SA on `third-party-rules.txt`.** Combined distributions that include the extract must honor upstream terms (attribution, share-alike / GPL as applicable).
+Original Spades source in this repository is licensed under [MIT](LICENSE). **MIT does not replace GPL/CC-BY-SA on `third-party-rules.txt`.** Combined distributions that include the extract must honor upstream terms (attribution, share-alike / GPL as applicable).
 
 ## Filters community list
 

@@ -25,11 +25,11 @@ Spades UX-Shield takes a different approach:
 
 ## 🚀 Installation
 
-Not on the Chrome Web Store yet. Load unpacked from a GitHub Release (no terminal).
+Not on the Chrome Web Store yet. Load unpacked from a GitHub Release (no terminal). Listing copy for when it is: [store/LISTING.md](store/LISTING.md).
 
 ### From a Release ZIP
 
-1. Download `spades-ux-shield-v1.0.1.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest).
+1. Download `spades-ux-shield-v1.0.2.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest).
 2. Extract the archive. You should see `manifest.json` in that folder (not a nested `dist/` only).
 3. Open `chrome://extensions/` (or `edge://extensions/`).
 4. Enable **Developer mode**.
@@ -54,7 +54,9 @@ Want to help us break dark patterns? Contribute to the official filter list in o
 
 ## Licenses & attribution
 
-Original engine source is intended as MIT when `LICENSE` is present. **`third-party-rules.txt` is not MIT** — it is a cosmetic extract of Fanboy/EasyList and AdGuard Annoyances (GPL-3.0 / CC BY-SA 3.0). See [ATTRIBUTION.md](ATTRIBUTION.md).
+Original engine source is [MIT](LICENSE). **`third-party-rules.txt` is not MIT** — it is a cosmetic extract of Fanboy/EasyList and AdGuard Annoyances (GPL-3.0 / CC BY-SA 3.0). See [ATTRIBUTION.md](ATTRIBUTION.md).
+
+Privacy: [PRIVACY.md](PRIVACY.md) (no telemetry).
 
 ## 🛠️ Tech Stack
 
@@ -73,3 +75,15 @@ Quality holdout (manual): [docs/HOLDOUT_PROTOCOL.md](docs/HOLDOUT_PROTOCOL.md).
 npm test          # unit tests
 npm run test:e2e  # extension + CLS fixture (builds first)
 ```
+
+## Support this project
+
+Spades UX-Shield is free, open-source, and client-side only. There is no paid tier, no ads, and no telemetry.
+
+Ways to help without paying:
+
+- Star [spades-ux-shield](https://github.com/vinayak509143/spades-ux-shield) and [spades-ux-shield-filters](https://github.com/vinayak509143/spades-ux-shield-filters)
+- Contribute hostname-scoped cosmetic rules (checkout / pay / auth stay frozen — see [CONTRIBUTING.md](CONTRIBUTING.md))
+- Use **Report broken page** in the popup
+
+To fund list extraction and the Chrome Web Store fee: **[Buy me a coffee on Ko-fi](https://ko-fi.com/spadesxx)**.
