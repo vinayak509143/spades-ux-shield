@@ -1,6 +1,6 @@
 # Spades UX-Shield
 
-A small Chrome extension that hides cookie walls, newsletter pop-ups, app-install nags and a few other interruptive bits of web design. It works from plain-text filter lists, the same way uBlock Origin's cosmetic filters do. There is no AI in it, no server, and nothing is sent anywhere.
+A small Chrome extension that hides cookie walls, newsletter pop-ups, fake countdown timers, app-install nags, and other dark patterns. It works from plain-text filter lists, the same way uBlock Origin's cosmetic filters do. There is no AI in it, no server, and nothing is sent anywhere.
 
 ## What it does
 
