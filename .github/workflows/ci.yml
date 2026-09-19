@@ -17,4 +17,5 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run validate-pending
+      - run: npm run validate-darklist
       - run: npm run build
