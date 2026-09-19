@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "notes": "Live Shopify app demo storefronts only — never App Store listing HTML, never /cart /checkout /login.",
+  "demos": [
+    {
+      "app": "Hurrify",
+      "prefix": "hurrify-",
+      "url": "https://demo-hurrier-countdown-timer.myshopify.com/",
+      "kind": "positive"
+    },
+    {
+      "app": "Hextom Free Shipping Bar",
+      "prefix": "hextom-",
+      "url": "https://sigma-28.myshopify.com/",
+      "kind": "positive"
+    },
+    {
+      "app": "Sales Pop",
+      "prefix": "sales-pop-",
+      "url": "https://sales-pop-demo.myshopify.com/",
+      "kind": "positive"
+    },
+    {
+      "app": "Qikify Salekit",
+      "prefix": null,
+      "url": "https://qikify-salekit.myshopify.com/",
+      "kind": "discover"
+    },
+    {
+      "app": "Smart Popup demo",
+      "prefix": null,
+      "url": "https://smartpopupdemo.myshopify.com/",
+      "kind": "discover"
+    },
+    {
+      "app": "MLO Shoes theme-native leftover",
+      "prefix": null,
+      "url": "https://mloshoes.com/",
+      "kind": "theme-native",
+      "expectVendorMiss": true
+    },
+    {
+      "app": "Local vendor fixture",
+      "prefix": "hurrify-",
+      "url": "http://127.0.0.1:4173/vendor-widget.html",
+      "kind": "positive",
+      "local": true
+    },
+    {
+      "app": "Local Dawn-like clean store",
+      "prefix": null,
+      "url": "http://127.0.0.1:4173/dawn-clean.html",
+      "kind": "negative",
+      "local": true
+    }
+  ]
+}

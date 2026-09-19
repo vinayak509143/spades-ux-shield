@@ -12,6 +12,8 @@ const server = http.createServer((req, res) => {
     file = resolve(root, 'urgency.html');
   } else if (req.url === '/vendor-widget.html') {
     file = resolve(root, 'vendor-widget.html');
+  } else if (req.url === '/dawn-clean.html') {
+    file = resolve(root, 'dawn-clean.html');
   }
   if (!file) {
     res.writeHead(404);

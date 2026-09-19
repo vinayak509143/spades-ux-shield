@@ -46,7 +46,7 @@ Amazon homepage GWM rules stay **ATF/home**. Never extend them to cart or pay.
 
 Before claiming a site is “fixed,” follow [docs/HOLDOUT_PROTOCOL.md](docs/HOLDOUT_PROTOCOL.md).
 
-New `cosmetic-vendors.css` prefixes or quarantine lines: [docs/FALSE_POSITIVE_MATRIX.md](docs/FALSE_POSITIVE_MATRIX.md). Run `npm run validate-pending` before merging `lists/pending-review.txt`.
+New `cosmetic-vendors.css` prefixes or quarantine lines: [docs/FALSE_POSITIVE_MATRIX.md](docs/FALSE_POSITIVE_MATRIX.md). Run `npm run validate-pending` before merging `lists/pending-review.txt`. Shopify app demos: `npm run crawl-demos` (Playwright storefronts, not App Store HTML) then human-merge `temp/pending-vendor-rules.css`.
 
 ## Licenses
 

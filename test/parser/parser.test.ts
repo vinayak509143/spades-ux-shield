@@ -13,8 +13,8 @@ describe('parseList', () => {
 
     expect(errors).toHaveLength(0);
     expect(directives.Title).toBe('Spades UX-Shield Base');
-    expect(directives.Version).toBe('202609172320');
-    expect(rules).toHaveLength(24);
+    expect(directives.Version).toBe('202609211600');
+    expect(rules).toHaveLength(39);
 
     const timerHide = rules.find((r) => r.hosts.includes('scam-shop.example.com'));
     expect(timerHide?.kind).toBe('cosmetic');

@@ -21,9 +21,15 @@ cosmetic-boot.css
 dist/
 scripts/.engine-bundle.cjs
 test/e2e/.user-data/
+test/e2e/.user-data-vendor/
 .stress-profile/
 .stress-profile*/
 .hero-dump/
+.probe*/
+.verify-mlo*/
+.verify-hurrier*/
+test/e2e/.user-data-vendor-holdout/
+temp/
 spades-ux-shield-unpacked/
 spades-ux-shield-v1.zip
 spades-ux-shield-v1.0.0.zip

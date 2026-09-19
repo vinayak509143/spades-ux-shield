@@ -8,7 +8,9 @@
         margin: 0;
         font-family: system-ui, sans-serif;
       }
-      .hurrify-countdown-bar {
+      .hurrify-countdown-bar,
+      .hextom-fsb-bar,
+      .privy-popup {
         height: 40px;
         background: #1565c0;
         color: #fff;
@@ -19,19 +21,42 @@
       .store-main {
         padding: 16px;
       }
-      .checkout-cta {
+      .checkout-cta,
+      .add-to-cart {
         display: inline-block;
         padding: 8px 16px;
         background: #2e7d32;
         color: #fff;
       }
+      .cart-drawer {
+        position: fixed;
+        right: 0;
+        top: 80px;
+        width: 280px;
+        padding: 12px;
+        background: #fff;
+        border: 1px solid #ccc;
+        z-index: 20;
+      }
+      .price {
+        font-size: 1.2rem;
+      }
     </style>
   </head>
   <body>
     <div class="hurrify-countdown-bar" id="hurrify-timer">Sale ends soon!</div>
+    <div class="hextom-fsb-bar">You are $20 from free shipping</div>
+    <div class="privy-popup">Spin to win</div>
     <main class="store-main">
-      <p>Product page without list rule — vendor CSS should hide hurrify-.</p>
-      <a class="checkout-cta" href="/cart">View cart</a>
+      <p>Product page — vendor CSS should hide app prefixes only.</p>
+      <p class="price">$34.50</p>
+      <button class="add-to-cart" type="button">Add to cart</button>
+      <a class="checkout-cta" href="/products/demo">View product</a>
     </main>
+    <aside id="cart-drawer" class="cart-drawer">
+      <p>Cart drawer</p>
+      <p class="product-price">$34.50</p>
+      <button class="checkout-cta" type="button">Check out</button>
+    </aside>
   </body>
 </html>

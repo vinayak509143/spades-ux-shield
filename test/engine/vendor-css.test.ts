@@ -31,6 +31,13 @@ describe('cosmetic-vendors.css', () => {
     }
   });
 
+  it('does not globalize Shopify theme-native leftovers', () => {
+    expect(source).not.toMatch(/promo-countdown/);
+    expect(source).not.toMatch(/header-timer/);
+    expect(source).not.toMatch(/hero__title/);
+    expect(source).not.toMatch(/\[class\*="promo-"]/);
+  });
+
   it('documents FP matrix in repo', () => {
     const doc = readFileSync(resolve(process.cwd(), 'docs/FALSE_POSITIVE_MATRIX.md'), 'utf8');
     expect(doc).toContain('must-not');

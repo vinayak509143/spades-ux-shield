@@ -158,6 +158,50 @@ const SERIALIZED = [
     "action": {
       "type": "hide"
     }
+  },
+  {
+    "ruleId": 912433863,
+    "hosts": [
+      "mloshoes.com",
+      "www.mloshoes.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": ".announcement__slide",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "ends in",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 2945835325,
+    "hosts": [
+      "mloshoes.com",
+      "www.mloshoes.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": ".badge-box.custom-box",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "best seller",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
   }
 ] as const;
 

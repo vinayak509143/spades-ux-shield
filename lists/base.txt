@@ -1,5 +1,5 @@
 ! Title: Spades UX-Shield Base
-! Version: 202609172320
+! Version: 202609211600
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
 sneaky-news.example.com##button:has-text("I hate saving money")
@@ -26,4 +26,28 @@ amazon.in,www.amazon.in##.gwm-window-tile:has(a[href*="amazon-bazaar"])
 amazon.in,www.amazon.in##.gwm-window-tile:has(a[href*="/hz/mobile/mission"])
 amazon.in,www.amazon.in##.gwm-window-tile:has([class*="single-video-card"])
 amazon.in,www.amazon.in##.gwm-window-tile:has(.gwm-window-skeleton-content)
+
+! MLO Shoes (mloshoes.com) — manipulative Shopify theme widgets; shopping flow untouched
+! Hide: fake countdowns (header, cart, announcement, sticky promo ribbon), inflated "compare" MSRP, every-SKU "Best Seller"
+! Keep: hero sale copy, current prices, add-to-cart, cart/checkout, free-shipping announcement slide
+! Do not copy these selectors into cosmetic-vendors.css — they are theme-native, not app prefixes.
+mloshoes.com,www.mloshoes.com###header-timer-box
+mloshoes.com,www.mloshoes.com###cart-timer-box
+mloshoes.com,www.mloshoes.com##.promo-price-card__ribbon-right
+mloshoes.com,www.mloshoes.com##.promo-countdown
+mloshoes.com,www.mloshoes.com##.announcement__slide:has-text(/ends in/i)
+mloshoes.com,www.mloshoes.com##.promo-price-card__compare
+mloshoes.com,www.mloshoes.com##.js-promo-compare
+mloshoes.com,www.mloshoes.com##.product__price--strike
+mloshoes.com,www.mloshoes.com##.price.sale s
+mloshoes.com,www.mloshoes.com##.badge-box.custom-box:has-text(/best seller/i)
+
+! Hurrier demo (Anvanto theme) — fake stock + delivery countdown + visitor count; not hurrify- app prefixes
+! Script: counter.smar7apps.com. Keep: price, variants, Add to Cart.
+! Do not globalize .product-count / .delivery-time-box — hostname-scoped only.
+demo-hurrier-countdown-timer.myshopify.com##.delivery-time-info
+demo-hurrier-countdown-timer.myshopify.com##.visitors-block
+demo-hurrier-countdown-timer.myshopify.com##.count-product-progress_wrapp
+demo-hurrier-countdown-timer.myshopify.com##.short-product-info li:has(.product-count)
+demo-hurrier-countdown-timer.myshopify.com##.an_position_timer
 

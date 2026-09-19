@@ -2,6 +2,7 @@
  * Shopify / Woo urgency & popup apps — stable vendor prefixes only.
  * Gated on host-mark (pause strips data-op). Not hostname-scoped: custom store domains.
  * No generic banner/modal/dialog selectors — see docs/FALSE_POSITIVE_MATRIX.md.
+ * Theme-native leftovers (promo-countdown, header-timer-box, hero__title) stay in lists/base.txt.
  */
 html[data-op="1"] [class*="hurrify-"],
 html[data-op="1"] [id*="hurrify-"],
