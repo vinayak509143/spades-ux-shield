@@ -46,6 +46,8 @@ Amazon homepage GWM rules stay **ATF/home**. Never extend them to cart or pay.
 
 Before claiming a site is “fixed,” follow [docs/HOLDOUT_PROTOCOL.md](docs/HOLDOUT_PROTOCOL.md).
 
+New `cosmetic-vendors.css` prefixes or quarantine lines: [docs/FALSE_POSITIVE_MATRIX.md](docs/FALSE_POSITIVE_MATRIX.md). Run `npm run validate-pending` before merging `lists/pending-review.txt`.
+
 ## Licenses
 
 Third-party extracts: [ATTRIBUTION.md](ATTRIBUTION.md).

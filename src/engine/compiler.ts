@@ -7,6 +7,7 @@ import type {
 } from './types.js';
 import { isBareHasTextSubject } from './util.js';
 import { DomainIndex } from './domain-index.js';
+import { cssRuleParses, isValidCosmeticSelector } from './selector-valid.js';
 
 const STYLE_DENY = [
   /url\s*\(/i,
@@ -139,17 +140,34 @@ export function compileRules(rules: Rule[]): CompileResult {
   return { genericCss, hostBuckets, errors };
 }
 
+function filterValidHideSelectors(_host: string, selectors: string[]): string[] {
+  return selectors.filter((sel) => isValidCosmeticSelector(sel));
+}
+
 export function hostBucketToCss(host: string, bucket: HostBucket): string {
   const chunks: string[] = [];
-  const hide = bucket.hideSelectors.filter(
-    (sel) => !bucket.exceptions.includes(sel),
+  const hide = filterValidHideSelectors(
+    host,
+    bucket.hideSelectors.filter((sel) => !bucket.exceptions.includes(sel)),
   );
   if (hide.length > 0) {
     const joined = hide.join(',\nhtml[data-op-h~="' + host + '"] ');
-    chunks.push(`html[data-op-h~="${host}"] ${joined}{display:none!important;}`);
+    const block = `html[data-op-h~="${host}"] ${joined}{display:none!important;}`;
+    if (cssRuleParses(block)) {
+      chunks.push(block);
+    } else {
+      for (const sel of hide) {
+        const rule = `html[data-op-h~="${host}"] ${sel}{display:none!important;}`;
+        if (cssRuleParses(rule) || isValidCosmeticSelector(sel)) {
+          chunks.push(rule);
+        }
+      }
+    }
   }
   for (const pathRule of bucket.pathCss) {
-    chunks.push(pathRule.css);
+    if (cssRuleParses(pathRule.css)) {
+      chunks.push(pathRule.css);
+    }
   }
   return chunks.join('\n');
 }

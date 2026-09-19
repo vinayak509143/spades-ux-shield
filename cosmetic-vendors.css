@@ -1,0 +1,18 @@
+/*
+ * Shopify / Woo urgency & popup apps — stable vendor prefixes only.
+ * Gated on host-mark (pause strips data-op). Not hostname-scoped: custom store domains.
+ * No generic banner/modal/dialog selectors — see docs/FALSE_POSITIVE_MATRIX.md.
+ */
+html[data-op="1"] [class*="hurrify-"],
+html[data-op="1"] [id*="hurrify-"],
+html[data-op="1"] [class*="hextom-"],
+html[data-op="1"] [class*="privy-"],
+html[data-op="1"] [id^="privy-"],
+html[data-op="1"] [class*="wisepops-"],
+html[data-op="1"] [class*="pushowl-"],
+html[data-op="1"] [class*="fomo-"],
+html[data-op="1"] [class*="justuno-"],
+html[data-op="1"] [class*="sales-pop-"],
+html[data-op="1"] [class*="proof-factor-"] {
+  display: none !important;
+}

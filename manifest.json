@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Spades UX-Shield",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "minimum_chrome_version": "111",
   "description": "Spades UX-Shield — zero-cost, deterministic dark pattern blocker.",
   "homepage_url": "https://github.com/vinayak509143/spades-ux-shield",
@@ -44,7 +44,7 @@
       "matches": ["<all_urls>"],
       "run_at": "document_start",
       "world": "ISOLATED",
-      "css": ["cosmetic-critical.css", "cosmetic-boot.css"],
+      "css": ["cosmetic-critical.css", "cosmetic-vendors.css", "cosmetic-boot.css"],
       "js": ["boot.js"],
       "all_frames": true
     }

@@ -39,6 +39,8 @@ Record pass/fail in the PR or issue. Do not paste passwords, card numbers, or fu
 
 `npm test` / `npm run test:e2e` cover engine fixtures, **not** this matrix.
 
+Per-selector vendor / generated rules: [FALSE_POSITIVE_MATRIX.md](./FALSE_POSITIVE_MATRIX.md).
+
 This protocol is **manual** (or a future Playwright file that **does not** submit payments). CI must never use real cards or production Stripe keys.
 
 ## Failures

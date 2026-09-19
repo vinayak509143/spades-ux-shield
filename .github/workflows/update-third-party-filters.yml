@@ -1,0 +1,47 @@
+name: Update third-party filters
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-filters:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Fetch Fanboy / AdGuard extracts
+        run: npm run update-filters
+
+      - name: Verify build after extract
+        run: |
+          npm test
+          npm run build
+
+      - name: Open PR (never push to main)
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'chore: refresh third-party-rules.txt'
+          title: 'chore: weekly third-party cosmetic extract'
+          body: |
+            Automated `npm run update-filters` (Fanboy / AdGuard hostname cosmetics only).
+
+            **Does not** change [spades-ux-shield-filters](https://github.com/vinayak509143/spades-ux-shield-filters) `lists/base.txt`.
+
+            After merge: run `npm run build` / `npm run package` locally or in release workflow.
+          branch: automation/third-party-filters
+          delete-branch: true
+          add-paths: |
+            third-party-rules.txt

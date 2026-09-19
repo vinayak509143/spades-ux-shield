@@ -7,9 +7,12 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), 'fixtures');
 const port = 4173;
 
 const server = http.createServer((req, res) => {
-  const file = req.url === '/' || req.url === '/urgency.html'
-    ? resolve(root, 'urgency.html')
-    : null;
+  let file = null;
+  if (req.url === '/' || req.url === '/urgency.html') {
+    file = resolve(root, 'urgency.html');
+  } else if (req.url === '/vendor-widget.html') {
+    file = resolve(root, 'vendor-widget.html');
+  }
   if (!file) {
     res.writeHead(404);
     res.end('Not found');
