@@ -48,7 +48,7 @@ Filter syntax is the usual `host##selector` with a few procedural extras. Detail
 
 ## Contributing
 
-Site rules go in [spades-ux-shield-filters](https://github.com/vinayak509143/spades-ux-shield-filters), either as an issue or a PR to `lists/base.txt`. Engine changes go here; run `npm test` first, and `npm run test:e2e` if you touch injection.
+Site rules go in [spades-ux-shield-filters](https://github.com/vinayak509143/spades-ux-shield-filters), either as an issue or a PR to `lists/darklist.txt`. Engine changes go here; run `npm test` first, and `npm run test:e2e` if you touch injection.
 
 [CONTRIBUTING.md](CONTRIBUTING.md) lists what is off limits: checkout, payment, login and account-cancellation flows. Before calling a site fixed, go through [docs/HOLDOUT_PROTOCOL.md](docs/HOLDOUT_PROTOCOL.md).
 

@@ -21,7 +21,7 @@ describe('storage shards', () => {
   });
 
   it('groups compiled buckets into shard records', () => {
-    const source = readFileSync(resolve(process.cwd(), 'lists/base.txt'), 'utf8');
+    const source = readFileSync(resolve(process.cwd(), 'lists/darklist.txt'), 'utf8');
     const { rules } = parseList(source);
     const compiled = compileRules(rules);
     const shards = groupBucketsByShard(compiled.hostBuckets);

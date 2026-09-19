@@ -1,5 +1,5 @@
 ! Title: Spades UX-Shield Pending Review (quarantine)
 ! Version: 0
-! Do not sync — human merge to spades-ux-shield-filters lists/base.txt after FP matrix.
+! Do not sync — human merge to spades-ux-shield-filters lists/darklist.txt after FP matrix.
 ! Run: npm run validate-pending
 !

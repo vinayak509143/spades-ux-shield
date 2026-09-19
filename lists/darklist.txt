@@ -1,4 +1,4 @@
-! Title: Spades UX-Shield Base
+! Title: Spades Darklist
 ! Version: 202609211600
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)

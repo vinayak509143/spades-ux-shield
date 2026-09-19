@@ -4,15 +4,15 @@ import { describe, expect, it } from 'vitest';
 import { compileRules, compileToDomainIndex } from '../../src/engine/compiler.js';
 import { parseLine, parseList } from '../../src/engine/parser.js';
 
-const baseListPath = resolve(process.cwd(), 'lists/base.txt');
+const baseListPath = resolve(process.cwd(), 'lists/darklist.txt');
 
 describe('parseList', () => {
-  it('parses lists/base.txt with directives and rules', () => {
+  it('parses lists/darklist.txt with directives and rules', () => {
     const source = readFileSync(baseListPath, 'utf8');
     const { rules, errors, directives } = parseList(source);
 
     expect(errors).toHaveLength(0);
-    expect(directives.Title).toBe('Spades UX-Shield Base');
+    expect(directives.Title).toBe('Spades Darklist');
     expect(directives.Version).toBe('202609211600');
     expect(rules).toHaveLength(39);
 

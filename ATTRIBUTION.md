@@ -1,6 +1,6 @@
 # Attribution
 
-Spades UX-Shield’s **engine, DSL, and original lists** (`lists/base.txt`, Amazon GWM overlays, this repository’s TypeScript) are original work. Packaged third-party cosmetics are **not**.
+Spades UX-Shield’s **engine, DSL, and original lists** (`lists/darklist.txt`, Amazon GWM overlays, this repository’s TypeScript) are original work. Packaged third-party cosmetics are **not**.
 
 ## Upstream filter lists
 

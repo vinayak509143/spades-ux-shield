@@ -21,7 +21,7 @@ buildSync({
 const { parseList, compileRules, hostBucketToCss } = require(engineBundle);
 
 const bootListPaths = [
-  { path: resolve(root, 'lists/base.txt'), strict: true },
+  { path: resolve(root, 'lists/darklist.txt'), strict: true },
   { path: resolve(root, 'lists/e2e-fixture.txt'), strict: true },
 ];
 const thirdPartyPath = resolve(root, 'third-party-rules.txt');
@@ -56,7 +56,7 @@ const bootRules = loadRules(bootListPaths);
 const thirdPartyRules = loadRules([{ path: thirdPartyPath, strict: false }]);
 
 if (bootRules.length === 0) {
-  console.error('No rules compiled — check lists/base.txt');
+  console.error('No rules compiled — check lists/darklist.txt');
   process.exit(1);
 }
 

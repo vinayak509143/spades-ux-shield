@@ -45,5 +45,5 @@ This protocol is **manual** (or a future Playwright file that **does not** submi
 
 ## Failures
 
-- Positive fail → add a **hostname-scoped** cosmetic in the [filters repo](https://github.com/vinayak509143/spades-ux-shield-filters) or `lists/base.txt` **if** it is in-scope (`CONTRIBUTING.md`).
+- Positive fail → add a **hostname-scoped** cosmetic in the [filters repo](https://github.com/vinayak509143/spades-ux-shield-filters) or `lists/darklist.txt` **if** it is in-scope (`CONTRIBUTING.md`).
 - Negative fail → **revert the rule**. Do not “fix” checkout with more `:uncheck`.

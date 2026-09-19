@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "packagedRev": 202609172320,
+  "packagedRev": 202609211600,
   "lists": [
     {
-      "id": "base",
-      "title": "Spades UX-Shield Base",
+      "id": "darklist",
+      "title": "Spades Darklist",
       "enabledByDefault": true,
-      "primaryUrl": "https://cdn.jsdelivr.net/gh/vinayak509143/spades-ux-shield-filters@main/lists/base.txt",
+      "primaryUrl": "https://cdn.jsdelivr.net/gh/vinayak509143/spades-ux-shield-filters@main/lists/darklist.txt",
       "mirrors": [
-        "https://raw.githubusercontent.com/vinayak509143/spades-ux-shield-filters/main/lists/base.txt"
+        "https://raw.githubusercontent.com/vinayak509143/spades-ux-shield-filters/main/lists/darklist.txt"
       ],
       "issues": "https://github.com/vinayak509143/spades-ux-shield-filters/issues/new"
     }

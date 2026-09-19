@@ -28,15 +28,15 @@ Positive-only Playwright that never opens checkout is **not** enough.
 
 ## Shopify vendor seeds
 
-Global prefixes live in `cosmetic-vendors.css`. Theme-native leftovers stay hostname-scoped in `lists/base.txt` (see mloshoes.com). Prove with `npm run prove-seeds` (live) and `npm run holdout-shopify` (local fixtures). Never harvest `/cart`, `/checkout`, or `/login`.
+Global prefixes live in `cosmetic-vendors.css`. Theme-native leftovers stay hostname-scoped in `lists/darklist.txt` (see mloshoes.com). Prove with `npm run prove-seeds` (live) and `npm run holdout-shopify` (local fixtures). Never harvest `/cart`, `/checkout`, or `/login`.
 
 | App | Demo storefront | Expected prefix | Last prove-seeds |
 |-----|-----------------|-----------------|------------------|
-| Hurrify demo | https://demo-hurrier-countdown-timer.myshopify.com/products/gap-disney-mickey-mouse-graphic-tee | `hurrify-` absent; theme uses `.product-count` / `.delivery-time-info` | pass — `lists/base.txt` hostname rules; `node test/scripts/verify-hurrier-rules.mjs` |
+| Hurrify demo | https://demo-hurrier-countdown-timer.myshopify.com/products/gap-disney-mickey-mouse-graphic-tee | `hurrify-` absent; theme uses `.product-count` / `.delivery-time-info` | pass — `lists/darklist.txt` hostname rules; `node test/scripts/verify-hurrier-rules.mjs` |
 | Hextom Free Shipping Bar | https://sigma-28.myshopify.com/ | `hextom-` | skip — prefix absent in headless |
 | Sales Pop | https://sales-pop-demo.myshopify.com/ | `sales-pop-` | skip — prefix absent in headless |
 | Qikify Salekit | https://qikify-salekit.myshopify.com/ | discover → `qsk-popup-` | pass (also `fomo-` hits); pending only, not merged |
 | Smart Popup | https://smartpopupdemo.myshopify.com/ | discover | pass — no seed prefix |
-| MLO Shoes | https://mloshoes.com/ | hostname in `lists/base.txt` | pass — vendor miss expected |
+| MLO Shoes | https://mloshoes.com/ | hostname in `lists/darklist.txt` | pass — vendor miss expected |
 | Local vendor fixture | http://127.0.0.1:4173/vendor-widget.html | `hurrify-` / `hextom-` / `privy-` | pass — hidden |
 | Local Dawn-like | http://127.0.0.1:4173/dawn-clean.html | must-not | pass — no vendor hit |

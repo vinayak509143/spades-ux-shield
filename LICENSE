@@ -23,7 +23,7 @@ SOFTWARE.
 ---
 
 This MIT license covers original Spades UX-Shield source in this repository
-(engine, DSL, popup, MV3 shell, and original rules in lists/base.txt).
+(engine, DSL, popup, MV3 shell, and original rules in lists/darklist.txt).
 
 It does **not** cover third-party filter extracts (`third-party-rules.txt` and
 compiled cosmetics derived from Fanboy/EasyList and AdGuard). Those remain
