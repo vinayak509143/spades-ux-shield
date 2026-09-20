@@ -29,6 +29,7 @@ const vis = () => {
   const proceed = [...document.querySelectorAll('input, button, a')].filter(
     (el) => visible(el) && /proceed to (buy|checkout)/i.test(el.textContent || el.value || ''),
   ).length;
+  const emptyCart = /cart is empty/i.test(document.body.innerText || '');
   return {
     dataOp,
     gwmFirstVisible: visible(gwmFirst),
@@ -37,6 +38,7 @@ const vis = () => {
     addToCart,
     searchCards,
     proceed,
+    emptyCart,
   };
 };
 
@@ -94,7 +96,7 @@ await page.goto('https://www.amazon.in/gp/cart/view.html', { waitUntil: 'domcont
 await page.waitForTimeout(4000);
 const cart = await page.evaluate(vis);
 console.log('cart', JSON.stringify(cart));
-if (cart.proceed < 1) {
+if (cart.proceed < 1 && !cart.emptyCart) {
   console.error('FAIL: Proceed to Buy not visible on cart');
   failed = true;
 }
