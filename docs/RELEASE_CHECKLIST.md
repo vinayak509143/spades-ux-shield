@@ -9,7 +9,7 @@ npm ci
 npm run validate-darklist
 npm test
 npm run build
-npm run package   # produces spades-ux-shield-v1.0.5.zip (version in package.json)
+npm run package   # build + zip + verify:zip (version must match manifest.json)
 ```
 
 Optional live smoke (headed Chrome; MV3 may not load under headless):
