@@ -1,4 +1,10 @@
 import type { CompiledProc, ProcOp } from '../engine/types.js';
+import {
+  isAmazonEnAliasHost,
+  isAmazonEnHost,
+  isAmazonRetailAliasHost,
+  isAmazonRetailHost,
+} from '../engine/amazon-retail.js';
 import { isUncheckFrozen } from '../engine/critical-flow.js';
 import { hostSuffixes } from '../engine/util.js';
 
@@ -7,8 +13,17 @@ export function pathAndSearch(): string {
 }
 
 export function ruleMatchesHost(rule: CompiledProc, hostname: string): boolean {
-  const suffixes = new Set(hostSuffixes(hostname));
-  return rule.hosts.some((h) => suffixes.has(h.toLowerCase()));
+  return rule.hosts.some((h) => {
+    const host = h.toLowerCase();
+    if (isAmazonRetailAliasHost(host)) {
+      return isAmazonRetailHost(hostname);
+    }
+    if (isAmazonEnAliasHost(host)) {
+      return isAmazonEnHost(hostname);
+    }
+    const suffixes = new Set(hostSuffixes(hostname));
+    return suffixes.has(host);
+  });
 }
 
 export function ruleMatchesPath(rule: CompiledProc, path: string): boolean {

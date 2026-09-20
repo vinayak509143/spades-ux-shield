@@ -160,10 +160,9 @@ const SERIALIZED = [
     }
   },
   {
-    "ruleId": 3509672676,
+    "ruleId": 2023833575,
     "hosts": [
-      "amazon.in",
-      "www.amazon.in"
+      "amazon-en"
     ],
     "entity": false,
     "pathRe": null,
@@ -182,10 +181,9 @@ const SERIALIZED = [
     }
   },
   {
-    "ruleId": 1275229986,
+    "ruleId": 4135333337,
     "hosts": [
-      "amazon.in",
-      "www.amazon.in"
+      "amazon-en"
     ],
     "entity": false,
     "pathRe": null,

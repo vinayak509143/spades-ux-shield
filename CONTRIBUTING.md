@@ -40,7 +40,9 @@ Interruptive **cosmetic** UI only:
 - Sticky media players and app-install banners
 - Isolated hero / ATF promo tiles (e.g. Amazon.in Gateway Window first slot)
 
-Amazon homepage GWM rules stay **ATF/home**. Never extend them to cart or pay.
+Amazon homepage GWM rules stay **ATF/home** on `amazon.in` only. Never extend them to cart or pay.
+
+**Amazon retail (23 storefronts):** use filter aliases `amazon-retail` (shared PDP IDs) and `amazon-en` (English deal-badge `:has-text`). Do **not** add `amazon.com##` lines — `data-op-h` suffix matching would hit `aws.amazon.com`, Music, Seller Central, etc. Allowlist lives in `src/engine/amazon-retail.ts`.
 
 ## Holdout
 

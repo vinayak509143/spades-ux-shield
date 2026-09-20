@@ -5,9 +5,20 @@ import type {
   ParseError,
   Rule,
 } from './types.js';
+import { isAmazonEnAliasHost, isAmazonRetailAliasHost } from './amazon-retail.js';
 import { isBareHasTextSubject } from './util.js';
 import { DomainIndex } from './domain-index.js';
 import { cssRuleParses, isValidCosmeticSelector } from './selector-valid.js';
+
+function hostGateSelector(host: string): string {
+  if (isAmazonRetailAliasHost(host)) {
+    return 'html[data-op="1"][data-op-amz="1"]';
+  }
+  if (isAmazonEnAliasHost(host)) {
+    return 'html[data-op="1"][data-op-amz-en="1"]';
+  }
+  return `html[data-op-h~="${host}"]`;
+}
 
 const STYLE_DENY = [
   /url\s*\(/i,
@@ -64,7 +75,7 @@ function cssSelectorForRule(rule: Rule): string {
 }
 
 function emitHideCss(host: string, selector: string): string {
-  return `html[data-op-h~="${host}"] ${selector}{display:none!important;}`;
+  return `${hostGateSelector(host)} ${selector}{display:none!important;}`;
 }
 
 function bucketForHost(map: Map<string, HostBucket>, host: string): HostBucket {
@@ -151,13 +162,14 @@ export function hostBucketToCss(host: string, bucket: HostBucket): string {
     bucket.hideSelectors.filter((sel) => !bucket.exceptions.includes(sel)),
   );
   if (hide.length > 0) {
-    const joined = hide.join(',\nhtml[data-op-h~="' + host + '"] ');
-    const block = `html[data-op-h~="${host}"] ${joined}{display:none!important;}`;
+    const gate = hostGateSelector(host);
+    const joined = hide.join(`,\n${gate} `);
+    const block = `${gate} ${joined}{display:none!important;}`;
     if (cssRuleParses(block)) {
       chunks.push(block);
     } else {
       for (const sel of hide) {
-        const rule = `html[data-op-h~="${host}"] ${sel}{display:none!important;}`;
+        const rule = `${gate} ${sel}{display:none!important;}`;
         if (cssRuleParses(rule) || isValidCosmeticSelector(sel)) {
           chunks.push(rule);
         }

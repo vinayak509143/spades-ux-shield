@@ -5,7 +5,7 @@ A small Chrome extension that hides cookie walls, newsletter pop-ups, fake count
 ## What it does
 
 - Hides elements with CSS. A rule looks like `example.com##.newsletter-overlay`. If the site and selector are on the list, the element is hidden before the page paints. If they aren't, nothing happens.
-- Ships with a cosmetic-only extract of Fanboy's Annoyance List, EasyList Cookie List and AdGuard Annoyances, plus a short list of my own for things like the first promo tile on the Amazon.in homepage.
+- Ships with a cosmetic-only extract of Fanboy's Annoyance List, EasyList Cookie List and AdGuard Annoyances, plus [Spades Darklist](https://github.com/vinayak509143/spades-ux-shield-filters) (Shopify urgency apps, Amazon retail PDP social-proof, Amazon.in homepage promos, and other hostname-scoped rules).
 - Pulls updates to my list from GitHub about twice a day. The third-party extract is baked in at build time.
 - Has a popup with two switches (this tab, this domain) and a "Report broken page" link that opens a pre-filled GitHub issue.
 
@@ -22,7 +22,7 @@ Not in the Chrome Web Store yet.
 
 From a release zip:
 
-1. Download `spades-ux-shield-v1.0.4.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest).
+1. Download `spades-ux-shield-v1.0.5.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest).
 2. Unzip it. `manifest.json` should be at the top level of the folder.
 3. Open `chrome://extensions`, turn on Developer mode, click Load unpacked and pick that folder.
 
@@ -38,9 +38,19 @@ npm run build
 
 Then Load unpacked on the repository folder (the one with `manifest.json`).
 
+### Verify Amazon rules (optional)
+
+After `npm run build`:
+
+```bash
+npm run verify:amazon
+```
+
+Checks `amazon.in` holdout targets and retail `data-op-amz` on `.com` / `.co.uk` / `.de`, with `aws.amazon.com` must-not. See [docs/HOLDOUT_PROTOCOL.md](docs/HOLDOUT_PROTOCOL.md).
+
 ## How it works
 
-Three content scripts run at `document_start` on every page. The first stamps `<html>` with the hostname and its parents (`data-op-h="www.amazon.in amazon.in in"`), so bundled CSS can be scoped as `html[data-op-h~="amazon.in"] .selector`. The second is a couple of kilobytes of CSS for the most common hides. The third starts a `MutationObserver`, but only if the current site has procedural rules (`:has-text`, `:uncheck` and so on). Most sites never start it.
+Three content scripts run at `document_start` on every page. The first stamps `<html>` with hostname suffixes (`data-op-h`) and, on the 23 Amazon **retail** storefronts only, `data-op-amz` / `data-op-amz-en` (not `aws.amazon.com` or other Amazon subdomains). Bundled CSS uses `html[data-op-h~="host"]` for normal sites and `amazon-retail` / `amazon-en` list aliases for shared PDP rules. A small boot stylesheet and optional `MutationObserver` apply procedural rules (`:has-text`, `:uncheck`) only where the list requires them.
 
 The service worker keeps my list in `chrome.storage.local`, split into shards by domain, and injects the matching CSS with `chrome.scripting.insertCSS` when a page commits.
 

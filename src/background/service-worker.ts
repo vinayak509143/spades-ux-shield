@@ -1,3 +1,4 @@
+import { isAmazonRetailHost } from '../engine/amazon-retail.js';
 import { registerMessageHandlers } from './messages.js';
 import { buildUserCssForHostname } from './inject-css.js';
 import {
@@ -75,8 +76,7 @@ async function injectUserCss(tabId: number, frameId: number, url: string): Promi
       return;
     }
     const css = await buildUserCssForHostname(hostname, shardMemory);
-    const amazon = /(^|\.)amazon\.in$/i.test(hostname);
-    if (amazon) {
+    if (isAmazonRetailHost(hostname)) {
       await chrome.scripting.insertCSS({
         target: { tabId, frameIds: [frameId] },
         files: ['cosmetic-critical.css'],

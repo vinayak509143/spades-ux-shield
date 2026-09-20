@@ -16,7 +16,9 @@ const vis = () => {
     const r = el.getBoundingClientRect();
     return r.width > 2 && r.height > 2;
   };
-  const dataOp = document.documentElement.getAttribute('data-op');
+  const html = document.documentElement;
+  const dataOp = html.getAttribute('data-op');
+  const dataOpAmz = html.getAttribute('data-op-amz');
   const gwmFirst = document.querySelector(
     '#gwm-window > li.gwm-window-tile:first-of-type, .gwm-window-tile[data-cel-widget="card-wd-01"], .gwm-window-tile:has([data-cel-widget="card-wd-01"])',
   );
@@ -32,6 +34,7 @@ const vis = () => {
   const emptyCart = /cart is empty/i.test(document.body.innerText || '');
   return {
     dataOp,
+    dataOpAmz,
     gwmFirstVisible: visible(gwmFirst),
     socialVisible: visible(social),
     dealBadges,
@@ -59,6 +62,10 @@ const home = await page.evaluate(vis);
 console.log('home', JSON.stringify(home));
 if (home.dataOp !== '1') {
   console.error('FAIL: data-op not set on homepage');
+  failed = true;
+}
+if (home.dataOpAmz !== '1') {
+  console.error('FAIL: data-op-amz not set on amazon.in');
   failed = true;
 }
 if (home.gwmFirstVisible) {

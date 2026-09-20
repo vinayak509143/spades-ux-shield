@@ -27,6 +27,8 @@ export function setPageActive(active: boolean): void {
   if (!active) {
     root.removeAttribute('data-op-h');
     root.removeAttribute('data-op');
+    root.removeAttribute('data-op-amz');
+    root.removeAttribute('data-op-amz-en');
     engine?.stop();
     return;
   }

@@ -39,4 +39,6 @@ Global prefixes live in `cosmetic-vendors.css`. Theme-native leftovers stay host
 | Smart Popup | https://smartpopupdemo.myshopify.com/ | discover | pass — no seed prefix |
 | MLO Shoes | https://mloshoes.com/ | hostname in `lists/darklist.txt` | pass — vendor miss expected |
 | Local vendor fixture | http://127.0.0.1:4173/vendor-widget.html | `hurrify-` / `hextom-` / `privy-` | pass — hidden |
-| Amazon.in PDP / SERP | https://www.amazon.in/dp/B0792MKTDD + https://www.amazon.in/s?k=headphones | hostname in `lists/darklist.txt` (`#socialProofing*`, `#dealBadge_feature_div`, `.a-badge:has-text`) | pass — must-not cart + buy box; `node test/scripts/verify-amazon-in-rules.mjs` |
+| Amazon.in PDP / SERP | https://www.amazon.in/dp/B0792MKTDD + https://www.amazon.in/s?k=headphones | `amazon.in` ATF + `amazon-retail` / `amazon-en` aliases (`src/engine/amazon-retail.ts`) | pass — must-not cart + buy box; `node test/scripts/verify-amazon-in-rules.mjs` |
+| Amazon retail (global) | https://www.amazon.com/dp/B0792MKTDD, https://www.amazon.co.uk/dp/B0792MKTDD, https://www.amazon.de/dp/B0792MKTDD | `amazon-retail` / `amazon-en` only — **never** `data-op-h~="amazon.com"` | `node test/scripts/verify-amazon-retail-rules.mjs` |
+| AWS (must-not) | https://aws.amazon.com/ | no `data-op-amz` | same script |

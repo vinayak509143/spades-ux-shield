@@ -20,6 +20,15 @@ await esbuild.build({
 });
 
 await esbuild.build({
+  entryPoints: [resolve(root, 'src/content/host-mark-main-entry.ts')],
+  bundle: true,
+  format: 'iife',
+  target: 'es2022',
+  outfile: resolve(root, 'host-mark-main.js'),
+  logLevel: 'info',
+});
+
+await esbuild.build({
   entryPoints: [resolve(root, 'src/content/boot.ts')],
   bundle: true,
   format: 'iife',

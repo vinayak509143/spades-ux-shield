@@ -17,6 +17,7 @@
     "harvest-widgets": "node scripts/quarantine/harvest-widgets.mjs",
     "extract-vendors": "node scripts/quarantine/extract-vendor-prefixes.mjs",
     "holdout-shopify": "node scripts/quarantine/holdout.mjs",
+    "verify:amazon": "npm run build && node test/scripts/verify-amazon-in-rules.mjs && node test/scripts/verify-amazon-retail-rules.mjs",
     "package": "npm run build && npm run zip"
   },
   "devDependencies": {

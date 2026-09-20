@@ -18,3 +18,10 @@ html[data-op="1"][data-op-h~="amazon.in"] .gwm-window-tile:has([class*="single-v
 html[data-op="1"][data-op-h~="amazon.in"] .gwm-window-tile:has(.gwm-window-skeleton-content) {
   display: none !important;
 }
+
+/* Amazon retail PDP — first-paint (all 23 storefronts via data-op-amz). */
+html[data-op="1"][data-op-amz="1"] #socialProofingAsinFaceout_feature_div,
+html[data-op="1"][data-op-amz="1"] #socialProofingBadge_feature_div,
+html[data-op="1"][data-op-amz="1"] #dealBadge_feature_div {
+  display: none !important;
+}
