@@ -18,6 +18,8 @@ Record pass/fail in the PR or issue. Do not paste passwords, card numbers, or fu
 | # | URL | What to look for |
 |---|-----|------------------|
 | 1 | `https://www.amazon.in/` | GWM first tile / ATF video-cashback promo **gone**; remaining tiles shift left (no white column). |
+| 1b | `https://www.amazon.in/dp/B0792MKTDD` (or any in-stock PDP) | `#socialProofingAsinFaceout_feature_div` (“bought in past month”) **gone**; price, In stock, Add to cart, delivery “Order within …” **stay**. |
+| 1c | `https://www.amazon.in/s?k=headphones` | `.a-badge` “Limited time deal” / “Ends in …” **gone**; product cards and Sponsored labels **stay**. |
 | 2 | `https://www.cnn.com/` (open an article) | Sticky video / newsletter modal listed by annoyances lists — hidden or dismissible without covering the article. |
 | 3 | `https://timesofindia.indiatimes.com/` | Floating interstitial / app nag if present — hidden. If none on that load, mark **N/A** (not fail). |
 | 4 | Recipe blog with a CMP (e.g. a site that shows a cookie banner; pick one from Fanboy that you can load legally) | Cookie consent overlay hidden **or** page readable; if your jurisdiction requires consent UI, use a site you already accept — this is engineering QA, not legal advice. |

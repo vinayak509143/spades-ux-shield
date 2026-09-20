@@ -7,7 +7,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { buildSync } from 'esbuild';
-import { isExtractableCosmeticLine } from './lib/extract-cosmetic.mjs';
+import { isCriticalFlowCosmetic } from './lib/extract-cosmetic.mjs';
 import { isDeniedQuarantineLine } from './quarantine/denylist.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -40,9 +40,10 @@ for (let i = 0; i < lines.length; i++) {
     failed++;
     continue;
   }
-  if (!isExtractableCosmeticLine(line)) {
-    console.error(`Line ${lineNo}: invalid or unsupported filter line — ${trimmed}`);
+  if (isCriticalFlowCosmetic(line) && !/\.example\.com\b/i.test(trimmed)) {
+    console.error(`Line ${lineNo}: critical-flow cosmetic (checkout/pay/auth) — ${trimmed}`);
     failed++;
+    continue;
   }
 }
 

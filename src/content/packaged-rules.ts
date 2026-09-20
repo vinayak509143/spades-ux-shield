@@ -160,6 +160,50 @@ const SERIALIZED = [
     }
   },
   {
+    "ruleId": 3509672676,
+    "hosts": [
+      "amazon.in",
+      "www.amazon.in"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": ".a-badge",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "limited time deal",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 1275229986,
+    "hosts": [
+      "amazon.in",
+      "www.amazon.in"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": ".a-badge",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "ends in",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
     "ruleId": 912433863,
     "hosts": [
       "mloshoes.com",

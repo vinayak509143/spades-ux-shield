@@ -1,5 +1,5 @@
 ! Title: Spades Darklist
-! Version: 202609211600
+! Version: 202609211830
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
 sneaky-news.example.com##button:has-text("I hate saving money")
@@ -26,6 +26,13 @@ amazon.in,www.amazon.in##.gwm-window-tile:has(a[href*="amazon-bazaar"])
 amazon.in,www.amazon.in##.gwm-window-tile:has(a[href*="/hz/mobile/mission"])
 amazon.in,www.amazon.in##.gwm-window-tile:has([class*="single-video-card"])
 amazon.in,www.amazon.in##.gwm-window-tile:has(.gwm-window-skeleton-content)
+! Amazon.in PDP / SERP — social-proof faceout + deal-timer badges only
+! Keep: prices, M.R.P., Add to cart, delivery "order within", sponsored listings, Prime, cart/checkout
+amazon.in,www.amazon.in###socialProofingAsinFaceout_feature_div
+amazon.in,www.amazon.in###socialProofingBadge_feature_div
+amazon.in,www.amazon.in###dealBadge_feature_div
+amazon.in,www.amazon.in##.a-badge:has-text(/limited time deal/i)
+amazon.in,www.amazon.in##.a-badge:has-text(/ends in/i)
 
 ! MLO Shoes (mloshoes.com) — manipulative Shopify theme widgets; shopping flow untouched
 ! Hide: fake countdowns (header, cart, announcement, sticky promo ribbon), inflated "compare" MSRP, every-SKU "Best Seller"

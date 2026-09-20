@@ -28,6 +28,7 @@ test/e2e/.user-data-vendor/
 .probe*/
 .verify-mlo*/
 .verify-hurrier*/
+.verify-amazon*/
 test/e2e/.user-data-vendor-holdout/
 temp/
 spades-ux-shield-unpacked/
