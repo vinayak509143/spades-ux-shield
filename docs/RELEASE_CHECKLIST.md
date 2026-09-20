@@ -16,6 +16,7 @@ Optional live smoke (headed Chrome; MV3 may not load under headless):
 
 ```bash
 npm run verify:amazon
+npm run verify:flipkart
 ```
 
 ## List sync (filters repo)
@@ -38,3 +39,11 @@ npm run verify:amazon
 
 - Tag engine repo release and attach the zip.
 - Confirm holdout notes in [HOLDOUT_PROTOCOL.md](./HOLDOUT_PROTOCOL.md) for any new hostname rules.
+
+## Chrome Web Store (same listing)
+
+While an older build is **In review**, do **not** cancel that submission. Ship engineering on `main`; upload the next zip only after the in-flight version shows **Published**.
+
+1. Wait until dashboard shows **1.0.4 Published** (or whatever is currently in review).
+2. Same store item → upload `spades-ux-shield-v1.0.7.zip` (includes Flipkart rules + Amazon host CI guard).
+3. `npm run package` / `npm run verify:zip` before upload; list `packagedRev` must match filters repo `darklist.txt` `! Version:`.

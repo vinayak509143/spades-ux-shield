@@ -1,5 +1,5 @@
 ! Title: Spades Darklist
-! Version: 202609202100
+! Version: 202609202230
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
 sneaky-news.example.com##button:has-text("I hate saving money")
@@ -34,6 +34,10 @@ amazon-retail###socialProofingBadge_feature_div
 amazon-retail###dealBadge_feature_div
 amazon-en##.a-badge:has-text(/limited time deal/i)
 amazon-en##.a-badge:has-text(/ends in/i)
+
+! Flipkart — www only (audit docs/flipkart-audit.md); SERP scarcity chips, not Bank Offer / price labels
+! Keep: price, seller, Add to cart / Buy now, real variant stock, cart & checkout
+www.flipkart.com##div.HZ0E6r.Rm9_cy:has-text(/^Only (few|\d+ left)/i)
 
 ! MLO Shoes (mloshoes.com) — manipulative Shopify theme widgets; shopping flow untouched
 ! Hide: fake countdowns (header, cart, announcement, sticky promo ribbon), inflated "compare" MSRP, every-SKU "Best Seller"

@@ -1,6 +1,6 @@
 # Chrome Web Store listing (paste into the dashboard)
 
-**Upload zip:** `spades-ux-shield-v1.0.6.zip` from [GitHub Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest) (run `npm run package` to rebuild).
+**Upload zip:** `spades-ux-shield-v1.0.7.zip` from [GitHub Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest) (run `npm run package` to rebuild).
 
 Privacy policy URL:
 

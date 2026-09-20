@@ -42,3 +42,4 @@ Global prefixes live in `cosmetic-vendors.css`. Theme-native leftovers stay host
 | Amazon.in PDP / SERP | https://www.amazon.in/dp/B0792MKTDD + https://www.amazon.in/s?k=headphones | `amazon.in` ATF + `amazon-retail` / `amazon-en` aliases (`src/engine/amazon-retail.ts`) | pass — must-not cart + buy box; `node test/scripts/verify-amazon-in-rules.mjs` |
 | Amazon retail (global) | https://www.amazon.com/dp/B0792MKTDD, https://www.amazon.co.uk/dp/B0792MKTDD, https://www.amazon.de/dp/B0792MKTDD | `amazon-retail` / `amazon-en` only — **never** `data-op-h~="amazon.com"` | `node test/scripts/verify-amazon-retail-rules.mjs` |
 | AWS (must-not) | https://aws.amazon.com/ | no `data-op-amz` | same script |
+| Flipkart SERP + PDP | https://www.flipkart.com/search?q=boat+earphones + in-stock PDP | `www.flipkart.com` only; `div.HZ0E6r.Rm9_cy` + scarcity text | `npm run verify:flipkart` (headed) |

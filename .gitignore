@@ -29,6 +29,7 @@ test/e2e/.user-data-vendor/
 .verify-mlo*/
 .verify-hurrier*/
 .verify-amazon*/
+.verify-flipkart*/
 test/e2e/.user-data-vendor-holdout/
 temp/
 spades-ux-shield-unpacked/
@@ -39,3 +40,6 @@ spades-ux-shield-v1.0.2.zip
 spades-ux-shield-v1.0.3.zip
 spades-ux-shield-v1.0.4.zip
 spades-ux-shield-v1.0.5.zip
+spades-ux-shield-v1.0.6.zip
+spades-ux-shield-v1.0.7.zip
+scripts/.validate-engine.cjs

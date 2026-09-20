@@ -202,6 +202,27 @@ const SERIALIZED = [
     }
   },
   {
+    "ruleId": 1766186056,
+    "hosts": [
+      "www.flipkart.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "div.HZ0E6r.Rm9_cy",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^Only (few|\\d+ left)",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
     "ruleId": 912433863,
     "hosts": [
       "mloshoes.com",

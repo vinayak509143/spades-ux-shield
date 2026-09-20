@@ -1,6 +1,6 @@
 {
   "name": "spades-ux-shield",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Spades UX-Shield — zero-cost, deterministic dark pattern blocker.",
   "scripts": {
     "test": "vitest run",
@@ -9,7 +9,7 @@
     "test:stress": "npm run build && node test/scripts/stress-test.mjs",
     "update-filters": "node scripts/fetch-third-party.mjs",
     "build": "node scripts/build-extension.mjs",
-    "zip": "bestzip spades-ux-shield-v1.0.6.zip manifest.json boot.js host-mark.js host-mark-main.js cosmetic-critical.css cosmetic-vendors.css cosmetic-boot.css ATTRIBUTION.md LICENSE PRIVACY.md store/icon-16.png store/icon-48.png store/icon-128.png dist",
+    "zip": "bestzip spades-ux-shield-v1.0.7.zip manifest.json boot.js host-mark.js host-mark-main.js cosmetic-critical.css cosmetic-vendors.css cosmetic-boot.css ATTRIBUTION.md LICENSE PRIVACY.md store/icon-16.png store/icon-48.png store/icon-128.png dist",
     "validate-pending": "node scripts/quarantine/validate-pending.mjs",
     "validate-darklist": "node scripts/validate-darklist.mjs",
     "crawl-demos": "node scripts/quarantine/crawl-demos.mjs",
@@ -18,6 +18,7 @@
     "extract-vendors": "node scripts/quarantine/extract-vendor-prefixes.mjs",
     "holdout-shopify": "node scripts/quarantine/holdout.mjs",
     "verify:amazon": "npm run build && node test/scripts/verify-amazon-in-rules.mjs && node test/scripts/verify-amazon-retail-rules.mjs",
+    "verify:flipkart": "npm run build && node test/scripts/verify-flipkart-rules.mjs",
     "verify:zip": "node scripts/verify-release-zip.mjs",
     "package": "npm run build && npm run zip && npm run verify:zip"
   },

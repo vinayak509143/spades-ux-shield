@@ -7,7 +7,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { buildSync } from 'esbuild';
-import { isCriticalFlowCosmetic } from './lib/extract-cosmetic.mjs';
+import { isCriticalFlowCosmetic, findCosmeticMarkerIndex } from './lib/extract-cosmetic.mjs';
 import { isDeniedQuarantineLine } from './quarantine/denylist.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -23,7 +23,7 @@ buildSync({
   logLevel: 'silent',
 });
 
-const { parseList } = createRequire(import.meta.url)(engineBundle);
+const { parseList, amazonListHostViolation } = createRequire(import.meta.url)(engineBundle);
 const source = readFileSync(listPath, 'utf8');
 const lines = source.split(/\r?\n/);
 let failed = 0;
@@ -44,6 +44,18 @@ for (let i = 0; i < lines.length; i++) {
     console.error(`Line ${lineNo}: critical-flow cosmetic (checkout/pay/auth) — ${trimmed}`);
     failed++;
     continue;
+  }
+  const markerAt = findCosmeticMarkerIndex(trimmed);
+  if (markerAt > 0) {
+    const domainRaw = trimmed.slice(0, markerAt).trim();
+    for (const part of domainRaw.split(',')) {
+      const violation = amazonListHostViolation(part);
+      if (violation) {
+        console.error(`Line ${lineNo}: ${violation} — ${trimmed}`);
+        failed++;
+        break;
+      }
+    }
   }
 }
 

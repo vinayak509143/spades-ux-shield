@@ -22,6 +22,8 @@ Record pass/fail in the PR or issue. Do not paste passwords, card numbers, or fu
 | 1c | `https://www.amazon.in/s?k=headphones` | `.a-badge` “Limited time deal” / “Ends in …” **gone**; product cards and Sponsored labels **stay**. |
 | 1d | `https://www.amazon.com/dp/B0792MKTDD` + `https://www.amazon.co.uk/dp/B0792MKTDD` | `html[data-op-amz="1"]`; social-proof faceout **gone**; Add to cart **stays**. India-only GWM rules must **not** apply on `.com`. |
 | 1e | `https://aws.amazon.com/` | **No** `data-op-amz` (retail alias must not match AWS). Page usable. |
+| 1f | `https://www.flipkart.com/search?q=earphones` | “Only few left” / “Only N left” SERP chips **gone**; “Bank Offer” chips **stay**. |
+| 1g | Flipkart PDP from SERP (in-stock) | Add to cart / Buy now **stay**; price visible. |
 | 2 | `https://www.cnn.com/` (open an article) | Sticky video / newsletter modal listed by annoyances lists — hidden or dismissible without covering the article. |
 | 3 | `https://timesofindia.indiatimes.com/` | Floating interstitial / app nag if present — hidden. If none on that load, mark **N/A** (not fail). |
 | 4 | Recipe blog with a CMP (e.g. a site that shows a cookie banner; pick one from Fanboy that you can load legally) | Cookie consent overlay hidden **or** page readable; if your jurisdiction requires consent UI, use a site you already accept — this is engineering QA, not legal advice. |
@@ -32,6 +34,7 @@ Record pass/fail in the PR or issue. Do not paste passwords, card numbers, or fu
 | # | URL | Must not break |
 |---|-----|----------------|
 | 1 | `https://www.amazon.in/gp/cart/view.html` (signed-in cart OK) | Cart line items, checkout CTA, Amazon Pay — **visible and clickable**. |
+| 1b | `https://www.flipkart.com/viewcart` | Cart / place-order path **usable** (empty cart OK). |
 | 2 | `https://github.com/` settings or any PR (`https://github.com/vinayak509143/spades-ux-shield`) | Review, comment, merge controls intact. |
 | 3 | Stripe Checkout test (or `https://checkout.stripe.com/` sample if you have one; otherwise a **test-mode** Checkout Session you own) | Card fields, Pay button — **no** hide/uncheck. |
 | 4 | `https://en.wikipedia.org/wiki/Dark_pattern` | Reading mode; no missing infobox/content from over-broad `##`. |
