@@ -15,6 +15,7 @@ jobs:
           node-version: '20'
           cache: npm
       - run: npm ci
+      - run: npm run typecheck
       - run: npm test
       - run: npm run validate-pending
       - run: npm run validate-darklist

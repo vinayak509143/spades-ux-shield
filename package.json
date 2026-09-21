@@ -3,6 +3,7 @@
   "version": "1.0.7",
   "description": "Spades UX-Shield — zero-cost, deterministic dark pattern blocker.",
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "npm run build && playwright test",

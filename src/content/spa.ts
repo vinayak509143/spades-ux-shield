@@ -15,8 +15,9 @@ export function initSpaRouting(engine: ProceduralEngine): void {
   window.addEventListener('popstate', notify);
   window.addEventListener('hashchange', notify);
 
-  if ('navigation' in window && typeof window.navigation?.addEventListener === 'function') {
-    window.navigation.addEventListener('navigate', () => {
+  const navigation = (window as Window & { navigation?: EventTarget }).navigation;
+  if (navigation && typeof navigation.addEventListener === 'function') {
+    navigation.addEventListener('navigate', () => {
       notify();
     });
   }

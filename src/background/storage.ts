@@ -27,7 +27,7 @@ export interface StoredCompiledProc {
   pathRe: SerializedRegex | null;
   selector: string;
   procedural: StoredProcOp[];
-  action: StoredCompiledProc['action'];
+  action: StoredAction;
 }
 
 export type StoredProcOp =

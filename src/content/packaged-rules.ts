@@ -350,7 +350,7 @@ function reviveAction(action: SerializedAction): CompiledProc['action'] {
 }
 
 export function revivePackagedRules(): CompiledProc[] {
-  return (SERIALIZED as SerializedRule[]).map((row) => ({
+  return (SERIALIZED as unknown as SerializedRule[]).map((row) => ({
     ruleId: row.ruleId,
     hosts: row.hosts,
     entity: row.entity,

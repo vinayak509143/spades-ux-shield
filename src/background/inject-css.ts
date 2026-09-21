@@ -33,6 +33,18 @@ async function loadPackagedHostCss(): Promise<Record<string, string>> {
   return packagedHostCss;
 }
 
+/** Prefer documentId so a reused frameId cannot style the wrong iframe document. */
+export function cssInjectionTarget(
+  tabId: number,
+  frameId: number,
+  documentId?: string,
+): chrome.scripting.InjectionTarget {
+  if (documentId) {
+    return { tabId, documentIds: [documentId] };
+  }
+  return { tabId, frameIds: [frameId] };
+}
+
 export async function buildUserCssForHostname(
   hostname: string,
   shardCache: Map<string, HostShardRecord>,

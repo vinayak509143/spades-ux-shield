@@ -1,6 +1,6 @@
 import { isAmazonRetailHost } from '../engine/amazon-retail.js';
 import { registerMessageHandlers } from './messages.js';
-import { buildUserCssForHostname } from './inject-css.js';
+import { buildUserCssForHostname, cssInjectionTarget } from './inject-css.js';
 import {
   ensureSyncAlarm,
   syncAllSubscriptions,
@@ -65,7 +65,12 @@ async function shouldInject(tabId: number, hostname: string): Promise<boolean> {
   return true;
 }
 
-async function injectUserCss(tabId: number, frameId: number, url: string): Promise<void> {
+async function injectUserCss(
+  tabId: number,
+  frameId: number,
+  url: string,
+  documentId?: string,
+): Promise<void> {
   try {
     const parsed = new URL(url);
     if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
@@ -76,9 +81,10 @@ async function injectUserCss(tabId: number, frameId: number, url: string): Promi
       return;
     }
     const css = await buildUserCssForHostname(hostname, shardMemory);
+    const target = cssInjectionTarget(tabId, frameId, documentId);
     if (isAmazonRetailHost(hostname)) {
       await chrome.scripting.insertCSS({
-        target: { tabId, frameIds: [frameId] },
+        target,
         files: ['cosmetic-critical.css'],
         origin: 'USER',
       });
@@ -87,7 +93,7 @@ async function injectUserCss(tabId: number, frameId: number, url: string): Promi
       return;
     }
     await chrome.scripting.insertCSS({
-      target: { tabId, frameIds: [frameId] },
+      target,
       css,
       origin: 'USER',
     });
@@ -163,7 +169,7 @@ chrome.webNavigation.onBeforeNavigate.addListener((details) => {
 });
 
 chrome.webNavigation.onCommitted.addListener((details) => {
-  void injectUserCss(details.tabId, details.frameId, details.url);
+  void injectUserCss(details.tabId, details.frameId, details.url, details.documentId);
 });
 
 chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {

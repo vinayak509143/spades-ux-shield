@@ -4,7 +4,7 @@ import { getShadowRoot, queryAll } from '../../src/content/shadow.js';
 
 type OpenFn = (el: HTMLElement) => ShadowRoot | null;
 
-function stubOpenOrClosed(impl: OpenFn): ReturnType<typeof vi.fn> {
+function stubOpenOrClosed(impl: OpenFn) {
   const open = vi.fn(impl);
   Object.defineProperty(globalThis, 'chrome', {
     value: { dom: { openOrClosedShadowRoot: open } },

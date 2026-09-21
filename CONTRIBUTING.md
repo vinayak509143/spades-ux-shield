@@ -4,7 +4,7 @@ The **engine** (parser, compiler, MV3 injection, popup) lives in this repository
 
 **Filter rules** (CSS selectors for real sites) belong in [spades-ux-shield-filters](https://github.com/vinayak509143/spades-ux-shield-filters). Use [CONTRIBUTING.md there](https://github.com/vinayak509143/spades-ux-shield-filters/blob/main/CONTRIBUTING.md): **rule-request** issues, PRs to `lists/darklist.txt`, or **breakage** reports. The extension popup **Report broken page** opens the breakage template (no telemetry, no DOM dumps). Run `npm run validate-darklist` before opening an engine PR that touches the bundled copy of the list.
 
-Engine PRs here: run `npm test` (and `npm run test:e2e` when you touch boot/CSS injection).
+Engine PRs here: run `npm run typecheck` and `npm test` (and `npm run test:e2e` when you touch boot/CSS injection).
 
 ## Safety policy & out-of-scope surfaces
 
