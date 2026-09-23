@@ -223,6 +223,111 @@ const SERIALIZED = [
     }
   },
   {
+    "ruleId": 589668192,
+    "hosts": [
+      "www.booking.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "li.bui-list__item.bui-text--color-destructive-dark",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "we have \\d+ left",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 319608009,
+    "hosts": [
+      "www.expedia.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "div.uitk-text.uitk-type-end",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "we have \\d+ left at this price",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 3273635184,
+    "hosts": [
+      "www.hotels.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "div.uitk-text.uitk-type-end",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "we have \\d+ left at this price",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 3619565006,
+    "hosts": [
+      "in.hotels.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "div.uitk-text.uitk-type-end",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "we have \\d+ left at this price",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 3568715519,
+    "hosts": [
+      "www.travelocity.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "div.uitk-text.uitk-type-end",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "we have \\d+ left at this price",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
     "ruleId": 912433863,
     "hosts": [
       "mloshoes.com",

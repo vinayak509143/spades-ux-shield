@@ -20,6 +20,11 @@
     "holdout-shopify": "node scripts/quarantine/holdout.mjs",
     "verify:amazon": "npm run build && node test/scripts/verify-amazon-in-rules.mjs && node test/scripts/verify-amazon-retail-rules.mjs",
     "verify:flipkart": "npm run build && node test/scripts/verify-flipkart-rules.mjs",
+    "verify:booking": "npm run build && node test/scripts/verify-booking-rules.mjs",
+    "verify:agoda": "npm run build && node test/scripts/verify-agoda-rules.mjs",
+    "verify:expedia": "npm run build && node test/scripts/verify-expedia-rules.mjs",
+    "verify:hotels": "npm run build && node test/scripts/verify-hotels-rules.mjs",
+    "verify:travelocity": "npm run build && node test/scripts/verify-travelocity-rules.mjs",
     "verify:zip": "node scripts/verify-release-zip.mjs",
     "package": "npm run build && npm run zip && npm run verify:zip"
   },

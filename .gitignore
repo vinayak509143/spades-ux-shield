@@ -30,6 +30,11 @@ test/e2e/.user-data-vendor/
 .verify-hurrier*/
 .verify-amazon*/
 .verify-flipkart*/
+.verify-booking*/
+.verify-agoda*/
+.verify-expedia*/
+.verify-hotels*/
+.verify-travelocity*/
 test/e2e/.user-data-vendor-holdout/
 temp/
 spades-ux-shield-unpacked/

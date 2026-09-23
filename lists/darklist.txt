@@ -1,5 +1,5 @@
 ! Title: Spades Darklist
-! Version: 202609202230
+! Version: 202609222055
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
 sneaky-news.example.com##button:has-text("I hate saving money")
@@ -38,6 +38,23 @@ amazon-en##.a-badge:has-text(/ends in/i)
 ! Flipkart — www only (audit docs/flipkart-audit.md); SERP scarcity chips, not Bank Offer / price labels
 ! Keep: price, seller, Add to cart / Buy now, real variant stock, cart & checkout
 www.flipkart.com##div.HZ0E6r.Rm9_cy:has-text(/^Only (few|\d+ left)/i)
+
+! Booking.com — www only (audit docs/booking-audit.md). Property room-table scarcity line, not the price cell or Reserve.
+! SERP "We have N left at this price" is hashed (cc87802d18) — unhandled. Do not hide banner-neutral or sign-in promos.
+www.booking.com##li.bui-list__item.bui-text--color-destructive-dark:has-text(/we have \d+ left/i)
+
+! Agoda — www only (audit docs/agoda-audit.md). 24h booking badge, demand banner, sold-out hurry line.
+! Keep: fpc-cor-price (crossed price explanation), Sign in, room price, book/select.
+www.agoda.com##[data-selenium="ssr-property-card-booking-last-24h"]
+www.agoda.com##article.UserEngagement--demand
+www.agoda.com##[data-selenium="hurry-up-sold-out-message"]
+
+! Expedia Group — one host per line (separate audits). UITK listing scarcity on SERP; PDP often bot-walled in audit.
+! Vrbo: percent-unavailable banner only — generic results-header-message slot — unhandled (docs/vrbo-audit.md).
+www.expedia.com##div.uitk-text.uitk-type-end:has-text(/we have \d+ left at this price/i)
+www.hotels.com##div.uitk-text.uitk-type-end:has-text(/we have \d+ left at this price/i)
+in.hotels.com##div.uitk-text.uitk-type-end:has-text(/we have \d+ left at this price/i)
+www.travelocity.com##div.uitk-text.uitk-type-end:has-text(/we have \d+ left at this price/i)
 
 ! MLO Shoes (mloshoes.com) — manipulative Shopify theme widgets; shopping flow untouched
 ! Hide: fake countdowns (header, cart, announcement, sticky promo ribbon), inflated "compare" MSRP, every-SKU "Best Seller"
