@@ -25,6 +25,7 @@
     "verify:expedia": "npm run build && node test/scripts/verify-expedia-rules.mjs",
     "verify:hotels": "npm run build && node test/scripts/verify-hotels-rules.mjs",
     "verify:travelocity": "npm run build && node test/scripts/verify-travelocity-rules.mjs",
+    "verify:etsy": "npm run build && node test/scripts/verify-etsy-rules.mjs",
     "verify:zip": "node scripts/verify-release-zip.mjs",
     "package": "npm run build && npm run zip && npm run verify:zip"
   },

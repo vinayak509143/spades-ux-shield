@@ -33,9 +33,9 @@ Global prefixes live in `cosmetic-vendors.css`. Theme-native leftovers stay host
 | App | Demo storefront | Expected prefix | Last prove-seeds |
 |-----|-----------------|-----------------|------------------|
 | Hurrify demo | https://demo-hurrier-countdown-timer.myshopify.com/products/gap-disney-mickey-mouse-graphic-tee | `hurrify-` absent; theme uses `.product-count` / `.delivery-time-info` | pass — `lists/darklist.txt` hostname rules; `node test/scripts/verify-hurrier-rules.mjs` |
-| Hextom Free Shipping Bar | https://sigma-28.myshopify.com/ | `hextom-` | skip — prefix absent in headless |
-| Sales Pop | https://sales-pop-demo.myshopify.com/ | `sales-pop-` | skip — prefix absent in headless |
-| Qikify Salekit | https://qikify-salekit.myshopify.com/ | discover → `qsk-popup-` | pass (also `fomo-` hits); pending only, not merged |
+| Hextom Free Shipping Bar | https://sigma-28.myshopify.com/products/cycling-tee (headed 2026-09-23) | `hextom-` absent on PDP (`#fsb_container` / `.fsb_background`); keep global `hextom-` line | skip — prefix-absent (`prove-seeds`) |
+| Sales Pop | https://sales-pop-demo.myshopify.com/products/jaxon-shoes (headed 2026-09-23) | `sales-pop-` absent (`.popup-guide` only); keep global line | skip — prefix-absent (`prove-seeds`) |
+| Qikify Salekit | https://qikify-salekit.myshopify.com/products/foldover-boots (headed 2026-09-23) | `qsk-popup-` merged in `cosmetic-vendors.css` | pass — `qsk-popup-:2`, `fomo-:2` (`prove-seeds`) |
 | Smart Popup | https://smartpopupdemo.myshopify.com/ | discover | pass — no seed prefix |
 | MLO Shoes | https://mloshoes.com/ | hostname in `lists/darklist.txt` | pass — vendor miss expected |
 | Local vendor fixture | http://127.0.0.1:4173/vendor-widget.html | `hurrify-` / `hextom-` / `privy-` | pass — hidden |
@@ -49,3 +49,8 @@ Global prefixes live in `cosmetic-vendors.css`. Theme-native leftovers stay host
 | Hotels.com SERP | https://www.hotels.com/Hotel-Search?destination=New+York&startDate=2026-10-16&endDate=2026-10-17&adults=2&rooms=1 | `www.hotels.com` only; same UITK scarcity line | `npm run verify:hotels` (headed) |
 | Travelocity SERP | https://www.travelocity.com/Hotel-Search?destination=New+York&startDate=2026-10-16&endDate=2026-10-17&adults=2&rooms=1 | `www.travelocity.com` only | `npm run verify:travelocity` (headed) |
 | Vrbo | https://www.vrbo.com/search?destination=New+York&startDate=2026-10-16&endDate=2026-10-17&adults=2 | No rule — percent-unavailable banner unhandled | audit only (`docs/vrbo-audit.md`) |
+| Ticketmaster | https://www.ticketmaster.com/search?q=concert + sample `/event/` (full audit 2026-09-24) | No pressure phrases on rendered surfaces | **No rule** — not clean; on-sale scarcity not seen (`docs/ticketmaster-audit.md`) |
+| eBay | https://www.ebay.com/sch/i.html?_nkw=trading+cards&LH_Auction=1 (full audit 2026-09-24) | No `N watching` / `almost gone` card to follow | **No rule** — not clean (`docs/ebay-audit.md`) |
+| Shein | `us.shein.com` home + PDP (full audit 2026-09-24) | PDP **blocked** (risk wall) | **No rule** — incomplete (`docs/shein-audit.md`) |
+| Airbnb | `www.airbnb.com` SERP + listing (full audit 2026-09-24, US VPN) | No per-listing viewer/scarcity in dump | **No rule** — both surfaces rendered; not “clean” (`docs/airbnb-audit.md`) |
+| Etsy | Listing + cart (2026-09-24) | `p[class*="wt-text-title"].wt-sem-text-critical`, `span.wt-text-body-small.wt-sem-text-critical`, `p[data-24-hour-sale-wrapper]` | **Rule** — cart “Just N available” included; price, Remove, checkout stay (`docs/etsy-audit.md`) |

@@ -14,6 +14,8 @@ html[data-op="1"] [class*="pushowl-"],
 html[data-op="1"] [class*="fomo-"],
 html[data-op="1"] [class*="justuno-"],
 html[data-op="1"] [class*="sales-pop-"],
-html[data-op="1"] [class*="proof-factor-"] {
+html[data-op="1"] [class*="proof-factor-"],
+html[data-op="1"] [class*="qsk-popup-"],
+html[data-op="1"] [id*="qsk-popup-"] {
   display: none !important;
 }

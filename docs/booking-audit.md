@@ -29,6 +29,25 @@ Not on this load: “X people are looking”, booking-count toasts, countdown ti
 - See availability: `[data-testid="availability-cta"]`
 - Sign in: `[data-testid="header-sign-in-button"]`
 
+## Hash parent follow-up (2026-09-23)
+
+Headed Playwright: `node scripts/audit-booking-scarcity.mjs`. Dump: `temp/booking-scarcity-audit.json`. Dates 2026-10-25 → 2026-10-26. Twelve ancestors per hit.
+
+### SERP — `We have N left at this price` (`div.cc87802d18`)
+
+| Depth | Stable hook | ownText (truncated) |
+|-------|-------------|---------------------|
+| 0–5 | None (only hashes `cc87802d18`, `b2bd50e031`, `f049fb9621`, …) | Scarcity only until depth 4, then room title + bed + scarcity |
+| 6 | `[data-testid="recommended-units"]` | Full **unit card** (room name, bed type, scarcity, price) |
+
+**Decision: still unhandled.** The first `data-testid` is `recommended-units`, which wraps the whole recommended room unit, not the chip alone. Hiding it would remove room name and price. Do not ship `cc87802d18` or `recommended-units`.
+
+### Property — same hotel, room table
+
+Hits are **`We have 5 left`** (no “at this price”) on `div.bui-list__description` inside existing **`li.bui-list__item.bui-text--color-destructive-dark`** / `ul.hprt-conditions-bui`. That is the shipped rule; no second line needed.
+
+The user-visible **`cc87802d18` + “at this price”** chip on Element Times Square is on **SERP / compact unit cards**, not a new PDP selector in this dump.
+
 ## Host
 
 Rules use `www.booking.com` only. Apex `booking.com` would also match `admin.` / `join.` / `secure.`.

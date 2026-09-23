@@ -13,11 +13,29 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const demosPath = resolve(root, 'scripts/quarantine/shopify-demos.json');
 const outPath = resolve(root, 'temp/scraped-widgets.json');
 
+const PLAN_LIVE_HOSTS = new Set([
+  'sigma-28.myshopify.com',
+  'sales-pop-demo.myshopify.com',
+  'qikify-salekit.myshopify.com',
+  'demo-hurrier-countdown-timer.myshopify.com',
+]);
+
 export function loadTargets() {
   const { demos } = JSON.parse(readFileSync(demosPath, 'utf8'));
   const includeLocal = process.argv.includes('--local');
   const includeLive = process.argv.includes('--live') || !includeLocal;
+  const shopifyPlan = process.argv.includes('--shopify-plan');
   return demos.filter((d) => {
+    if (shopifyPlan) {
+      try {
+        const host = new URL(d.url).hostname;
+        if (!PLAN_LIVE_HOSTS.has(host)) {
+          return false;
+        }
+      } catch {
+        return false;
+      }
+    }
     if (isFrozenHarvestUrl(d.url)) {
       return false;
     }
@@ -28,11 +46,42 @@ export function loadTargets() {
   });
 }
 
-async function scrapePage(page, url) {
-  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60_000 });
-  await page.waitForLoadState('networkidle', { timeout: 20_000 }).catch(() => {});
-  await page.waitForTimeout(3000);
-  return page.evaluate(() => {
+async function openProductPage(page, baseUrl) {
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 90_000 });
+  await page.waitForLoadState('networkidle', { timeout: 25_000 }).catch(() => {});
+  await page.waitForTimeout(2000);
+  const cookie = page.getByRole('button', { name: /accept|agree|close/i }).first();
+  if (await cookie.isVisible().catch(() => false)) {
+    await cookie.click({ timeout: 3000 }).catch(() => {});
+    await page.waitForTimeout(800);
+  }
+  const href = await page
+    .locator('a[href*="/products/"]')
+    .first()
+    .getAttribute('href')
+    .catch(() => null);
+  if (href) {
+    const product = href.startsWith('http') ? href.split('?')[0] : new URL(href, baseUrl).href.split('?')[0];
+    await page.goto(product, { waitUntil: 'domcontentloaded', timeout: 90_000 });
+    await page.waitForLoadState('networkidle', { timeout: 25_000 }).catch(() => {});
+    await page.waitForTimeout(4000);
+    return { productUrl: page.url(), usedProduct: true };
+  }
+  return { productUrl: page.url(), usedProduct: false };
+}
+
+async function scrapePage(page, url, opts = {}) {
+  const productFirst = opts.productFirst === true;
+  let usedProduct = false;
+  if (productFirst) {
+    const nav = await openProductPage(page, url);
+    usedProduct = nav.usedProduct;
+  } else {
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.waitForLoadState('networkidle', { timeout: 20_000 }).catch(() => {});
+    await page.waitForTimeout(3000);
+  }
+  const data = await page.evaluate(() => {
     const URGENCY =
       /hurry|ends in|left in stock|ordered in the last|someone purchased|accept cookies|agree & close|just bought|people are viewing|free shipping/i;
     const nodes = [];
@@ -73,15 +122,19 @@ async function scrapePage(page, url) {
     return {
       title: document.title,
       hostname: location.hostname,
+      url: location.href,
       nodes,
     };
   });
+  return { ...data, usedProduct };
 }
 
 export async function harvest(targets = loadTargets()) {
   mkdirSync(resolve(root, 'temp'), { recursive: true });
   const fixtureChild = targets.some((d) => d.local) ? await ensureFixtureServer() : null;
-  const browser = await chromium.launch({ headless: true });
+  const headless = !process.argv.includes('--headed');
+  const productFirst = process.argv.includes('--shopify-plan') || process.argv.includes('--product');
+  const browser = await chromium.launch({ headless });
   const context = await browser.newContext({
     viewport: { width: 1280, height: 800 },
     userAgent:
@@ -97,11 +150,15 @@ export async function harvest(targets = loadTargets()) {
       const page = await context.newPage();
       try {
         console.log(`harvest ${demo.app} ${demo.url}`);
-        const data = await scrapePage(page, demo.url);
+        const data = await scrapePage(page, demo.url, { productFirst });
         pages.push({
-          url: demo.url,
+          url: data.url ?? demo.url,
+          baseUrl: demo.url,
           app: demo.app,
           kind: demo.kind,
+          expectedPrefix: demo.prefix ?? null,
+          productPage: data.usedProduct,
+          headed: !headless,
           skipped: false,
           reason: null,
           title: data.title,

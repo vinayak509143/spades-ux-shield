@@ -13,8 +13,8 @@ describe('parseList', () => {
 
     expect(errors).toHaveLength(0);
     expect(directives.Title).toBe('Spades Darklist');
-    expect(directives.Version).toBe('202609222055');
-    expect(rules).toHaveLength(53);
+    expect(directives.Version).toBe('202609240243');
+    expect(rules).toHaveLength(56);
 
     const timerHide = rules.find((r) => r.hosts.includes('scam-shop.example.com'));
     expect(timerHide?.kind).toBe('cosmetic');

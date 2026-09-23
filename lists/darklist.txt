@@ -1,5 +1,5 @@
 ! Title: Spades Darklist
-! Version: 202609222055
+! Version: 202609240243
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
 sneaky-news.example.com##button:has-text("I hate saving money")
@@ -79,4 +79,12 @@ demo-hurrier-countdown-timer.myshopify.com##.visitors-block
 demo-hurrier-countdown-timer.myshopify.com##.count-product-progress_wrapp
 demo-hurrier-countdown-timer.myshopify.com##.short-product-info li:has(.product-count)
 demo-hurrier-countdown-timer.myshopify.com##.an_position_timer
+
+! Etsy — www only. Red urgency lines and the 24-hour sale countdown.
+! Listing uses a red title (any wt-text-title-* size). Cart uses a red body-small span ("Just 1 available and in 12 carts").
+! First-paint CSS. Keep: price, delivery, Remove, Proceed to checkout, Add to cart.
+! Do not hide wt-sem-text-critical alone, and do not hide wt-sem-text-monetary-value.
+www.etsy.com##p[class*="wt-text-title"].wt-sem-text-critical
+www.etsy.com##span.wt-text-body-small.wt-sem-text-critical
+www.etsy.com##p[data-24-hour-sale-wrapper]
 

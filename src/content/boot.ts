@@ -2,6 +2,7 @@ import { bindEngine, isPageActive, setPageActive } from './lifecycle.js';
 import { ProceduralEngine } from './dom-mutator.js';
 import { applyHostMark } from './host-mark.js';
 import { revivePackagedRules } from './packaged-rules.js';
+import { sendRuntimeMessage } from './runtime-safe.js';
 import { initSpaRouting } from './spa.js';
 
 (function boot(): void {
@@ -12,9 +13,7 @@ import { initSpaRouting } from './spa.js';
   const engineOpts = {
     pierceShadow: true,
     onRuleApplied: (ruleId: number): void => {
-      chrome.runtime.sendMessage({ type: 'op:rule-hit', ruleId }).catch(() => {
-        // Service worker asleep.
-      });
+      sendRuntimeMessage({ type: 'op:rule-hit', ruleId });
     },
   };
 
@@ -34,11 +33,11 @@ import { initSpaRouting } from './spa.js';
     requestAnimationFrame(startProceduralIfNeeded);
   }
 
-  chrome.runtime.sendMessage({ type: 'op:query-state' }, (response) => {
-    if (chrome.runtime.lastError || !response) {
+  sendRuntimeMessage({ type: 'op:query-state' }, (response) => {
+    if (!response || typeof response !== 'object') {
       return;
     }
-    if (response.active === false) {
+    if ('active' in response && response.active === false) {
       setPageActive(false);
     }
   });
