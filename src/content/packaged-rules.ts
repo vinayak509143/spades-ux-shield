@@ -370,6 +370,28 @@ const SERIALIZED = [
     "action": {
       "type": "hide"
     }
+  },
+  {
+    "ruleId": 1471857862,
+    "hosts": [
+      "us.shein.com",
+      "www.shein.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span.label-text",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "(\\d+k?\\+\\s+sold|user add to cart)",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
   }
 ] as const;
 

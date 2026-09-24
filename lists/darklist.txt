@@ -1,5 +1,5 @@
 ! Title: Spades Darklist
-! Version: 202609240243
+! Version: 202609240330
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
 sneaky-news.example.com##button:has-text("I hate saving money")
@@ -87,4 +87,16 @@ demo-hurrier-countdown-timer.myshopify.com##.an_position_timer
 www.etsy.com##p[class*="wt-text-title"].wt-sem-text-critical
 www.etsy.com##span.wt-text-body-small.wt-sem-text-critical
 www.etsy.com##p[data-24-hour-sale-wrapper]
+
+! Shein — us.shein.com and www.shein.com. First-paint chip, not the whole label class.
+! The 12px icon alt is the phrase ("9k+ user add to cart", "900+ sold"). Hide that icon and the label-text beside it.
+! Do not hide span.label-text alone. The :has-text line is only for a chip that has no icon.
+! Keep: price, percent off, Save $N, free-shipping threshold, points-if-late, qty, checkout.
+us.shein.com,www.shein.com##img[width="12"][height="12"][alt*="user add to cart"]
+us.shein.com,www.shein.com##img[width="12"][height="12"][alt*="+ sold"]
+us.shein.com,www.shein.com##span.label-text:has(img[width="12"][height="12"][alt*="user add to cart"])
+us.shein.com,www.shein.com##span.label-text:has(img[width="12"][height="12"][alt*="+ sold"])
+us.shein.com,www.shein.com##:has(img[width="12"][height="12"][alt*="user add to cart"]) > span.label-text
+us.shein.com,www.shein.com##:has(img[width="12"][height="12"][alt*="+ sold"]) > span.label-text
+us.shein.com,www.shein.com##span.label-text:has-text(/(\d+k?\+\s+sold|user add to cart)/i)
 
