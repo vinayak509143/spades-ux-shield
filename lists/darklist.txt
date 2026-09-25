@@ -1,5 +1,5 @@
 ! Title: Spades Darklist
-! Version: 202609240330
+! Version: 202609260215
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
 sneaky-news.example.com##button:has-text("I hate saving money")
@@ -99,4 +99,15 @@ us.shein.com,www.shein.com##span.label-text:has(img[width="12"][height="12"][alt
 us.shein.com,www.shein.com##:has(img[width="12"][height="12"][alt*="user add to cart"]) > span.label-text
 us.shein.com,www.shein.com##:has(img[width="12"][height="12"][alt*="+ sold"]) > span.label-text
 us.shein.com,www.shein.com##span.label-text:has-text(/(\d+k?\+\s+sold|user add to cart)/i)
+! PDP scarcity and cart promo lines (bsc-* cart slots). First-paint where the node is the nag text.
+! Keep: price, size/color picker, Add to cart, qty, checkout, free-shipping threshold.
+us.shein.com,www.shein.com##span.nowrap-text:has-text(/^(only \d+ left!|almost sold out)/i)
+us.shein.com,www.shein.com##span.incentive-text:has-text(/almost sold out/i)
+us.shein.com,www.shein.com##span:has(.sui-icon-common__wrap):has-text(/almost sold out/i)
+us.shein.com,www.shein.com##p.bsc-cart-item-estimated-reference__count-down-text
+us.shein.com,www.shein.com##span.bsc-cart-item-time-info__text
+
+! Shein EU (euqs.shein.com) — tags-text activity / surge chips on PDP (BEUC activity messages).
+! Keep: price amount, percent off, Add to cart, checkout. "Price Drop" is a promo label on the price row — not hidden.
+euqs.shein.com##span.tags-text:has-text(/(sold recently|returning customers|(sales|follower) surge)/i)
 

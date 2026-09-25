@@ -40,3 +40,22 @@ Playwright PDP stayed on the risk wall. A normal window showed the chips:
 | QuickShip, Local, `#6 Bestseller` | badges | **Not a pattern** |
 
 `span.label-text` is not hidden by itself. The 12×12 icon (`alt` is the same phrase) is part of the chip and is hidden at first paint, with the `label-text` next to it. A `:has-text` backstop remains for a chip that has no icon.
+
+## Manual capture (PDP + cart, 2026-09-26)
+
+| Text | Node | Label |
+|------|------|-------|
+| `Only 7 left!`, `Almost sold out` | `span.nowrap-text` | **Ship** — `:has-text` |
+| `Almost sold out` / `Almost sold out!` | `span.incentive-text` or orange row with `span.sui-icon-common__wrap` + 12px SVG | **Ship** — `:has-text` |
+
+## Manual capture (EU `euqs.shein.com`, 2026-09-26)
+
+Extension off: no “Only N left” / “Almost sold out” on sampled PDP; social proof uses `span.tags-text`.
+
+| Text | Node | Label |
+|------|------|-------|
+| `320K Sold Recently`, `100K` / `3.6M Returning Customers` | `span.tags-text` | **Ship** — activity / trust surge copy |
+| `Sales surge 38%`, `Follower surge 25%` | `span.tags-text` | **Ship** — same rule |
+| `Price Drop` | `span.promotion-text-box__itemForCalc` | **Not hidden** — sits with promo/price row |
+| `Last 2 days` | `p.bsc-cart-item-estimated-reference__count-down-text` | **Ship** — static |
+| `Last 2 days` | `span.bsc-cart-item-time-info__text` | **Ship** — static |

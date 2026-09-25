@@ -13,12 +13,16 @@ describe('parseList', () => {
 
     expect(errors).toHaveLength(0);
     expect(directives.Title).toBe('Spades Darklist');
-    expect(directives.Version).toBe('202609240330');
-    expect(rules).toHaveLength(63);
+    expect(directives.Version).toBe('202609260215');
+    expect(rules).toHaveLength(69);
 
     const sheinRules = rules.filter((r) => r.hosts.includes('us.shein.com'));
-    expect(sheinRules).toHaveLength(7);
+    expect(sheinRules).toHaveLength(12);
     expect(sheinRules.every((r) => r.hosts.includes('www.shein.com'))).toBe(true);
+    const euqsTags = rules.find(
+      (r) => r.hosts.includes('euqs.shein.com') && r.selector === 'span.tags-text',
+    );
+    expect(euqsTags?.procedural[0]?.type).toBe('has-text');
     const sheinIcon = sheinRules.find((r) => r.selector.includes('user add to cart'));
     expect(sheinIcon?.procedural).toHaveLength(0);
     const sheinText = sheinRules.find((r) => r.procedural[0]?.type === 'has-text');

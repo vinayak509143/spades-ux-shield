@@ -392,6 +392,93 @@ const SERIALIZED = [
     "action": {
       "type": "hide"
     }
+  },
+  {
+    "ruleId": 3041904213,
+    "hosts": [
+      "us.shein.com",
+      "www.shein.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span.nowrap-text",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^(only \\d+ left!|almost sold out)",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 3101958043,
+    "hosts": [
+      "us.shein.com",
+      "www.shein.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span.incentive-text",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "almost sold out",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 974995192,
+    "hosts": [
+      "us.shein.com",
+      "www.shein.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span:has(.sui-icon-common__wrap)",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "almost sold out",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 3167120011,
+    "hosts": [
+      "euqs.shein.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span.tags-text",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "(sold recently|returning customers|(sales|follower) surge)",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
   }
 ] as const;
 
