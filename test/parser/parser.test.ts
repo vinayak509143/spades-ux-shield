@@ -13,8 +13,8 @@ describe('parseList', () => {
 
     expect(errors).toHaveLength(0);
     expect(directives.Title).toBe('Spades Darklist');
-    expect(directives.Version).toBe('202609260215');
-    expect(rules).toHaveLength(69);
+    expect(directives.Version).toBe('202609261405');
+    expect(rules).toHaveLength(70);
 
     const sheinRules = rules.filter((r) => r.hosts.includes('us.shein.com'));
     expect(sheinRules).toHaveLength(12);
@@ -27,6 +27,9 @@ describe('parseList', () => {
     expect(sheinIcon?.procedural).toHaveLength(0);
     const sheinText = sheinRules.find((r) => r.procedural[0]?.type === 'has-text');
     expect(sheinText?.selector).toBe('span.label-text');
+    const temuChip = rules.find((r) => r.hosts.includes('www.temu.com'));
+    expect(temuChip?.selector).toBe('span[class]');
+    expect(temuChip?.procedural[0]?.type).toBe('has-text');
 
     const timerHide = rules.find((r) => r.hosts.includes('scam-shop.example.com'));
     expect(timerHide?.kind).toBe('cosmetic');

@@ -263,6 +263,8 @@ export async function runLiveAudit({
   headlessFlag = '--headless',
   expectedHostname,
   contextOptions = null,
+  persistentContext = null,
+  connectOverCDP = null,
 }) {
   const { chromium } = await import('playwright');
   const { mkdirSync, writeFileSync } = await import('node:fs');
@@ -272,18 +274,39 @@ export async function runLiveAudit({
   const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
   const outPath = resolve(root, `temp/${outBasename}-audit.json`);
   const headless = process.argv.includes(headlessFlag);
-  const browser = await chromium.launch({ headless });
-  const defaultContext = {
-    viewport: { width: 1360, height: 900 },
-    locale: 'en-US',
-    timezoneId: 'America/New_York',
-    geolocation: { latitude: 40.7128, longitude: -74.006 },
-    permissions: ['geolocation'],
-    userAgent:
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-  };
-  const context = await browser.newContext({ ...defaultContext, ...contextOptions });
-  const page = await context.newPage();
+  let browser;
+  let context;
+  let page;
+  if (connectOverCDP) {
+    browser = await chromium.connectOverCDP(connectOverCDP, { timeout: 180000 });
+    context = browser.contexts()[0];
+    if (!context) throw new Error('Chrome CDP connected without a browser context');
+    page = context.pages().find((p) => p.url() === 'about:blank') ?? (await context.newPage());
+  } else if (persistentContext) {
+    context = await chromium.launchPersistentContext(persistentContext.userDataDir, {
+      headless,
+      channel: persistentContext.channel ?? 'chrome',
+      viewport: { width: 1360, height: 900 },
+      locale: 'en-US',
+      args: persistentContext.args ?? [],
+      ignoreDefaultArgs: persistentContext.ignoreDefaultArgs,
+    });
+    browser = context.browser();
+    page = context.pages()[0] ?? (await context.newPage());
+  } else {
+    browser = await chromium.launch({ headless });
+    const defaultContext = {
+      viewport: { width: 1360, height: 900 },
+      locale: 'en-US',
+      timezoneId: 'America/New_York',
+      geolocation: { latitude: 40.7128, longitude: -74.006 },
+      permissions: ['geolocation'],
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+    };
+    context = await browser.newContext({ ...defaultContext, ...contextOptions });
+    page = await context.newPage();
+  }
   const report = {
     at: new Date().toISOString(),
     headed: !headless,
@@ -468,7 +491,10 @@ export async function runLiveAudit({
     }
   }
 
-  await browser.close();
+  if (connectOverCDP) {
+    // Caller owns the Chrome process (real user profile).
+  } else if (persistentContext) await context.close();
+  else await browser.close();
   writeFileSync(outPath, JSON.stringify(report, null, 2));
   console.log('wrote', outPath);
   return report;

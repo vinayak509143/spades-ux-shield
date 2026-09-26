@@ -54,7 +54,7 @@ Global prefixes live in `cosmetic-vendors.css`. Theme-native leftovers stay host
 | Shein | US + EU (`us`/`www` + `euqs.shein.com`) | US: sold/add-to-cart, scarcity, cart timers; EU: `span.tags-text` sold/surge/returning-customers | **Rule** — Price Drop promo label stays (`docs/shein-audit.md`) |
 | Airbnb | `www.airbnb.com` SERP + listing (full audit 2026-09-24, US VPN) | No per-listing viewer/scarcity in dump | **No rule** — both surfaces rendered; not “clean” (`docs/airbnb-audit.md`) |
 | Etsy | Listing + cart (2026-09-24) | `p[class*="wt-text-title"].wt-sem-text-critical`, `span.wt-text-body-small.wt-sem-text-critical`, `p[data-24-hour-sale-wrapper]` | **Rule** — cart “Just N available” included; price, Remove, checkout stay (`docs/etsy-audit.md`) |
-| Temu | `www.temu.com` (2026-09-26) | Login wall — no PDP | **No rule** — incomplete (`docs/temu-audit.md`) |
+| Temu | Logged-in home + search (2026-09-26) | `span[class]` whose whole text is ONLY N LEFT, N sold, or Limited stock | **Rule** — hashed classes differ by surface; price stays; PDP body did not hydrate (`docs/temu-audit.md`) |
 | AliExpress | Home + PDP (2026-09-26) | `N sold` — PDP `span[class*="reviewer--sold"]` candidate; SERP hash class | **No rule** — PDP hook pending confirm (`docs/aliexpress-audit.md`) |
 | Myntra | SERP + PDP (2026-09-26, IN) | No pressure on earphones load | **No rule** (`docs/myntra-audit.md`) |
 | H&M | `www2.hm.com` PLP (2026-09-26) | Bot/challenge | **No rule** — incomplete (`docs/hm-audit.md`) |
