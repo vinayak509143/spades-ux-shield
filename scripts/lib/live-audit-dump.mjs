@@ -50,6 +50,7 @@ export function dumpPage(extraNagRe = '') {
     { id: 'someone_bought', re: /\bsomeone\s+(just\s+)?bought\b/i },
     { id: 'purchased_recent', re: /\bpurchased\s+.+\s+ago\b/i },
     { id: 'almost_sold', re: /\balmost\s+sold\s+out\b/i },
+    { id: 'almost_out', re: /\balmost\s+out\b/i },
     { id: 'sold_recently', re: /\bsold\s+recently\b/i },
     { id: 'n_plus_sold', re: /\b\d+[kK+]?\s*\+?\s*sold\b/i },
     { id: 'add_to_cart_social', re: /\b(user\s+add\s+to\s+cart|\d+k?\+?\s+added\s+to\s+cart)\b/i },

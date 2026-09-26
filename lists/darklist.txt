@@ -1,5 +1,5 @@
 ! Title: Spades Darklist
-! Version: 202609261405
+! Version: 202609261415
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
 sneaky-news.example.com##button:has-text("I hate saving money")
@@ -112,7 +112,8 @@ us.shein.com,www.shein.com##span.bsc-cart-item-time-info__text
 euqs.shein.com##span.tags-text:has-text(/(sold recently|returning customers|(sales|follower) surge)/i)
 
 ! Temu — www.temu.com feed chips (logged-in audit 2026-09-26). Classes are hashed and differ by surface.
-! Hide a span whose entire text is the chip: "ONLY N LEFT", "3.5K+sold" / "6sold", "Limited stock".
+! Hide a span whose entire text is the chip: "ONLY N LEFT", "3.5K+sold" / "6sold", "Limited stock",
+! "Almost out!" or "Add now! Almost out!". "Add now!" alone stays (that can be a real control).
 ! Keep: price, Add to cart, free-shipping and price-match banners. PDP body did not hydrate in that pass.
-www.temu.com##span[class]:has-text(/^\s*(?:only\s+\d+\s+left|\d+(?:\.\d+)?[kK]?\+?\s*sold|limited stock)\s*$/i)
+www.temu.com##span[class]:has-text(/^\s*(?:only\s+\d+\s+left|\d+(?:\.\d+)?[kK]?\+?\s*sold|limited stock|(?:add now!\s*)?almost out!?)\s*$/i)
 

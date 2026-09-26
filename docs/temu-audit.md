@@ -20,12 +20,13 @@ Anonymous Playwright never got past login or the security check. The logged-in p
 | `ONLY 5 LEFT`, `ONLY 7 LEFT`, `ONLY 4 LEFT` | `span._2h8Ne7BR` on home; own text is only the chip | **Ship** |
 | `ONLY 9 LEFT`, `ONLY 7 LEFT` | `span._1FxJ41PO` on search; own text is only the chip | **Ship** — different hash than home |
 | `Limited stock` | `span._1kXnRPCz` on an earlier logged-in home pass | **Ship** |
+| `Add now! Almost out!` | `span[class]` with `data-type="0"` (manual HTML) | **Ship** — urgency chip; `Add now!` alone is not hidden |
 | `3.5K+sold`, `6sold`, `30K+sold`, and similar | Present in feed `innerText`; not a stable class | **Ship** when the span's entire text is that phrase |
 | Price, Add to cart, free-shipping banner, Price Match Guarantee | — | **Not a pattern** |
 
 ## Rule
 
-`www.temu.com##span[class]:has-text(/^\s*(?:only\s+\d+\s+left|\d+(?:\.\d+)?[kK]?\+?\s*sold|limited stock)\s*$/i)`
+`www.temu.com##span[class]:has-text(/^\s*(?:only\s+\d+\s+left|\d+(?:\.\d+)?[kK]?\+?\s*sold|limited stock|(?:add now!\s*)?almost out!?)\s*$/i)`
 
 The hash classes are not the hook. The regex must match the span's whole text so a card that also contains the price is left alone.
 
