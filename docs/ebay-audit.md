@@ -1,8 +1,8 @@
-# eBay full cosmetic audit (2026-09-24)
+# eBay full cosmetic audit (2026-09-24, re-run 2026-09-26)
 
 Headed Playwright: `node scripts/audit-ebay.mjs`. Dump: `temp/ebay-audit.json`. Screenshot: `temp/ebay-serp.png`.
 
-Locale `en-US`. Auction-focused SERP (`trading cards`, `LH_Auction=1`). `followPressure` enabled — no card matched `N watching` / `almost gone` / `in N carts`. No sign-in.
+Locale `en-US`. SERP `sneakers` + `LH_Auction=1`. `followPressure` enabled — no card matched `N watching` / `almost gone` / `in N carts`. No sign-in.
 
 ## Surfaces
 

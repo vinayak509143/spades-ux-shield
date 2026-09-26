@@ -49,6 +49,14 @@ export function dumpPage(extraNagRe = '') {
     { id: 'countdown', re: /\b\d{1,2}:\d{2}:\d{2}\b/ },
     { id: 'someone_bought', re: /\bsomeone\s+(just\s+)?bought\b/i },
     { id: 'purchased_recent', re: /\bpurchased\s+.+\s+ago\b/i },
+    { id: 'almost_sold', re: /\balmost\s+sold\s+out\b/i },
+    { id: 'sold_recently', re: /\bsold\s+recently\b/i },
+    { id: 'n_plus_sold', re: /\b\d+[kK+]?\s*\+?\s*sold\b/i },
+    { id: 'add_to_cart_social', re: /\b(user\s+add\s+to\s+cart|\d+k?\+?\s+added\s+to\s+cart)\b/i },
+    { id: 'returning_customers', re: /\breturning\s+customers\b/i },
+    { id: 'surge', re: /\b(sales|follower)\s+surge\b/i },
+    { id: 'limited_stock', re: /\blimited\s+stock\b/i },
+    { id: 'left_in_stock', re: /\bleft\s+in\s+stock\b/i },
   ];
 
   let extraPatterns = [];
@@ -254,6 +262,7 @@ export async function runLiveAudit({
   pages,
   headlessFlag = '--headless',
   expectedHostname,
+  contextOptions = null,
 }) {
   const { chromium } = await import('playwright');
   const { mkdirSync, writeFileSync } = await import('node:fs');
@@ -264,7 +273,7 @@ export async function runLiveAudit({
   const outPath = resolve(root, `temp/${outBasename}-audit.json`);
   const headless = process.argv.includes(headlessFlag);
   const browser = await chromium.launch({ headless });
-  const context = await browser.newContext({
+  const defaultContext = {
     viewport: { width: 1360, height: 900 },
     locale: 'en-US',
     timezoneId: 'America/New_York',
@@ -272,7 +281,8 @@ export async function runLiveAudit({
     permissions: ['geolocation'],
     userAgent:
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-  });
+  };
+  const context = await browser.newContext({ ...defaultContext, ...contextOptions });
   const page = await context.newPage();
   const report = {
     at: new Date().toISOString(),
