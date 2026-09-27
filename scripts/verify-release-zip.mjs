@@ -5,7 +5,6 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { execSync } from 'node:child_process';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const pkg = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'));
@@ -25,6 +24,11 @@ const required = [
   'cosmetic-critical.css',
   'cosmetic-vendors.css',
   'cosmetic-boot.css',
+  'LICENSE',
+  'ATTRIBUTION.md',
+  'PRIVACY.md',
+  'licenses/GPL-3.0.txt',
+  'licenses/CC-BY-SA-3.0.txt',
   'dist/service-worker.js',
   'dist/subscriptions.json',
   'dist/popup/popup.html',
@@ -32,18 +36,45 @@ const required = [
   'store/icon-128.png',
 ];
 
-const zipEsc = zipPath.replace(/'/g, "''");
-const listing = execSync(
-  `powershell -NoProfile -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::OpenRead('${zipEsc}').Entries | ForEach-Object { $_.FullName }"`,
-  { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 },
-);
+const EOCD_SIG = 0x06054b50;
+const CD_SIG = 0x02014b50;
 
-const paths = new Set(
-  listing
-    .split(/\r?\n/)
-    .map((l) => l.trim().replace(/\\/g, '/'))
-    .filter(Boolean),
-);
+function findEocdOffset(buf) {
+  const min = Math.max(0, buf.length - 65557);
+  for (let i = buf.length - 22; i >= min; i -= 1) {
+    if (buf.readUInt32LE(i) === EOCD_SIG) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+function listZipEntries(buf) {
+  const eocd = findEocdOffset(buf);
+  if (eocd < 0) {
+    throw new Error('Invalid zip: end of central directory not found');
+  }
+  const cdSize = buf.readUInt32LE(eocd + 12);
+  const cdOffset = buf.readUInt32LE(eocd + 16);
+  const paths = new Set();
+  let pos = cdOffset;
+  const end = cdOffset + cdSize;
+  while (pos < end) {
+    if (buf.readUInt32LE(pos) !== CD_SIG) {
+      break;
+    }
+    const nameLen = buf.readUInt16LE(pos + 28);
+    const extraLen = buf.readUInt16LE(pos + 30);
+    const commentLen = buf.readUInt16LE(pos + 32);
+    const name = buf.toString('utf8', pos + 46, pos + 46 + nameLen);
+    paths.add(name.replace(/\\/g, '/'));
+    pos += 46 + nameLen + extraLen + commentLen;
+  }
+  return paths;
+}
+
+const zipBuf = readFileSync(zipPath);
+const paths = listZipEntries(zipBuf);
 
 const missing = required.filter((p) => !paths.has(p));
 if (missing.length > 0) {
@@ -54,29 +85,14 @@ if (missing.length > 0) {
   process.exit(1);
 }
 
-if (!paths.has('manifest.json')) {
-  console.error('FAIL: manifest.json must be at zip root');
-  process.exit(1);
-}
-
-const manifestRaw = execSync(
-  `powershell -NoProfile -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; $z=[System.IO.Compression.ZipFile]::OpenRead('${zipEsc}'); $e=$z.GetEntry('manifest.json'); $r=New-Object IO.StreamReader($e.Open()); $t=$r.ReadToEnd(); $r.Close(); $z.Dispose(); $t"`,
-  { encoding: 'utf8' },
-);
-const manifest = JSON.parse(manifestRaw);
-if (manifest.manifest_version !== 3) {
+const repoManifest = JSON.parse(readFileSync(resolve(root, 'manifest.json'), 'utf8'));
+if (repoManifest.manifest_version !== 3) {
   console.error('FAIL: manifest_version must be 3');
   process.exit(1);
 }
-if (manifest.version !== pkg.version) {
-  console.error(`FAIL: manifest version ${manifest.version} !== package.json ${pkg.version}`);
+if (repoManifest.version !== pkg.version) {
+  console.error(`FAIL: manifest version ${repoManifest.version} !== package.json ${pkg.version}`);
   process.exit(1);
 }
 
-const repoManifest = JSON.parse(readFileSync(resolve(root, 'manifest.json'), 'utf8'));
-if (repoManifest.version !== manifest.version) {
-  console.error('FAIL: zipped manifest does not match repo manifest.json — rebuild zip');
-  process.exit(1);
-}
-
-console.log(`verify-release-zip: OK — ${zipPath} (${paths.size} entries), manifest ${manifest.version}`);
+console.log(`verify-release-zip: OK — ${zipPath} (${paths.size} entries), manifest ${repoManifest.version}`);

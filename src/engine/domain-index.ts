@@ -10,7 +10,6 @@ function emptyBucket(): HostBucket {
   return {
     hideSelectors: [],
     exceptions: [],
-    pathCss: [],
     procedural: [],
   };
 }
@@ -18,7 +17,6 @@ function emptyBucket(): HostBucket {
 function mergeBuckets(into: HostBucket, from: HostBucket): void {
   into.hideSelectors.push(...from.hideSelectors);
   into.exceptions.push(...from.exceptions);
-  into.pathCss.push(...from.pathCss);
   into.procedural.push(...from.procedural);
 }
 

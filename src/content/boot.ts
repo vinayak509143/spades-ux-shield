@@ -1,7 +1,8 @@
-import { bindEngine, isPageActive, setPageActive } from './lifecycle.js';
+import { bindEngine, handlePageShow, isPageActive, setPageActive } from './lifecycle.js';
 import { ProceduralEngine } from './dom-mutator.js';
 import { applyHostMark } from './host-mark.js';
 import { revivePackagedRules } from './packaged-rules.js';
+import { ruleMatchesHost } from './procedural-match.js';
 import { sendRuntimeMessage } from './runtime-safe.js';
 import { initSpaRouting } from './spa.js';
 
@@ -20,14 +21,22 @@ import { initSpaRouting } from './spa.js';
   bindEngine(engine, rules, engineOpts);
 
   const startProceduralIfNeeded = (): void => {
-    if (rules.length === 0) {
+    if (!isPageActive() || rules.length === 0) {
       return;
     }
     engine.start(rules, engineOpts);
     initSpaRouting(engine);
   };
 
-  if (typeof requestIdleCallback === 'function') {
+  const criticalProceduralForHost = rules.some(
+    (rule) =>
+      ruleMatchesHost(rule, location.hostname) &&
+      rule.procedural.length > 0 &&
+      (rule.action.type === 'hide' || rule.action.type === 'replace-text'),
+  );
+  if (criticalProceduralForHost) {
+    startProceduralIfNeeded();
+  } else if (typeof requestIdleCallback === 'function') {
     requestIdleCallback(startProceduralIfNeeded, { timeout: 200 });
   } else {
     requestAnimationFrame(startProceduralIfNeeded);
@@ -52,9 +61,6 @@ import { initSpaRouting } from './spa.js';
   });
 
   window.addEventListener('pageshow', () => {
-    applyHostMark();
-    if (isPageActive() && rules.length > 0) {
-      engine.start(rules, engineOpts);
-    }
+    handlePageShow();
   });
 })();

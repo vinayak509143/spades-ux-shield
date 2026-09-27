@@ -29,10 +29,22 @@ export function setPageActive(active: boolean): void {
     root.removeAttribute('data-op');
     root.removeAttribute('data-op-amz');
     root.removeAttribute('data-op-amz-en');
-    engine?.stop();
+    engine?.stop({ restoreHides: true });
     return;
   }
 
+  applyHostMark();
+  if (engine && rules.length > 0 && engineOpts) {
+    engine.start(rules, engineOpts);
+  }
+}
+
+/** BFCache / host-mark pageshow may re-stamp marks; re-apply pause or restart engine. */
+export function handlePageShow(): void {
+  if (!pageActive) {
+    setPageActive(false);
+    return;
+  }
   applyHostMark();
   if (engine && rules.length > 0 && engineOpts) {
     engine.start(rules, engineOpts);

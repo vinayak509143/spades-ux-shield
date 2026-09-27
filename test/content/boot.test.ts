@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 import { applyAmazonRetailMarks, applyHostMark } from '../../src/content/host-mark.js';
-import { setPageActive } from '../../src/content/lifecycle.js';
+import { handlePageShow, setPageActive } from '../../src/content/lifecycle.js';
 import { hostSuffixes } from '../../src/engine/util.js';
 
 describe('boot data-op-h', () => {
@@ -39,5 +39,15 @@ describe('amazon retail host marks', () => {
     setPageActive(false);
     expect(document.documentElement.getAttribute('data-op-amz')).toBeNull();
     expect(document.documentElement.getAttribute('data-op-amz-en')).toBeNull();
+  });
+
+  it('pageshow while paused does not restore data-op marks', () => {
+    setPageActive(false);
+    expect(document.documentElement.getAttribute('data-op')).toBeNull();
+    applyHostMark();
+    expect(document.documentElement.getAttribute('data-op')).toBe('1');
+    handlePageShow();
+    expect(document.documentElement.getAttribute('data-op')).toBeNull();
+    expect(document.documentElement.getAttribute('data-op-h')).toBeNull();
   });
 });

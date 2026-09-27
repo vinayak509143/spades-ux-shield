@@ -21,6 +21,8 @@ Do **not** target:
 
 `scripts/lib/extract-cosmetic.mjs` **rejects** imported third-party lines whose host, path, or selector matches this freeze. Do not work around it.
 
+Runtime enforcement in `src/engine/critical-flow.ts` is **narrower on purpose**: it blocks `:uncheck` / state mutation on checkout/pay/auth, not every cosmetic hide, so reviewed cart badge rules (e.g. Shein, GetYourGuide) can still apply where the list allows.
+
 ### Out of scope (not a CSS problem)
 
 These [deceptive.design](https://deceptive.design/types) types **cannot** be solved by cosmetic injection and are **prohibited** from production `lists/darklist.txt`:

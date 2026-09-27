@@ -1,6 +1,6 @@
 # Spades UX-Shield
 
-A small Chrome extension that hides cookie walls, newsletter pop-ups, fake countdown timers, app-install nags, and other dark patterns. It works from plain-text filter lists, the same way uBlock Origin's cosmetic filters do. There is no AI in it, no server, and nothing is sent anywhere.
+A small Chrome extension that hides cookie walls, newsletter pop-ups, fake countdown timers, app-install nags, and other dark patterns. It works from plain-text filter lists, the same way uBlock Origin's cosmetic filters do. There is no AI in it and no browsing telemetry server; filter lists update over HTTPS when the extension checks GitHub/jsDelivr.
 
 ## What it does
 
@@ -13,7 +13,7 @@ A small Chrome extension that hides cookie walls, newsletter pop-ups, fake count
 
 - It does not block network requests or ads.
 - It does not read page content for anything except matching selectors.
-- It stays away from checkout, payment and login pages. Rules for those are dropped when the list is built and refused again at runtime.
+- It stays away from checkout, payment and login pages. Rules targeting those surfaces are dropped when lists are built and reviewed. At runtime, only `:uncheck` and related state mutation are refused on checkout/pay/auth surfaces (`src/engine/critical-flow.ts`); cosmetic hides rely on list review and tests.
 - It does not guess. If a pattern isn't on the list, it stays on the page.
 
 ## Install
@@ -66,7 +66,7 @@ Site rules go in [spades-ux-shield-filters](https://github.com/vinayak509143/spa
 
 Engine code is MIT. `third-party-rules.txt` is an extract of GPL-3.0 / CC BY-SA 3.0 lists and keeps those licences. See [ATTRIBUTION.md](ATTRIBUTION.md).
 
-Privacy: [PRIVACY.md](PRIVACY.md). Short version: nothing leaves your browser unless you click the report link.
+Privacy: [PRIVACY.md](PRIVACY.md). Short version: browsing is not logged. Filter-list updates download from GitHub/jsDelivr; the report link opens GitHub only if you click it.
 
 ## Support
 

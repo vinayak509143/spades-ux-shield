@@ -172,7 +172,8 @@ type SerializedAction =
   | { type: 'remove' }
   | { type: 'remove-attr'; pattern: string | SerializedRegex }
   | { type: 'remove-class'; pattern: string | SerializedRegex }
-  | { type: 'style'; decls: Array<[string, string]> };
+  | { type: 'style'; decls: Array<[string, string]> }
+  | { type: 'replace-text'; text: string };
 
 interface SerializedRule {
   ruleId: number;

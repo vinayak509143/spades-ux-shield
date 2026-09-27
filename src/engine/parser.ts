@@ -23,6 +23,7 @@ const ACTION_OPS = new Set([
   'remove',
   'style',
   'unlock-scroll',
+  'replace-text',
 ]);
 
 const PROCEDURAL_OPS = new Set([
@@ -334,9 +335,28 @@ function parseAction(name: string, arg: string | null): Action | null {
         return null;
       }
       return { type: 'style', decls: parseStyleDecls(arg) };
+    case 'replace-text':
+      return parseReplaceText(arg);
     default:
       return null;
   }
+}
+
+const REPLACE_TEXT_MAX = 40;
+
+function parseReplaceText(arg: string | null): Action | null {
+  if (arg === null) {
+    return null;
+  }
+  const text = unquoteArg(arg.trim());
+  if (!isSafeReplacementText(text)) {
+    return null;
+  }
+  return { type: 'replace-text', text };
+}
+
+export function isSafeReplacementText(text: string): boolean {
+  return text.length > 0 && text.length <= REPLACE_TEXT_MAX && !/[<>\r\n]/.test(text);
 }
 
 function parseStyleDecls(raw: string): Array<[string, string]> {

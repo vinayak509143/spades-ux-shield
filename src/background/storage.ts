@@ -16,7 +16,6 @@ export interface SerializedRegex {
 export interface StoredHostBucket {
   hideSelectors: string[];
   exceptions: string[];
-  pathCss: Array<{ pathRe: SerializedRegex; css: string }>;
   procedural: StoredCompiledProc[];
 }
 
@@ -47,7 +46,8 @@ export type StoredAction =
   | { type: 'remove' }
   | { type: 'remove-attr'; pattern: string | SerializedRegex }
   | { type: 'remove-class'; pattern: string | SerializedRegex }
-  | { type: 'style'; decls: Array<[string, string]> };
+  | { type: 'style'; decls: Array<[string, string]> }
+  | { type: 'replace-text'; text: string };
 
 export type HostShardRecord = Record<string, StoredHostBucket>;
 
@@ -102,10 +102,6 @@ export function serializeHostBucket(bucket: HostBucket): StoredHostBucket {
   return {
     hideSelectors: [...bucket.hideSelectors],
     exceptions: [...bucket.exceptions],
-    pathCss: bucket.pathCss.map((row) => ({
-      pathRe: serRegex(row.pathRe),
-      css: row.css,
-    })),
     procedural: bucket.procedural.map(serializeCompiledProc),
   };
 }
@@ -166,10 +162,6 @@ export function reviveHostBucket(stored: StoredHostBucket): HostBucket {
   return {
     hideSelectors: [...stored.hideSelectors],
     exceptions: [...stored.exceptions],
-    pathCss: stored.pathCss.map((row) => ({
-      pathRe: new RegExp(row.pathRe.source, row.pathRe.flags),
-      css: row.css,
-    })),
     procedural: stored.procedural.map(reviveCompiledProc),
   };
 }

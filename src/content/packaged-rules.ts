@@ -97,6 +97,75 @@ const SERIALIZED = [
     }
   },
   {
+    "ruleId": 301169397,
+    "hosts": [
+      "www.getyourguide.com"
+    ],
+    "entity": false,
+    "pathRe": {
+      "source": "^\\/(?:[a-z]{2}(?:-[a-z]{2})?\\/)?(?:cart\\/?|(?:[^/?]+-l\\d+(?:\\/[^/?]+-t\\d+)?\\/?)?)(?:\\?.*)?$",
+      "flags": ""
+    },
+    "selector": "span[id$=\"-likelyToSellOut-badge\"]:not(:has(button, a, input, select, textarea, [role=\"button\"]))",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^Likely to sell out$",
+          "flags": ""
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 416051888,
+    "hosts": [
+      "www.getyourguide.com"
+    ],
+    "entity": false,
+    "pathRe": {
+      "source": "^\\/(?:[a-z]{2}(?:-[a-z]{2})?\\/)?[^/?]+-l\\d+\\/[^/?]+-t\\d+\\/?(?:\\?.*)?$",
+      "flags": ""
+    },
+    "selector": "#sticky-booking-assistant-configurator > .header > .badge-wrapper:not(:has(button, a, input, select, textarea, [role=\"button\"]))",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^Likely to sell out$",
+          "flags": ""
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 1523211246,
+    "hosts": [
+      "www.getyourguide.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span.c-marketplace-badge--primary:not(:has(button, a, input, select, textarea, [role=\"button\"]))",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^Likely to sell out$",
+          "flags": ""
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
     "ruleId": 2282359013,
     "hosts": [
       "amazon.in",
@@ -479,6 +548,114 @@ const SERIALIZED = [
     "action": {
       "type": "hide"
     }
+  },
+  {
+    "ruleId": 336233526,
+    "hosts": [
+      "www.temu.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span[class]",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^\\s*(?:only\\s+\\d+\\s+left|\\d+(?:\\.\\d+)?[kK]?\\+?\\s*sold|limited stock|almost\\s+sold\\s+out!?|almost out!?|last day!?|ends\\s+in!?|\\d{1,2}:\\d{2}(?::\\d{2})?|#?\\d*\\s*(?:best-selling(?:\\s+brand)?\\s+item|top rated|most repurchased(?:\\s+brand)?\\s+item)(?:\\s*in\\s+.+)?)\\s*$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 1434435823,
+    "hosts": [
+      "www.temu.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "div[class]",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^\\s*(?:only\\s+\\d+\\s+left|\\d+(?:\\.\\d+)?[kK]?\\+?\\s*sold|limited stock|almost\\s+sold\\s+out!?|almost out!?|last day!?|ends\\s+in!?|\\d{1,2}:\\d{2}(?::\\d{2})?|#?\\d*\\s*(?:best-selling(?:\\s+brand)?\\s+item|top rated|most repurchased(?:\\s+brand)?\\s+item)(?:\\s*in\\s+.+)?)\\s*$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 948592060,
+    "hosts": [
+      "www.temu.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span[data-type=\"0\"]",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^\\s*add now!\\s*almost out!?\\s*$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "replace-text",
+      "text": "Add to cart"
+    }
+  },
+  {
+    "ruleId": 293264927,
+    "hosts": [
+      "www.temu.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span[data-type=\"0\"]",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^\\s*buy now!\\s*almost out!?\\s*$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "replace-text",
+      "text": "Buy now"
+    }
+  },
+  {
+    "ruleId": 3000919336,
+    "hosts": [
+      "www.temu.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span[data-type=\"0\"]",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^\\s*buy now!\\s*last\\s+\\d+!?\\s*$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "replace-text",
+      "text": "Buy now"
+    }
   }
 ] as const;
 
@@ -504,7 +681,8 @@ type SerializedAction =
   | { type: 'remove' }
   | { type: 'remove-attr'; pattern: string | SerializedRegex }
   | { type: 'remove-class'; pattern: string | SerializedRegex }
-  | { type: 'style'; decls: Array<[string, string]> };
+  | { type: 'style'; decls: Array<[string, string]> }
+  | { type: 'replace-text'; text: string };
 
 interface SerializedRule {
   ruleId: number;

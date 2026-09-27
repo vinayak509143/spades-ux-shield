@@ -16,7 +16,7 @@ Three content scripts (`manifest.json`, all `document_start`, `all_frames`):
 2. **ISOLATED** `host-mark.js` — same stamp (bfcache / `pageshow`).
 3. **ISOLATED** `cosmetic-critical.css` + `cosmetic-vendors.css` + `cosmetic-boot.css` + `boot.js` — gated hides and the procedural engine (`:has-text`, `:uncheck`, …) only where the list requires them.
 
-Pause removes `data-op*`. Packaged CSS is written as `html[data-op="1"] …` / `html[data-op-h~="host"] …` so it stops matching.
+Pause removes `data-op*` and restores procedural hides (inline `display` and `op-hide`). Packaged CSS is written as `html[data-op="1"] …` / `html[data-op-h~="host"] …` so it stops matching.
 
 ## Host gating (suffix-match traps)
 
@@ -48,10 +48,22 @@ Supported markers: `##`, `#@#`, `#?#`
 
 Procedural ops: `:has-text`, `:matches-path`, `:matches-attr`, `:matches-css`, `:upward`, `:watch-attr`, `:min-text-length`
 
-Actions: `:uncheck`, `:click-dismiss`, `:remove-attr`, `:remove-class`, `:remove`, `:style`, `:unlock-scroll`
+Actions: `:uncheck`, `:click-dismiss`, `:remove-attr`, `:remove-class`, `:remove`, `:style`, `:unlock-scroll`, `:replace-text`
 
-Reject at compile: `:xpath()`, `:others()`, `##^`, `#$#`, `+js()`, `:style()` containing `url`/`javascript`. Reject `:has-text` on bare `div`/`span`/`p`/`*`.
+Rules with `:matches-path` (and no other procedural ops) compile as **procedural** hides so path scope is enforced at runtime, not as unconditional packaged CSS.
+
+Reject at compile: `:xpath()`, `:others()`, `##^`, `#$#`, `+js()`, `:style()` containing `url`/`javascript`. Reject `:has-text` on bare `div`/`span`/`p`/`*`. Reject top-level commas in `##` selectors (one selector per rule).
 
 ## Safety and limits
 
-Checkout, cart, pay, and auth are frozen (`CONTRIBUTING.md`). A selector list cannot tell a fake countdown from a real one, cannot fix basket-sneaking, and cannot cover one-off theme widgets without a fingerprint or a hostname audit. That is accepted. Do not add runtime detectors to close it.
+Checkout, cart, pay, and auth paths are frozen at **list build** (`CONTRIBUTING.md`, `extract-cosmetic.mjs`). At **runtime**, `critical-flow.ts` refuses `:uncheck` and similar state mutation on those surfaces; it does not block ordinary cosmetic `:hide` rules, so intentional cart badge rules (reviewed in holdout) can still apply.
+
+A selector list cannot tell a fake countdown from a real one, cannot fix basket-sneaking, and cannot cover one-off theme widgets without a fingerprint or a hostname audit. That is accepted. Do not add runtime detectors to close it.
+
+## Known limits (not yet implemented)
+
+- Downloaded **procedural** rules are stored in the service worker but content boot uses packaged procedural rules only; remote retraction of a packaged rule is not supported.
+- Packaged host CSS is always concatenated with synced shard CSS.
+- Subscription sync deletes old storage shards before writing replacements (crash mid-write can leave gaps).
+- `op:route` is broadcast to all frames; iframes may match procedural paths against the top-frame URL.
+- Procedural passes cap **writes** per frame (`MAX_NODES_PER_FRAME`); selector queries still run for every active rule.

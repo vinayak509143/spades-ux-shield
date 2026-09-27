@@ -1,0 +1,29 @@
+name: Engine feature
+description: Parser, MV3 architecture, or tooling change in this repository
+title: "[feature] "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        New site hide rules belong in [spades-ux-shield-filters](https://github.com/vinayak509143/spades-ux-shield-filters).
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This does not require hiding checkout, payment, or login controls
+          required: true

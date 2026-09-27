@@ -1,0 +1,199 @@
+{
+  "schemaVersion": 1,
+  "retailer": {
+    "brand": "Temu",
+    "host": "www.temu.com",
+    "jurisdictionNote": "US www storefront observed; not legal advice"
+  },
+  "audit": {
+    "date": "2026-09-26",
+    "methods": [
+      "chrome_remote_debugging_cdp",
+      "playwright_live_audit",
+      "maintainer_logged_in_session",
+      "user_reported_dom_snippets"
+    ],
+    "surfaces": [
+      { "id": "home", "path": "/", "rendered": true },
+      { "id": "search", "path": "/search_result.html", "queryExample": "search_key=socks", "rendered": true },
+      { "id": "best_sellers", "path": "/channel/best-sellers.html", "rendered": true },
+      { "id": "pdp_socks", "pathExample": "/…-g-601100993923950.html", "rendered": true },
+      { "id": "pdp_sneaker", "pathExample": "/--low-07-lv8-black-iron-grey-men-s-fashion-sneaker-new-g-602801702854751.html", "rendered": true }
+    ],
+    "scripts": {
+      "fullAudit": "scripts/audit-temu.mjs",
+      "chipInventory": "scripts/audit-temu-chips.mjs"
+    },
+    "narrativeDoc": "docs/temu-audit.md"
+  },
+  "rulePack": {
+    "listVersion": 202609262140,
+    "listFile": "lists/darklist.txt",
+    "hostRules": 4,
+    "actions": {
+      "hideChip": "www.temu.com##span[class],div[class]:has-text(...)",
+      "relabelAdd": "span[data-type=\"0\"] Add now! Almost out! → Add to cart",
+      "relabelBuyAlmost": "span[data-type=\"0\"] Buy now! Almost out! → Buy now",
+      "relabelBuyLast": "span[data-type=\"0\"] BUY NOW! LAST N! → Buy now"
+    }
+  },
+  "patterns": [
+    {
+      "id": "temu.false_scarcity.only_n_left",
+      "deceptiveDesignCategory": "false_scarcity",
+      "examplePhrases": ["ONLY 1 LEFT", "ONLY 8 LEFT", "ONLY 2 LEFT"],
+      "dom": {
+        "stableHook": "span[class] or div[class] with whole text = phrase",
+        "unstableClassHashes": ["_2h8Ne7BR", "_1FxJ41PO", "_2_ku4rfX"],
+        "dataType": null
+      },
+      "extensionAction": "hide",
+      "surfaces": ["home", "search", "pdp_socks"],
+      "keepGuards": ["Must not match parent innerText that also contains price"]
+    },
+    {
+      "id": "temu.false_scarcity.almost_sold_out",
+      "deceptiveDesignCategory": "false_scarcity",
+      "examplePhrases": ["ALMOST SOLD OUT", "Almost out!", "Almost out"],
+      "dom": {
+        "stableHook": "span[class],div[class] whole-text; span[data-type=\"0\"] on PDP",
+        "typicalStyle": "rgb(251, 119, 1) orange, 14–16px"
+      },
+      "extensionAction": "hide",
+      "surfaces": ["pdp_socks", "home"]
+    },
+    {
+      "id": "temu.false_scarcity.limited_stock",
+      "deceptiveDesignCategory": "false_scarcity",
+      "examplePhrases": ["Limited stock"],
+      "dom": { "stableHook": "span[class] whole-text", "unstableClassHashes": ["_1kXnRPCz"] },
+      "extensionAction": "hide",
+      "surfaces": ["home"]
+    },
+    {
+      "id": "temu.social_proof.sold_count",
+      "deceptiveDesignCategory": "social_proof_misleading",
+      "examplePhrases": ["3.5K+sold", "105sold", "2.3K+ sold", "100K+sold"],
+      "dom": {
+        "stableHook": "span[class] whole-text",
+        "typicalStyle": "rgb(85, 85, 85) gray, 13px"
+      },
+      "extensionAction": "hide",
+      "surfaces": ["home", "best_sellers", "pdp_socks"]
+    },
+    {
+      "id": "temu.false_urgency.last_day",
+      "deceptiveDesignCategory": "false_urgency",
+      "examplePhrases": ["Last day"],
+      "dom": { "stableHook": "span[class] whole-text", "typicalStyle": "orange 15px" },
+      "extensionAction": "hide",
+      "surfaces": ["pdp_socks", "home_recommendations"]
+    },
+    {
+      "id": "temu.false_urgency.ends_in_timer",
+      "deceptiveDesignCategory": "false_urgency",
+      "examplePhrases": ["Ends in", "12:34:56"],
+      "dom": {
+        "stableHook": "span[class] whole-text label; sibling span whole-text HH:MM(:SS)",
+        "unstableClassHashes": ["iwi01ph3"],
+        "typicalStyle": "white label on flash-sale bar"
+      },
+      "extensionAction": "hide",
+      "surfaces": ["pdp_sneaker"],
+      "userReported": true
+    },
+    {
+      "id": "temu.ranking.bestseller_badge",
+      "deceptiveDesignCategory": "ranking_claim",
+      "examplePhrases": [
+        "#1 BEST-SELLING ITEM",
+        "#1 BEST-SELLING ITEM in Electric Bikes",
+        "#1 TOP RATED in Bedding",
+        "#3 MOST REPURCHASED BRAND ITEM in Bedding",
+        "BEST-SELLING ITEM in Batteries & Accessories"
+      ],
+      "dom": {
+        "stableHook": "div[class] whole-text includes rank + optional in category; orange span[data-type=\"0\"] for headline fragment",
+        "note": "Hide wrapper so gray in {category} fragment does not remain"
+      },
+      "extensionAction": "hide",
+      "surfaces": ["best_sellers", "pdp_socks"]
+    },
+    {
+      "id": "temu.cta_urgency.add_now_almost_out",
+      "deceptiveDesignCategory": "cta_urgency_fusion",
+      "examplePhrases": ["Add now! Almost out!"],
+      "dom": { "stableHook": "span[data-type=\"0\"] whole-text", "typicalStyle": "white 16px font-weight 600" },
+      "extensionAction": "replace_text",
+      "replacementText": "Add to cart",
+      "surfaces": ["home", "search", "pdp"],
+      "userReported": true
+    },
+    {
+      "id": "temu.cta_urgency.buy_now_almost_out",
+      "deceptiveDesignCategory": "cta_urgency_fusion",
+      "examplePhrases": ["Buy now! Almost out!"],
+      "dom": { "stableHook": "span[data-type=\"0\"] whole-text" },
+      "extensionAction": "replace_text",
+      "replacementText": "Buy now",
+      "userReported": true
+    },
+    {
+      "id": "temu.cta_urgency.buy_now_last_n",
+      "deceptiveDesignCategory": "cta_urgency_fusion",
+      "examplePhrases": ["BUY NOW! LAST 1!"],
+      "dom": { "stableHook": "span[data-type=\"0\"] whole-text" },
+      "extensionAction": "replace_text",
+      "replacementText": "Buy now",
+      "userReported": true
+    }
+  ],
+  "explicitlyNotPatterns": [
+    {
+      "id": "temu.keep.delivery_estimate",
+      "examplePhrases": [
+        "Fastest delivery in 5 business days",
+        "Fastest delivery:",
+        "5 BUSINESS DAYS",
+        "Arrives in 2+ business days"
+      ],
+      "reason": "Shipping SLA copy, not scarcity"
+    },
+    {
+      "id": "temu.keep.price_and_discount",
+      "examplePhrases": ["56% OFF", "$19.80", "Pay $2.16 today"],
+      "reason": "Price, promo percent, financing — not hidden"
+    },
+    {
+      "id": "temu.keep.ratings",
+      "examplePhrases": ["4.8", "4.8 out of five stars"],
+      "reason": "Product rating"
+    },
+    {
+      "id": "temu.keep.nav_bestselling_heading",
+      "examplePhrases": ["Best-Selling Items"],
+      "reason": "Plural section heading, not per-card rank chip"
+    },
+    {
+      "id": "temu.keep.settings_low_stock_alerts",
+      "examplePhrases": ["Low stock items alerts"],
+      "reason": "Notification preference label, not product scarcity on SKU"
+    },
+    {
+      "id": "temu.keep.neutral_cta",
+      "examplePhrases": ["Add to cart", "Add now!", "Buy now!"],
+      "reason": "Plain CTA without fused urgency phrase"
+    },
+    {
+      "id": "temu.keep.free_shipping",
+      "examplePhrases": ["Free shipping", "Price Match Guarantee"],
+      "reason": "Fulfillment / policy banners"
+    }
+  ],
+  "engineeringNotes": {
+    "classHashesRotate": true,
+    "preferredSelectors": ["whole-text :has-text with ^...$ anchor", "span[data-type=\"0\"] for fused CTAs"],
+    "proceduralActionReplaceText": "Shipped in extension 2026-09-26; requires npm run build for boot.js",
+    "cdnListSync": "spades-ux-shield-filters lists/darklist.txt via subscriptions primaryUrl"
+  }
+}

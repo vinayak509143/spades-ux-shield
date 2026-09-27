@@ -8,7 +8,8 @@ export type Action =
   | { type: 'remove' }
   | { type: 'remove-attr'; pattern: string | RegExp }
   | { type: 'remove-class'; pattern: string | RegExp }
-  | { type: 'style'; decls: Array<[prop: string, value: string]> };
+  | { type: 'style'; decls: Array<[prop: string, value: string]> }
+  | { type: 'replace-text'; text: string };
 
 export type ProcOp =
   | { type: 'has-text'; needle: string | RegExp }
@@ -57,7 +58,6 @@ export interface CompiledProc {
 export interface HostBucket {
   hideSelectors: string[];
   exceptions: string[];
-  pathCss: Array<{ pathRe: RegExp; css: string }>;
   procedural: CompiledProc[];
 }
 

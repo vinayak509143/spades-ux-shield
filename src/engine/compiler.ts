@@ -7,8 +7,9 @@ import type {
 } from './types.js';
 import { isAmazonEnAliasHost, isAmazonRetailAliasHost } from './amazon-retail.js';
 import { isBareHasTextSubject } from './util.js';
+import { isSafeReplacementText } from './parser.js';
 import { DomainIndex } from './domain-index.js';
-import { cssRuleParses, isValidCosmeticSelector } from './selector-valid.js';
+import { cssRuleParses, hasTopLevelCommaInSelector, isValidCosmeticSelector } from './selector-valid.js';
 
 function hostGateSelector(host: string): string {
   if (isAmazonRetailAliasHost(host)) {
@@ -31,6 +32,14 @@ const STYLE_DENY = [
 ];
 
 function validateRule(rule: Rule): ParseError | null {
+  if (rule.selector && hasTopLevelCommaInSelector(rule.selector)) {
+    return {
+      line: rule.line,
+      message: 'one selector per rule; top-level comma is not allowed',
+      source: rule.source,
+    };
+  }
+
   if (rule.procedural.some((op) => op.type === 'has-text')) {
     if (!rule.selector || isBareHasTextSubject(rule.selector)) {
       return {
@@ -47,6 +56,23 @@ function validateRule(rule: Rule): ParseError | null {
       message: 'Unsupported procedural operator',
       source: rule.source,
     };
+  }
+
+  if (rule.action.type === 'replace-text') {
+    if (!rule.procedural.some((op) => op.type === 'has-text')) {
+      return {
+        line: rule.line,
+        message: ':replace-text requires :has-text',
+        source: rule.source,
+      };
+    }
+    if (!isSafeReplacementText(rule.action.text)) {
+      return {
+        line: rule.line,
+        message: ':replace-text label is empty or unsafe',
+        source: rule.source,
+      };
+    }
   }
 
   if (rule.action.type === 'style') {
@@ -67,7 +93,7 @@ function validateRule(rule: Rule): ParseError | null {
 }
 
 function isStaticRule(rule: Rule): boolean {
-  return rule.procedural.length === 0 && rule.action.type === 'hide';
+  return rule.procedural.length === 0 && rule.action.type === 'hide' && !rule.pathRe;
 }
 
 function cssSelectorForRule(rule: Rule): string {
@@ -84,7 +110,6 @@ function bucketForHost(map: Map<string, HostBucket>, host: string): HostBucket {
     bucket = {
       hideSelectors: [],
       exceptions: [],
-      pathCss: [],
       procedural: [],
     };
     map.set(host, bucket);
@@ -123,14 +148,7 @@ function applyRule(map: Map<string, HostBucket>, rule: Rule): void {
       continue;
     }
 
-    if (rule.pathRe) {
-      bucket.pathCss.push({
-        pathRe: rule.pathRe,
-        css: emitHideCss(host, selector),
-      });
-    } else {
-      bucket.hideSelectors.push(selector);
-    }
+    bucket.hideSelectors.push(selector);
   }
 }
 
@@ -174,11 +192,6 @@ export function hostBucketToCss(host: string, bucket: HostBucket): string {
           chunks.push(rule);
         }
       }
-    }
-  }
-  for (const pathRule of bucket.pathCss) {
-    if (cssRuleParses(pathRule.css)) {
-      chunks.push(pathRule.css);
     }
   }
   return chunks.join('\n');

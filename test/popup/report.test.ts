@@ -5,6 +5,7 @@ describe('breakage report helpers', () => {
   it('anonymizes path templates', () => {
     expect(pathTemplate('/orders/12345/confirm')).toBe('/orders/:id/confirm');
     expect(pathTemplate('/user/test@example.com/profile')).toBe('/user/:email/profile');
+    expect(pathTemplate('/u/me%40example.com/orders/123')).toBe('/u/:email/orders/:id');
     expect(pathTemplate('/')).toBe('/');
   });
 

@@ -1,0 +1,35 @@
+name: Engine bug
+description: Extension crash, injection failure, or parser/compiler defect in this repo
+title: "[bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For broken checkout/login on a specific site, use the [filters breakage template](https://github.com/vinayak509143/spades-ux-shield-filters/issues/new?template=breakage.yml).
+  - type: input
+    id: version
+    attributes:
+      label: Extension version
+      placeholder: e.g. 1.0.7
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true

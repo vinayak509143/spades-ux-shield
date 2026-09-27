@@ -55,7 +55,12 @@ export class ProceduralEngine {
   private readonly observedShadowRoots = new Set<ShadowRoot>();
   private mutationHandler: MutationCallback | null = null;
   private mutationAttrFilter: string[] = [];
+  private mutationWatchText = false;
+  private criticalScheduled = false;
+
+  private static readonly CRITICAL_ACTIONS = new Set<Action['type']>(['hide', 'replace-text']);
   private readonly pendingShadowHosts: HTMLElement[] = [];
+  private readonly procedurallyHidden = new Set<Element>();
 
   start(rules: CompiledProc[], opts: ProceduralEngineOptions): void {
     this.rules = rules;
@@ -67,13 +72,26 @@ export class ProceduralEngine {
       this.disconnectObservers();
       return;
     }
+    this.applyCriticalActions(document);
     this.attachObserver();
     this.schedule();
+    this.scheduleCriticalBeforePaint();
   }
 
-  stop(): void {
+  stop(options?: { restoreHides?: boolean }): void {
+    if (options?.restoreHides) {
+      this.restoreProceduralHides();
+    }
     this.stopped = true;
     this.disconnectObservers();
+  }
+
+  private restoreProceduralHides(): void {
+    for (const el of this.procedurallyHidden) {
+      el.classList.remove(HIDE_CLASS);
+      (el as HTMLElement).style.removeProperty('display');
+    }
+    this.procedurallyHidden.clear();
   }
 
   onRoute(path: string): void {
@@ -83,7 +101,9 @@ export class ProceduralEngine {
     this.path = path;
     this.clickedSelectors.clear();
     this.rebindRoute(path);
+    this.applyCriticalActions(document);
     this.schedule();
+    this.scheduleCriticalBeforePaint();
   }
 
   /** Test hook: run one read/write pass synchronously (no rAF). */
@@ -109,9 +129,11 @@ export class ProceduralEngine {
 
     this.observer = new MutationObserver(handler);
     const observeAttrs = attrFilter.length > 0;
+    this.mutationWatchText = this.activeRules.some((rule) => rule.action.type === 'replace-text');
     this.observer.observe(document.documentElement, {
       subtree: true,
       childList: true,
+      characterData: this.mutationWatchText,
       attributes: observeAttrs,
       attributeFilter: observeAttrs ? attrFilter : undefined,
     });
@@ -130,6 +152,7 @@ export class ProceduralEngine {
     obs.observe(shadow, {
       subtree: true,
       childList: true,
+      characterData: this.mutationWatchText,
       attributes: observeAttrs,
       attributeFilter: observeAttrs ? attrFilter : undefined,
     });
@@ -178,13 +201,28 @@ export class ProceduralEngine {
     if (records.length > MAX_SYNC_MUTATION_RECORDS) {
       this.dirty = true;
       this.schedule();
+      this.scheduleCriticalBeforePaint();
       return;
     }
 
+    const criticalRoots: ParentNode[] = [];
     let relevant = false;
     for (const record of records) {
+      if (record.type === 'characterData') {
+        const parent = record.target.parentElement;
+        if (parent) {
+          criticalRoots.push(parent);
+        }
+        relevant = true;
+        continue;
+      }
       if (record.type === 'childList') {
         for (const node of record.addedNodes) {
+          if (node instanceof Element) {
+            criticalRoots.push(node);
+          } else if (node.parentElement) {
+            criticalRoots.push(node.parentElement);
+          }
           if (this.queueAddedElement(node)) {
             relevant = true;
           }
@@ -208,11 +246,90 @@ export class ProceduralEngine {
       }
       relevant = true;
     }
+    if (criticalRoots.length > 0) {
+      this.writing++;
+      try {
+        for (const root of criticalRoots) {
+          this.applyCriticalActions(root);
+        }
+      } finally {
+        this.writing--;
+        this.observer?.takeRecords();
+        for (const obs of this.shadowObserverByRoot.values()) {
+          obs.takeRecords();
+        }
+      }
+    }
     if (!relevant) {
       return;
     }
     this.dirty = true;
     this.schedule();
+    this.scheduleCriticalBeforePaint();
+  }
+
+  private hasCriticalRules(): boolean {
+    return this.activeRules.some((rule) => ProceduralEngine.CRITICAL_ACTIONS.has(rule.action.type));
+  }
+
+  /** Hide/relabel urgency UI before paint; idle pass still re-applies if the site restores nodes. */
+  private scheduleCriticalBeforePaint(): void {
+    if (this.criticalScheduled || this.stopped || !this.hasCriticalRules()) {
+      return;
+    }
+    this.criticalScheduled = true;
+    const run = (): void => {
+      this.criticalScheduled = false;
+      if (this.stopped) {
+        return;
+      }
+      this.writing++;
+      try {
+        this.applyCriticalActions(document);
+        for (const root of this.observedShadowRoots) {
+          this.applyCriticalActions(root);
+        }
+      } finally {
+        this.writing--;
+        this.observer?.takeRecords();
+        for (const obs of this.shadowObserverByRoot.values()) {
+          obs.takeRecords();
+        }
+      }
+    };
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(run);
+    } else {
+      run();
+    }
+  }
+
+  private applyCriticalActions(root: ParentNode): void {
+    for (const rule of this.activeRules) {
+      if (!ProceduralEngine.CRITICAL_ACTIONS.has(rule.action.type) || !rule.selector) {
+        continue;
+      }
+      const nodes: Element[] = [];
+      if (root instanceof Element) {
+        try {
+          if (root.matches(rule.selector)) {
+            nodes.push(root);
+          }
+        } catch {
+          // Selector is not valid on this node.
+        }
+      }
+      nodes.push(...queryAll(rule.selector, root, false));
+      for (const el of nodes) {
+        if (!elementMatchesProcedural(el, rule.procedural)) {
+          continue;
+        }
+        const applied = this.exec(el, rule.action, rule);
+        if (applied) {
+          this.onRuleApplied?.(rule.ruleId);
+        }
+      }
+    }
   }
 
   private schedule(): void {
@@ -348,6 +465,9 @@ export class ProceduralEngine {
         this.hide(el);
         return true;
       }
+      if (action.type === 'replace-text' && !this.hasReplacementText(el, action.text)) {
+        return this.replaceText(el, action.text);
+      }
       return false;
     }
 
@@ -395,6 +515,12 @@ export class ProceduralEngine {
         }
         acted.add(el);
         return true;
+      case 'replace-text':
+        if (this.replaceText(el, action.text)) {
+          acted.add(el);
+          return true;
+        }
+        return false;
       default:
         return false;
     }
@@ -403,6 +529,40 @@ export class ProceduralEngine {
   private hide(el: Element): void {
     el.classList.add(HIDE_CLASS);
     (el as HTMLElement).style.setProperty('display', 'none', 'important');
+    this.procedurallyHidden.add(el);
+  }
+
+  private hasReplacementText(el: Element, text: string): boolean {
+    return this.labelText(el) === text;
+  }
+
+  private labelText(el: Element): string {
+    return (el.textContent ?? '').replace(/\s+/g, ' ').trim();
+  }
+
+  /** Swap the label. Element children (icons) stay; only text nodes change. */
+  private replaceText(el: Element, text: string): boolean {
+    if (this.hasReplacementText(el, text)) {
+      return false;
+    }
+    if (el.children.length === 0) {
+      el.textContent = text;
+      return true;
+    }
+    const textNodes: Text[] = [];
+    for (const node of el.childNodes) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        textNodes.push(node as Text);
+      }
+    }
+    if (textNodes.length === 0) {
+      return false;
+    }
+    textNodes[0].textContent = text;
+    for (let i = 1; i < textNodes.length; i++) {
+      textNodes[i].textContent = '';
+    }
+    return true;
   }
 
   private uncheck(el: Element, rule: CompiledProc): boolean {

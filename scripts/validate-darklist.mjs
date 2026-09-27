@@ -23,7 +23,7 @@ buildSync({
   logLevel: 'silent',
 });
 
-const { parseList, amazonListHostViolation } = createRequire(import.meta.url)(engineBundle);
+const { parseList, compileRules, amazonListHostViolation } = createRequire(import.meta.url)(engineBundle);
 const source = readFileSync(listPath, 'utf8');
 const lines = source.split(/\r?\n/);
 let failed = 0;
@@ -65,6 +65,14 @@ if (errors.length > 0) {
     console.error(`parseList line ${err.line}: ${err.message}`);
   }
   failed += errors.length;
+}
+
+const { errors: compileErrors } = compileRules(rules);
+if (compileErrors.length > 0) {
+  for (const err of compileErrors) {
+    console.error(`compileRules line ${err.line}: ${err.message}`);
+  }
+  failed += compileErrors.length;
 }
 
 if (directives.Title !== 'Spades Darklist') {

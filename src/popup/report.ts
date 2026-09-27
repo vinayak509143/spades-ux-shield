@@ -10,7 +10,13 @@ const UUID_RE =
 
 /** Pathname only — never includes `?query` or `#hash` from the page URL. */
 export function pathTemplate(pathname: string): string {
-  let path = pathname.replace(EMAIL_RE, ':email');
+  let path = pathname;
+  try {
+    path = decodeURIComponent(pathname);
+  } catch {
+    path = pathname;
+  }
+  path = path.replace(EMAIL_RE, ':email');
   path = path.replace(UUID_RE, ':id');
   path = path.replace(/\/\d+(?=\/|$)/g, '/:id');
   return path || '/';

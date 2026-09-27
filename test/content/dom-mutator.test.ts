@@ -15,6 +15,18 @@ function hideRule(selector: string, needle: RegExp): CompiledProc {
   };
 }
 
+function replaceRule(selector: string, needle: RegExp, text: string): CompiledProc {
+  return {
+    ruleId: 3,
+    hosts: ['example.com'],
+    entity: false,
+    pathRe: null,
+    selector,
+    procedural: [{ type: 'has-text', needle }],
+    action: { type: 'replace-text', text },
+  };
+}
+
 function uncheckRule(selector: string): CompiledProc {
   return {
     ruleId: 2,
@@ -54,6 +66,24 @@ describe('ProceduralEngine', () => {
 
     expect(banner.classList.contains('op-hide')).toBe(true);
     expect(banner.style.display).toBe('none');
+  });
+
+  it('restores procedural hides when stopped with restoreHides', () => {
+    document.body.innerHTML =
+      '<div class="urgency-banner">only 2 left in stock</div>';
+    const banner = document.querySelector('.urgency-banner') as HTMLElement;
+
+    const engine = new ProceduralEngine();
+    engine.start(
+      [hideRule('.urgency-banner', /only \d+ left in stock/i)],
+      { pierceShadow: false },
+    );
+    engine.flush();
+    expect(banner.classList.contains('op-hide')).toBe(true);
+
+    engine.stop({ restoreHides: true });
+    expect(banner.classList.contains('op-hide')).toBe(false);
+    expect(banner.style.display).toBe('');
   });
 
   it('unchecks checkboxes with native setter and events', () => {
@@ -179,5 +209,147 @@ describe('ProceduralEngine', () => {
 
     engine.stop();
     Reflect.deleteProperty(globalThis, 'chrome');
+  });
+
+  it('replaces an urgency button label and keeps the control', () => {
+    document.body.innerHTML =
+      '<span data-type="0" class="" style="font-weight:600">Add now! Almost out!</span>';
+    const label = document.querySelector('span') as HTMLElement;
+
+    const engine = new ProceduralEngine();
+    engine.start(
+      [replaceRule('span[data-type="0"]', /^\s*add now!\s*almost out!?\s*$/i, 'Add to cart')],
+      { pierceShadow: false },
+    );
+    engine.flush();
+
+    expect(label.textContent).toBe('Add to cart');
+    expect(label.style.display).not.toBe('none');
+    expect(label.classList.contains('op-hide')).toBe(false);
+    engine.stop();
+  });
+
+  it('keeps an icon inside a relabeled control', () => {
+    document.body.innerHTML =
+      '<span data-type="0" class=""><svg id="cart"></svg>Add now! Almost out!</span>';
+    const label = document.querySelector('span') as HTMLElement;
+
+    const engine = new ProceduralEngine();
+    engine.start(
+      [replaceRule('span[data-type="0"]', /^\s*add now!\s*almost out!?\s*$/i, 'Add to cart')],
+      { pierceShadow: false },
+    );
+    engine.flush();
+
+    expect(label.querySelector('#cart')).not.toBeNull();
+    expect(label.textContent?.replace(/\s+/g, ' ').trim()).toBe('Add to cart');
+    engine.stop();
+  });
+
+  it('writes the label again when the site restores the urgency text', () => {
+    document.body.innerHTML = '<span data-type="0">Add now! Almost out!</span>';
+    const label = document.querySelector('span') as HTMLElement;
+
+    const engine = new ProceduralEngine();
+    engine.start(
+      [replaceRule('span[data-type="0"]', /^\s*add now!\s*almost out!?\s*$/i, 'Add to cart')],
+      { pierceShadow: false },
+    );
+    engine.flush();
+    label.textContent = 'Add now! Almost out!';
+    engine.flush();
+
+    expect(label.textContent).toBe('Add to cart');
+    engine.stop();
+  });
+
+  it('hides ALMOST SOLD OUT on insert before idle (no glimpse path)', async () => {
+    document.body.innerHTML = '<div id="mount"></div>';
+    const mount = document.getElementById('mount') as HTMLElement;
+    const engine = new ProceduralEngine();
+    engine.start(
+      [hideRule('span[data-type="0"]', /^\s*ALMOST SOLD OUT\s*$/i)],
+      { pierceShadow: false },
+    );
+
+    mount.innerHTML =
+      '<span data-type="0" class="" style="font-weight:600;color:#FB7701">ALMOST SOLD OUT</span>';
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const label = mount.querySelector('span') as HTMLElement;
+    expect(label.classList.contains('op-hide')).toBe(true);
+    engine.stop();
+  });
+
+  it('hides a flash-sale Ends in label', () => {
+    document.body.innerHTML =
+      '<span class="iwi01ph3" style="color:#fff">Ends in</span><span class="t">12:34:56</span>';
+    const label = document.querySelector('.iwi01ph3') as HTMLElement;
+
+    const engine = new ProceduralEngine();
+    engine.start(
+      [
+        hideRule(
+          'span[class]',
+          /^\s*(?:ends\s+in!?|\d{1,2}:\d{2}(?::\d{2})?)\s*$/i,
+        ),
+      ],
+      { pierceShadow: false },
+    );
+    engine.flush();
+
+    expect(label.classList.contains('op-hide')).toBe(true);
+    engine.stop();
+  });
+
+  it('relabels Buy now! Almost out! without hiding the control', () => {
+    document.body.innerHTML =
+      '<span data-type="0" class="" style="font-weight:600">Buy now! Almost out!</span>';
+    const label = document.querySelector('span') as HTMLElement;
+
+    const engine = new ProceduralEngine();
+    engine.start(
+      [replaceRule('span[data-type="0"]', /^\s*buy now!\s*almost out!?\s*$/i, 'Buy now')],
+      { pierceShadow: false },
+    );
+    engine.flush();
+
+    expect(label.textContent).toBe('Buy now');
+    engine.stop();
+  });
+
+  it('relabels BUY NOW! LAST N! without hiding the control', () => {
+    document.body.innerHTML =
+      '<span data-type="0" class="" style="font-weight:600">BUY NOW! LAST 1!</span>';
+    const label = document.querySelector('span') as HTMLElement;
+
+    const engine = new ProceduralEngine();
+    engine.start(
+      [replaceRule('span[data-type="0"]', /^\s*buy now!\s*last\s+\d+!?\s*$/i, 'Buy now')],
+      { pierceShadow: false },
+    );
+    engine.flush();
+
+    expect(label.textContent).toBe('Buy now');
+    expect(label.classList.contains('op-hide')).toBe(false);
+    engine.stop();
+  });
+
+  it('relabels an inserted button and leaves a delivery estimate', async () => {
+    document.body.innerHTML = '<div id="card"></div>';
+    const card = document.getElementById('card') as HTMLElement;
+    const engine = new ProceduralEngine();
+    engine.start(
+      [replaceRule('span[data-type="0"]', /^\s*add now!\s*almost out!?\s*$/i, 'Add to cart')],
+      { pierceShadow: false },
+    );
+
+    card.innerHTML =
+      '<span data-type="0" class="">Add now! Almost out!</span><span data-type="0" class="">Fastest delivery in 5 business days</span>';
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const spans = [...card.querySelectorAll('span')].map((el) => el.textContent);
+    expect(spans).toEqual(['Add to cart', 'Fastest delivery in 5 business days']);
+    engine.stop();
   });
 });

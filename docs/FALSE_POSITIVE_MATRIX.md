@@ -54,10 +54,11 @@ Global prefixes live in `cosmetic-vendors.css`. Theme-native leftovers stay host
 | Shein | US + EU (`us`/`www` + `euqs.shein.com`) | US: sold/add-to-cart, scarcity, cart timers; EU: `span.tags-text` sold/surge/returning-customers | **Rule** — Price Drop promo label stays (`docs/shein-audit.md`) |
 | Airbnb | `www.airbnb.com` SERP + listing (full audit 2026-09-24, US VPN) | No per-listing viewer/scarcity in dump | **No rule** — both surfaces rendered; not “clean” (`docs/airbnb-audit.md`) |
 | Etsy | Listing + cart (2026-09-24) | `p[class*="wt-text-title"].wt-sem-text-critical`, `span.wt-text-body-small.wt-sem-text-critical`, `p[data-24-hour-sale-wrapper]` | **Rule** — cart “Just N available” included; price, Remove, checkout stay (`docs/etsy-audit.md`) |
-| Temu | Logged-in home + search (2026-09-26) | `span[class]` whose whole text is ONLY N LEFT, N sold, Limited stock, or Almost out / Add now! Almost out! | **Rule** — `Add now!` alone stays; price stays; PDP body did not hydrate (`docs/temu-audit.md`) |
+| Temu | Logged-in home, best-sellers, socks + sneaker PDPs (2026-09-26) | Whole-text chips + fused CTAs; see `docs/data/temu-pattern-catalog-2026-09-26.json` | **Rule** — `docs/temu-audit.md`, `docs/REGULATORY_EVIDENCE.md` |
 | AliExpress | Home + PDP (2026-09-26) | `N sold` — PDP `span[class*="reviewer--sold"]` candidate; SERP hash class | **No rule** — PDP hook pending confirm (`docs/aliexpress-audit.md`) |
 | Myntra | SERP + PDP (2026-09-26, IN) | No pressure on earphones load | **No rule** (`docs/myntra-audit.md`) |
 | H&M | `www2.hm.com` PLP (2026-09-26) | Bot/challenge | **No rule** — incomplete (`docs/hm-audit.md`) |
 | Zara | PLP (2026-09-26) | No snippets; weak follow URL | **No rule** (`docs/zara-audit.md`) |
 | ASOS | Search + PDP (2026-09-26) | No pressure snippets | **No rule** (`docs/asos-audit.md`) |
 | eBay | SERP re-run (2026-09-26) | Still no `N watching` card | **No rule** (`docs/ebay-audit.md`) |
+| GetYourGuide | Home, Paris destination, Cotswolds activity (2026-09-27) | Exact `Likely to sell out` on semantic card ID suffix / isolated activity badge; positive route allowlists | **Local rules** — live engine comparisons, login and empty cart pass; 21 route/content safety tests. Populated checkout and live packaged positive remain unverified due site error pages. See `docs/getyourguide-audit.md`. |
