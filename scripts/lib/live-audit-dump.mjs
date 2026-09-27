@@ -58,6 +58,9 @@ export function dumpPage(extraNagRe = '') {
     { id: 'surge', re: /\b(sales|follower)\s+surge\b/i },
     { id: 'limited_stock', re: /\blimited\s+stock\b/i },
     { id: 'left_in_stock', re: /\bleft\s+in\s+stock\b/i },
+    { id: 'likely_to_sell_soon', re: /\blikely to sell soon\b/i },
+    { id: 'item_is_popular', re: /\bthis item is popular\b/i },
+    { id: 'items_sold_hour', re: /\bitems sold this hour\b/i },
   ];
 
   let extraPatterns = [];

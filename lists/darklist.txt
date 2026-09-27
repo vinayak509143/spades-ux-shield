@@ -1,5 +1,5 @@
 ! Title: Spades Darklist
-! Version: 202609280142
+! Version: 202609280322
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
 sneaky-news.example.com##button:has-text("I hate saving money")
@@ -133,4 +133,8 @@ www.temu.com##div[class]:has-text(/^\s*(?:only\s+\d+\s+left|\d+(?:\.\d+)?[kK]?\+
 www.temu.com##span[data-type="0"]:has-text(/^\s*add now!\s*almost out!?\s*$/i):replace-text("Add to cart")
 www.temu.com##span[data-type="0"]:has-text(/^\s*buy now!\s*almost out!?\s*$/i):replace-text("Buy now")
 www.temu.com##span[data-type="0"]:has-text(/^\s*buy now!\s*last\s+\d+!?\s*$/i):replace-text("Buy now")
+
+! ThredUp — PDP predictive popularity row (flame icon + sell-soon copy). docs/thredup-audit.md
+! Keep: prices, condition, Add to cart, shipping policy, promo banners (FIRST50), cart/checkout.
+www.thredup.com##div.body-copy-sm:has(> img[alt="Flame"]):has-text(/this item is popular.*likely to sell soon/i):not(:has(button, a, input, select, textarea, [role="button"])):matches-path(/^\/product\//)
 

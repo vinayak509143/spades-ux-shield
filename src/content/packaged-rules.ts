@@ -656,6 +656,30 @@ const SERIALIZED = [
       "type": "replace-text",
       "text": "Buy now"
     }
+  },
+  {
+    "ruleId": 3263828354,
+    "hosts": [
+      "www.thredup.com"
+    ],
+    "entity": false,
+    "pathRe": {
+      "source": "^\\/product\\/",
+      "flags": ""
+    },
+    "selector": "div.body-copy-sm:has(> img[alt=\"Flame\"])",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "this item is popular.*likely to sell soon",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
   }
 ] as const;
 
