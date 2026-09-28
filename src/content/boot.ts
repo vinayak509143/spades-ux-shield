@@ -1,10 +1,11 @@
-import { bindEngine, handlePageShow, isPageActive, setPageActive } from './lifecycle.js';
+import { bindEngine, handlePageShow, isPageActive, onPageActiveChange, setPageActive } from './lifecycle.js';
 import { ProceduralEngine } from './dom-mutator.js';
 import { applyHostMark } from './host-mark.js';
 import { revivePackagedRules } from './packaged-rules.js';
 import { ruleMatchesHost } from './procedural-match.js';
 import { sendRuntimeMessage } from './runtime-safe.js';
 import { initSpaRouting } from './spa.js';
+import { applyTemuOverlayPass, startTemuOverlayGuard } from './temu-overlay.js';
 
 (function boot(): void {
   applyHostMark();
@@ -63,4 +64,11 @@ import { initSpaRouting } from './spa.js';
   window.addEventListener('pageshow', () => {
     handlePageShow();
   });
+
+  if (location.hostname === 'www.temu.com') {
+    startTemuOverlayGuard(isPageActive);
+    onPageActiveChange(() => {
+      applyTemuOverlayPass(document, isPageActive);
+    });
+  }
 })();

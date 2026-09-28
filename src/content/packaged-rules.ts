@@ -681,7 +681,7 @@ const SERIALIZED = [
     }
   },
   {
-    "ruleId": 336233526,
+    "ruleId": 760920002,
     "hosts": [
       "www.temu.com"
     ],
@@ -692,7 +692,7 @@ const SERIALIZED = [
       {
         "type": "has-text",
         "needle": {
-          "source": "^\\s*(?:only\\s+\\d+\\s+left|\\d+(?:\\.\\d+)?[kK]?\\+?\\s*sold|limited stock|almost\\s+sold\\s+out!?|almost out!?|last day!?|ends\\s+in!?|\\d{1,2}:\\d{2}(?::\\d{2})?|#?\\d*\\s*(?:best-selling(?:\\s+brand)?\\s+item|top rated|most repurchased(?:\\s+brand)?\\s+item)(?:\\s*in\\s+.+)?)\\s*$",
+          "source": "^\\s*(?:only\\s+\\d+\\s+left|\\d+(?:\\.\\d+)?[kK]?\\+?\\s*sold|limited stock|almost\\s+sold\\s+out!?|almost out!?|last day!?|ends\\s+in!?|\\d{1,2}:\\d{2}(?::\\d{2})?|#?\\d*\\s*(?:best-selling(?:\\s+brand)?\\s+item|top rated|most repurchased(?:\\s+brand)?\\s+item)(?:\\s*in\\s+.+)?|(?:\\d{1,2}\\s*:\\s*){1,5}\\d{1,2}(?:\\s+ends\\s+in!?)?)\\s*$",
           "flags": "i"
         }
       }
@@ -702,7 +702,7 @@ const SERIALIZED = [
     }
   },
   {
-    "ruleId": 1434435823,
+    "ruleId": 4209919575,
     "hosts": [
       "www.temu.com"
     ],
@@ -713,7 +713,49 @@ const SERIALIZED = [
       {
         "type": "has-text",
         "needle": {
-          "source": "^\\s*(?:only\\s+\\d+\\s+left|\\d+(?:\\.\\d+)?[kK]?\\+?\\s*sold|limited stock|almost\\s+sold\\s+out!?|almost out!?|last day!?|ends\\s+in!?|\\d{1,2}:\\d{2}(?::\\d{2})?|#?\\d*\\s*(?:best-selling(?:\\s+brand)?\\s+item|top rated|most repurchased(?:\\s+brand)?\\s+item)(?:\\s*in\\s+.+)?)\\s*$",
+          "source": "^\\s*(?:only\\s+\\d+\\s+left|\\d+(?:\\.\\d+)?[kK]?\\+?\\s*sold|limited stock|almost\\s+sold\\s+out!?|almost out!?|last day!?|ends\\s+in!?|\\d{1,2}:\\d{2}(?::\\d{2})?|#?\\d*\\s*(?:best-selling(?:\\s+brand)?\\s+item|top rated|most repurchased(?:\\s+brand)?\\s+item)(?:\\s*in\\s+.+)?|(?:\\d{1,2}\\s*:\\s*){1,5}\\d{1,2}(?:\\s+ends\\s+in!?)?)\\s*$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 1679696372,
+    "hosts": [
+      "www.temu.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span[data-type=\"0\"]",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^\\s*(?:only\\s+\\d+\\s+left|\\d+(?:\\.\\d+)?[kK]?\\+?\\s*sold|limited stock|almost\\s+sold\\s+out!?|almost out!?|last day!?|ends\\s+in!?|\\d{1,2}:\\d{2}(?::\\d{2})?|#?\\d*\\s*(?:best-selling(?:\\s+brand)?\\s+item|top rated|most repurchased(?:\\s+brand)?\\s+item)(?:\\s*in\\s+.+)?|(?:\\d{1,2}\\s*:\\s*){1,5}\\d{1,2}(?:\\s+ends\\s+in!?)?)\\s*$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 3181095155,
+    "hosts": [
+      "www.temu.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span[data-type=\"0\"]",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^\\s*fastest delivery in \\d+ business days\\s*$",
           "flags": "i"
         }
       }
@@ -786,6 +828,72 @@ const SERIALIZED = [
     "action": {
       "type": "replace-text",
       "text": "Buy now"
+    }
+  },
+  {
+    "ruleId": 452740258,
+    "hosts": [
+      "www.temu.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span[data-type=\"0\"]",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^\\s*add the last\\s+\\d+!?\\s*$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "replace-text",
+      "text": "Add to cart"
+    }
+  },
+  {
+    "ruleId": 771182869,
+    "hosts": [
+      "www.temu.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span[role=\"button\"]",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^\\s*add the last\\s+\\d+!?\\s*$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "replace-text",
+      "text": "Add to cart"
+    }
+  },
+  {
+    "ruleId": 236650852,
+    "hosts": [
+      "www.temu.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "span[class]",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^\\s*add the last\\s+\\d+!?\\s*$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "replace-text",
+      "text": "Add to cart"
     }
   },
   {

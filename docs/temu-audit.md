@@ -26,7 +26,7 @@ Anonymous Playwright never got past login or the security check. The logged-in p
 | `Buy now! Almost out!` | `span[data-type="0"]`, white 16px (manual HTML) | **Ship** — replace with `Buy now`; plain `Buy now!` alone stays |
 | `BUY NOW! LAST 1!` | `span[data-type="0"]`, white 16px (manual HTML) | **Ship** — replace with `Buy now` |
 | `Ends in` | white `span[class]` on a sneaker PDP flash timer (manual HTML) | **Ship** — hide the label; hide a sibling span whose whole text is only `HH:MM(:SS)` |
-| `ALMOST SOLD OUT` | `span[data-type="0"]` on the socks PDP; parent text is only that phrase; orange 16px | **Ship** — scarcity chip |
+| `ALMOST SOLD OUT` | `span[data-type="0"]` with an empty or missing class; parent may be a hashed `div` whose text is only that phrase | **Ship** — hide `span[data-type="0"]` as well as `span[class]` / `div[class]` |
 | `Last day` | orange `span` on a recommendation card; parent text is only that phrase | **Ship** |
 | `#1 BEST-SELLING ITEM`, `#1 TOP RATED`, `#3 MOST REPURCHASED BRAND ITEM`, plus `in {category}` | orange `span[data-type="0"]` inside `div[class]` whose whole text is the badge. Seen on best-sellers and the socks PDP | **Ship** — the wrapper, so the category half does not remain |
 | `Best-Selling Items` | nav label, plural | **Not a pattern** |

@@ -13,8 +13,8 @@ describe('parseList', () => {
 
     expect(errors).toHaveLength(0);
     expect(directives.Title).toBe('Spades Darklist');
-    expect(directives.Version).toBe('202609280142');
-    expect(rules).toHaveLength(77);
+    expect(directives.Version).toBe('202609290215');
+    expect(rules).toHaveLength(108);
 
     const sheinRules = rules.filter((r) => r.hosts.includes('us.shein.com'));
     expect(sheinRules).toHaveLength(12);
@@ -28,10 +28,15 @@ describe('parseList', () => {
     const sheinText = sheinRules.find((r) => r.procedural[0]?.type === 'has-text');
     expect(sheinText?.selector).toBe('span.label-text');
     const temuRules = rules.filter((r) => r.hosts.includes('www.temu.com'));
-    expect(temuRules).toHaveLength(5);
+    expect(temuRules).toHaveLength(10);
     const temuChips = temuRules.filter((r) => r.action.type === 'hide');
-    expect(temuChips).toHaveLength(2);
-    expect(temuChips.map((r) => r.selector).sort()).toEqual(['div[class]', 'span[class]']);
+    expect(temuChips).toHaveLength(4);
+    expect(temuChips.map((r) => r.selector).sort()).toEqual([
+      'div[class]',
+      'span[class]',
+      'span[data-type="0"]',
+      'span[data-type="0"]',
+    ]);
     const temuChip = temuChips[0];
     expect(temuChip?.procedural[0]?.type).toBe('has-text');
     const temuNeedle = temuChip?.procedural[0];
@@ -50,6 +55,8 @@ describe('parseList', () => {
         '#3 MOST REPURCHASED BRAND ITEM in Bedding',
         '2.3K+ sold',
         '105sold',
+        '03 : 10 : 40 : 41 Ends in',
+        '12:34:56',
       ]) {
         expect(temuNeedle.needle.test(phrase)).toBe(true);
       }
@@ -62,6 +69,7 @@ describe('parseList', () => {
         'Best-Selling Items',
         'Low stock items alerts',
         'Pay $2.16 today',
+        'ADD THE LAST 1!',
         'Free shipping',
         'in Electric Bikes',
       ]) {
@@ -69,7 +77,7 @@ describe('parseList', () => {
       }
     }
     const temuRelabels = temuRules.filter((r) => r.action.type === 'replace-text');
-    expect(temuRelabels).toHaveLength(3);
+    expect(temuRelabels).toHaveLength(6);
     expect(
       temuRelabels.find(
         (r) =>

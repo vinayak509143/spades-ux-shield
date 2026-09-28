@@ -6,6 +6,14 @@ let engine: ProceduralEngine | null = null;
 let rules: CompiledProc[] = [];
 let engineOpts: ProceduralEngineOptions | null = null;
 let pageActive = true;
+const activeListeners = new Set<() => void>();
+
+export function onPageActiveChange(listener: () => void): () => void {
+  activeListeners.add(listener);
+  return () => {
+    activeListeners.delete(listener);
+  };
+}
 
 export function bindEngine(
   instance: ProceduralEngine,
@@ -30,12 +38,14 @@ export function setPageActive(active: boolean): void {
     root.removeAttribute('data-op-amz');
     root.removeAttribute('data-op-amz-en');
     engine?.stop({ restoreHides: true });
-    return;
+  } else {
+    applyHostMark();
+    if (engine && rules.length > 0 && engineOpts) {
+      engine.start(rules, engineOpts);
+    }
   }
-
-  applyHostMark();
-  if (engine && rules.length > 0 && engineOpts) {
-    engine.start(rules, engineOpts);
+  for (const listener of activeListeners) {
+    listener();
   }
 }
 
