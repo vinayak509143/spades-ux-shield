@@ -24,7 +24,7 @@ Record pass/fail in the PR or issue. Do not paste passwords, card numbers, or fu
 | 1e | `https://aws.amazon.com/` | **No** `data-op-amz` (retail alias must not match AWS). Page usable. |
 | 1f | `https://www.flipkart.com/search?q=earphones` | “Only few left” / “Only N left” SERP chips **gone**; “Bank Offer” chips **stay**. |
 | 1g | Flipkart PDP from SERP (in-stock) | Add to cart / Buy now **stay**; price visible. |
-| 1h | `https://www.booking.com/hotel/us/element-times-square.html` (dates filled) | Room-table “We have N left” **gone**; `#hp_book_now_button` and the price **stay**. SERP hash chips may remain. |
+| 1h | `https://www.booking.com/hotel/us/element-times-square.html` (dates filled) | Room-table “We have N left” **gone**; `#hp_book_now_button` and the price **stay**. SERP “We have N left at this price” inside recommended units **gone**; unit name and price **stay**. |
 | 1i | `https://www.agoda.com/search?city=318` (New York, dates filled) | “Booked N times in last 24 hr” **gone**; crossed price (`fpc-cor-price`) and Sign in **stay**. |
 | 1j | Expedia / Hotels.com / Travelocity SERP (New York, 2026-10-16→17) | “We have N left at this price” **gone**; listing prices **stay**. Vrbo **N/A** (no rule). |
 | 1k | Etsy listing that shows “Only N left and in N carts” (manual Chrome if automation is challenged) | Scarcity line and “Sale ends in” countdown **gone**; price and Add to cart **stay**. |

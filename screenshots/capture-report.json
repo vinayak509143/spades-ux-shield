@@ -1,0 +1,44 @@
+{
+  "at": "2026-09-28T13:06:43.702Z",
+  "headless": false,
+  "sites": [
+    {
+      "id": "agoda/serp",
+      "url": "https://www.agoda.com/search?city=318&checkIn=2026-10-16&checkOut=2026-10-17&rooms=1&adults=2&children=0&locale=en-us&currency=USD",
+      "usable": true,
+      "before": {
+        "url": "https://www.agoda.com/search?city=318&checkIn=2026-10-16&checkOut=2026-10-17&rooms=1&adults=2&children=0&locale=en-us&currency=USD&ds=bFuhghC1B9lXgoJj&sort=agodaRecommended",
+        "title": "Agoda | Hotels in New York (NY) | Best Price Guarantee!",
+        "bodyLen": 19430,
+        "blocked": false,
+        "dataOp": null
+      },
+      "after": {
+        "url": "https://www.agoda.com/search?city=318&checkIn=2026-10-16&checkOut=2026-10-17&rooms=1&adults=2&children=0&locale=en-us&currency=USD&ds=UM5VKK%2FHpygys1tp&sort=agodaRecommended",
+        "title": "Agoda | Hotels in New York (NY) | Best Price Guarantee!",
+        "bodyLen": 19898,
+        "blocked": false,
+        "dataOp": "1"
+      }
+    },
+    {
+      "id": "agoda/property",
+      "url": "https://www.agoda.com/quality-inn_34/hotel/new-york-ny-us.html?adults=2&children=0&rooms=1&checkIn=2026-10-16&los=1&currencyCode=USD",
+      "usable": true,
+      "before": {
+        "url": "https://www.agoda.com/quality-inn_34/hotel/new-york-ny-us.html?adults=2&children=0&rooms=1&checkIn=2026-10-16&los=1&currencyCode=USD&ds=zBTejKHRfqTyOEEz",
+        "title": "Quality Inn JFK Airport Rockaway Blvd Hotel (New York (NY)) - Deals, Photos & Reviews",
+        "bodyLen": 32233,
+        "blocked": false,
+        "dataOp": null
+      },
+      "after": {
+        "url": "https://www.agoda.com/quality-inn_34/hotel/new-york-ny-us.html?adults=2&children=0&rooms=1&checkIn=2026-10-16&los=1&currencyCode=USD&ds=sAMRu%2FdGAPjMagSS",
+        "title": "Quality Inn JFK Airport Rockaway Blvd Hotel (New York (NY)) - Deals, Photos & Reviews",
+        "bodyLen": 32016,
+        "blocked": false,
+        "dataOp": "1"
+      }
+    }
+  ]
+}

@@ -26,14 +26,19 @@ function dumpPage() {
   const hint = (el) => {
     if (!el || el.nodeType !== 1) return null;
     if (el.id && el.id.length < 40) return `#${CSS.escape(el.id)}`;
-    const tid = el.getAttribute('data-testid') || el.getAttribute('data-element-name') || el.getAttribute('data-selenium');
-    if (tid) return `[data-selenium="${tid}"]`;
+    const named = [
+      ['data-testid', el.getAttribute('data-testid')],
+      ['data-element-name', el.getAttribute('data-element-name')],
+      ['data-selenium', el.getAttribute('data-selenium')],
+      ['data-badge-id', el.getAttribute('data-badge-id')],
+    ].find(([, value]) => value);
+    if (named) return `[${named[0]}="${named[1]}"]`;
     const cls = [...el.classList].filter((c) => c.length > 2 && !hashed(c)).slice(0, 2);
     if (cls.length) return `${el.tagName.toLowerCase()}.${cls.map((c) => CSS.escape(c)).join('.')}`;
     return el.tagName.toLowerCase();
   };
   const NAG =
-    /people are (looking|viewing)|looking at this|just booked|in the last|only \d+|we have \d+ left|\d+ left|in high demand|hurry|ends in|expires|someone just|booked \d+/i;
+    /people are (looking|viewing)|looking at this|just booked|in the last|only \d+|we have \d+ left|\d+ left|in high demand|hurry|ends in|expires|someone just|booked \d+|last booked|popular!/i;
   const snippets = [];
   const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   while (walk.nextNode()) {

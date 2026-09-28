@@ -15,7 +15,7 @@ Locale `en-US`, timezone `America/New_York`. No sign-in, no Reserve click. Final
 
 | Text | Where | Selector from the dump | Decision |
 |------|--------|------------------------|----------|
-| `We have N left at this price` | SERP cards | Node class `cc87802d18` (and parents `b2bd50e031`, `f049fb9621`). No `data-testid` in six ancestors. Hint collapsed to bare `div` because the class is a hash. | **Unhandled.** Do not ship the hash. |
+| `We have N left at this price` | SERP cards | Leaf `div` (hashed class, currently `cc87802d18`) inside `[data-testid="recommended-units"]`. The unit card’s first stable hook wraps room name and price. | **Rule** on `[data-testid="recommended-units"] div` whose entire text is that sentence. Do not hide `recommended-units`. |
 | `77% of places to stay are unavailable for your dates on our site.` | SERP banner | `h3` id `:rps:` (React `useId`). Parent `[data-testid="banner-neutral"]`. | **Unhandled.** Id is generated. `banner-neutral` is a generic banner slot. |
 | `We have 5 left` | Property room table, conditions cell, next to the price and “Select Rooms” | `li.bui-list__item.bui-text--color-destructive-dark` inside `ul.hprt-conditions-bui` / `td.hprt-table-cell-conditions`. Own text is only that sentence. | **Rule.** Text-filter so other red list rows stay. This is not the room `<select>` and not the price cell. |
 | `Unlock member-only discounts` / Sign in | Promo banner | `[data-testid="promotional-banner-content-cta"]` | **Must not.** Auth. |
@@ -40,7 +40,7 @@ Headed Playwright: `node scripts/audit-booking-scarcity.mjs`. Dump: `temp/bookin
 | 0–5 | None (only hashes `cc87802d18`, `b2bd50e031`, `f049fb9621`, …) | Scarcity only until depth 4, then room title + bed + scarcity |
 | 6 | `[data-testid="recommended-units"]` | Full **unit card** (room name, bed type, scarcity, price) |
 
-**Decision: still unhandled.** The first `data-testid` is `recommended-units`, which wraps the whole recommended room unit, not the chip alone. Hiding it would remove room name and price. Do not ship `cc87802d18` or `recommended-units`.
+**Decision (2026-09-28): rule.** Hide `[data-testid="recommended-units"] div` only when its whole text is `We have N left at this price`. The hashed class is still not shipped. `recommended-units` itself stays, so room name and price stay. Every chip on the New York SERP load sat inside that test id.
 
 ### Property — same hotel, room table
 

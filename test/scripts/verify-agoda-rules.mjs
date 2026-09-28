@@ -32,6 +32,34 @@ const vis = () => {
     const t = (el.textContent || '').replace(/\s+/g, ' ').trim();
     return visible(el) && t.length < 48 && /(\$|USD)\s?\d/.test(t);
   });
+  const hurrySite = [...document.querySelectorAll('h5')].filter(
+    (el) => visible(el) && /^Hurry!.*fully booked!/i.test((el.textContent || '').trim()),
+  ).length;
+  const bookedToday = [...document.querySelectorAll('span')].filter(
+    (el) => visible(el) && /^Booked \d+ times today$/i.test((el.textContent || '').trim()),
+  ).length;
+  const bookedTodayContainer = count(
+    '[data-element-name="ssr-property-card-today-book"], [data-testid="property-badge-today-booking-container"], [data-badge-id="today-booking"]',
+  );
+  const bookingUrgency = count(
+    '[data-element-name="PropertyCardBookingUrgency"], [data-testid="PropertyCardBookingUrgency"], [data-selenium="PropertyCardBookingUrgency"]',
+  );
+  const lastBookedBadge = count('[data-badge-id="lbk"], [data-element-name="mob-ssr-last-booked-badge"]');
+  const lastBookedText = [...document.querySelectorAll('span')].filter(
+    (el) => visible(el) && /^(Popular! )?Last booked \d+/i.test((el.textContent || '').trim()),
+  ).length;
+  const cityDemand = [...document.querySelectorAll('p.kite-js-Typography')].filter(
+    (el) => visible(el) && /in high demand on your selected dates/i.test((el.textContent || '').trim()),
+  ).length;
+  const cityHero = count('[data-element-name="hero-banner-container"], [data-selenium="hero-banner-container"]');
+  const roomUrgency = count('[data-element-name="room-grid-urgency-message"]');
+  const roomLastBooked = count('[data-testid="room-badge-last_booked_x_hours_ago"]');
+  const limitedRooms = [...document.querySelectorAll('span')].filter(
+    (el) => visible(el) && /^Limited availability$/i.test((el.textContent || '').trim()),
+  ).length;
+  const lastRooms = [...document.querySelectorAll('span')].filter(
+    (el) => visible(el) && /^Last \d+ rooms!$/i.test((el.textContent || '').trim()),
+  ).length;
   const cor = document.querySelector('[data-selenium="fpc-cor-price"]');
   return {
     dataOp: document.documentElement.getAttribute('data-op'),
@@ -39,6 +67,18 @@ const vis = () => {
     booked24h: count('[data-selenium="ssr-property-card-booking-last-24h"]'),
     demand: count('article.UserEngagement--demand'),
     hurry: count('[data-selenium="hurry-up-sold-out-message"]'),
+    hurrySite,
+    bookedToday,
+    bookedTodayContainer,
+    bookingUrgency,
+    lastBookedBadge,
+    lastBookedText,
+    cityDemand,
+    cityHero,
+    roomUrgency,
+    roomLastBooked,
+    limitedRooms,
+    lastRooms,
     priceVisible,
     corHidden: !!cor && !visible(cor),
     signInVisible,
@@ -68,12 +108,32 @@ if (serp.dataOp !== '1') {
   console.error('FAIL: data-op not set on SERP');
   failed = true;
 }
-if (!serp.dataOpH?.includes('www.agoda.com')) {
-  console.error('FAIL: data-op-h missing www.agoda.com');
+if (!serp.dataOpH?.includes('agoda.com')) {
+  console.error('FAIL: data-op-h missing agoda.com suffix');
   failed = true;
 }
-if (serp.booked24h.visible > 0) {
-  console.error('FAIL: 24h booking badge still visible', serp.booked24h);
+if (
+  serp.booked24h.visible > 0 ||
+  serp.bookedToday > 0 ||
+  serp.bookedTodayContainer.visible > 0 ||
+  serp.bookingUrgency.visible > 0 ||
+  serp.lastBookedBadge.visible > 0 ||
+  serp.lastBookedText > 0 ||
+  serp.cityDemand > 0 ||
+  serp.cityHero.visible > 0 ||
+  serp.hurrySite > 0
+) {
+  console.error('FAIL: SERP urgency still visible', {
+    booked24h: serp.booked24h,
+    bookedToday: serp.bookedToday,
+    bookedTodayContainer: serp.bookedTodayContainer,
+    bookingUrgency: serp.bookingUrgency,
+    lastBookedBadge: serp.lastBookedBadge,
+    lastBookedText: serp.lastBookedText,
+    cityDemand: serp.cityDemand,
+    cityHero: serp.cityHero,
+    hurrySite: serp.hurrySite,
+  });
   failed = true;
 }
 if (serp.corHidden) {
@@ -95,16 +155,26 @@ await page.mouse.wheel(0, 1800);
 await page.waitForTimeout(3000);
 const pdp = await page.evaluate(vis);
 console.log('pdp', JSON.stringify(pdp));
-if (pdp.dataOp !== '1' || !pdp.dataOpH?.includes('www.agoda.com')) {
+if (pdp.dataOp !== '1' || !pdp.dataOpH?.includes('agoda.com')) {
   console.error('FAIL: host mark missing on property');
   failed = true;
 }
-if (pdp.demand.visible > 0) {
-  console.error('FAIL: high-demand banner still visible', pdp.demand);
-  failed = true;
-}
-if (pdp.hurry.visible > 0) {
-  console.error('FAIL: sold-out hurry line still visible', pdp.hurry);
+if (
+  pdp.demand.visible > 0 ||
+  pdp.hurry.visible > 0 ||
+  pdp.roomUrgency.visible > 0 ||
+  pdp.roomLastBooked.visible > 0 ||
+  pdp.limitedRooms > 0 ||
+  pdp.lastRooms > 0
+) {
+  console.error('FAIL: property urgency still visible', {
+    demand: pdp.demand,
+    hurry: pdp.hurry,
+    roomUrgency: pdp.roomUrgency,
+    roomLastBooked: pdp.roomLastBooked,
+    limitedRooms: pdp.limitedRooms,
+    lastRooms: pdp.lastRooms,
+  });
   failed = true;
 }
 if (!pdp.priceVisible) {

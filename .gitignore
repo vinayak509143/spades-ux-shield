@@ -32,6 +32,7 @@ test/e2e/.user-data-vendor/
 .verify-flipkart*/
 .verify-booking*/
 .verify-agoda*/
+.capture-profile*/
 .verify-expedia*/
 .verify-hotels*/
 .verify-travelocity*/

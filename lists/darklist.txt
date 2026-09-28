@@ -1,5 +1,5 @@
 ! Title: Spades Darklist
-! Version: 202609280322
+! Version: 202609282200
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
 sneaky-news.example.com##button:has-text("I hate saving money")
@@ -46,15 +46,43 @@ amazon-en##.a-badge:has-text(/ends in/i)
 ! Keep: price, seller, Add to cart / Buy now, real variant stock, cart & checkout
 www.flipkart.com##div.HZ0E6r.Rm9_cy:has-text(/^Only (few|\d+ left)/i)
 
-! Booking.com — www only (audit docs/booking-audit.md). Property room-table scarcity line, not the price cell or Reserve.
-! SERP "We have N left at this price" is hashed (cc87802d18) — unhandled. Do not hide banner-neutral or sign-in promos.
+! Booking.com — www only (audit docs/booking-audit.md).
+! Property room table: stable BUI list row. SERP chip has no class of its own that survives a deploy;
+! hide the exact "We have N left at this price" node inside recommended-units only (not the unit card or price).
 www.booking.com##li.bui-list__item.bui-text--color-destructive-dark:has-text(/we have \d+ left/i)
+www.booking.com##[data-testid="recommended-units"] div:has-text(/^\s*We have \d+ left at this price\s*$/i)
 
-! Agoda — www only (audit docs/agoda-audit.md). 24h booking badge, demand banner, sold-out hurry line.
-! Keep: fpc-cor-price (crossed price explanation), Sign in, room price, book/select.
-www.agoda.com##[data-selenium="ssr-property-card-booking-last-24h"]
-www.agoda.com##article.UserEngagement--demand
-www.agoda.com##[data-selenium="hurry-up-sold-out-message"]
+! Agoda — www.agoda.com + www.agoda.co.in (audit docs/agoda-audit.md).
+! Live SERP (2026-09-28 New Delhi): badges are data-element-name / data-testid / data-badge-id.
+! data-selenium on these nodes is empty — do not rely on it. Keep both spellings where older builds used selenium.
+! Keep: fpc-cor-price, data-badge-id other than today-booking/lbk, Sign in, room price, book/select.
+www.agoda.com,www.agoda.co.in##[data-element-name="ssr-property-card-today-book"]
+www.agoda.com,www.agoda.co.in##[data-testid="property-badge-today-booking-container"]
+www.agoda.com,www.agoda.co.in##[data-badge-id="today-booking"]
+www.agoda.com,www.agoda.co.in##[data-badge-id="lbk"]
+www.agoda.com,www.agoda.co.in##[data-element-name="mob-ssr-last-booked-badge"]
+www.agoda.com,www.agoda.co.in##[data-testid="property-badge-lbk-badge-container"]
+www.agoda.com,www.agoda.co.in##[data-element-name="PropertyCardBookingUrgency"]
+www.agoda.com,www.agoda.co.in##[data-testid="PropertyCardBookingUrgency"]
+www.agoda.com,www.agoda.co.in##[data-element-name="hero-banner-container"]
+www.agoda.com,www.agoda.co.in##[data-element-name="hurry-up-sold-out-message"]
+www.agoda.com,www.agoda.co.in##[data-selenium="PropertyCardBookingUrgency"]
+www.agoda.com,www.agoda.co.in##[data-selenium="ssr-property-card-booking-last-24h"]
+www.agoda.com,www.agoda.co.in##[data-selenium="property-badge-today-booking-container"]
+www.agoda.com,www.agoda.co.in##[data-selenium="ssr-property-card-today-book"]
+www.agoda.com,www.agoda.co.in##[data-selenium="mob-ssr-last-booked-badge"]
+www.agoda.com,www.agoda.co.in##[data-selenium="ssr-last-booked-badge"]
+www.agoda.com,www.agoda.co.in##[data-selenium="property-badge-lbk-badge-container"]
+www.agoda.com,www.agoda.co.in##[data-selenium="hero-banner-container"]
+www.agoda.com,www.agoda.co.in##[data-selenium="hurry-up-sold-out-message"]
+www.agoda.com,www.agoda.co.in##article.UserEngagement--demand
+www.agoda.com,www.agoda.co.in##h5:has-text(/^Hurry!.*fully booked!/i):not(:has(button, a, input, select, textarea, [role="button"]))
+www.agoda.com,www.agoda.co.in##p.kite-js-Typography:has-text(/in high demand on your selected dates/i)
+www.agoda.com,www.agoda.co.in##[data-testid="room-badge-last_booked_x_hours_ago"]
+www.agoda.com,www.agoda.co.in##[data-testid="room-offer"] span:not(:has(button, a, input, select, textarea, [role="button"])):has-text(/^\s*Last booked \d+\s+(?:minutes?|hours?|hrs?)\s+ago\s*$/i)
+www.agoda.com,www.agoda.co.in##[data-element-name="room-grid-urgency-message"]
+www.agoda.com,www.agoda.co.in###roomGridContent span:has-text(/^Limited availability$/i)
+www.agoda.com,www.agoda.co.in###roomGridContent span:has-text(/^Last \d+ rooms!$/i)
 
 ! Expedia Group — one host per line (separate audits). UITK listing scarcity on SERP; PDP often bot-walled in audit.
 ! Vrbo: percent-unavailable banner only — generic results-header-message slot — unhandled (docs/vrbo-audit.md).

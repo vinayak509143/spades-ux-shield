@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore real before and after screenshots of Spades UX-Shield hiding selected pressure messages while keeping booking details visible.">
+  <title>See the difference · Spades UX-Shield</title>
+  <style>
+    :root { color-scheme: light; --ink: #172e2b; --muted: #52645f; --green: #125e46; --mint: #ddf1e6; --line: #d9e1db; --paper: #f6f7f2; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.5; }
+    button, input { font: inherit; }
+    button, a, input { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
+    a { color: var(--green); text-underline-offset: 4px; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #bc571c; outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    .wrap { width: min(1280px, calc(100% - 64px)); margin: auto; }
+    .topbar { border-bottom: 1px solid var(--line); }
+    .topbar .wrap { min-height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-size: 17px; font-weight: 750; letter-spacing: -.4px; }
+    .brand-icon { display: grid; place-items: center; background: var(--ink); color: #e2f3b9; width: 38px; height: 42px; border-radius: 12px; font-size: 31px; }
+    .top-link { font-size: 13px; font-weight: 650; text-decoration: none; }
+    .hero { padding: 48px 0 32px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: end; }
+    .eyebrow { font-size: 11px; font-weight: 750; letter-spacing: 1.7px; text-transform: uppercase; color: var(--green); margin: 0 0 12px; }
+    h1 { margin: 0; font-size: clamp(34px, 4.4vw, 58px); line-height: 1.07; letter-spacing: -2.6px; font-weight: 730; }
+    h1 span { color: var(--green); }
+    .hero-copy { max-width: 445px; justify-self: end; }
+    .hero-copy p { font-size: 16px; color: var(--muted); margin: 0 0 16px; }
+    .facts { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; font-weight: 650; }
+    .facts span { border: 1px solid var(--line); border-radius: 30px; padding: 5px 11px; background: #fff9; }
+    .examples { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0 0 24px; }
+    .example { border: 1px solid var(--line); border-radius: 14px; background: #fff9; color: var(--ink); padding: 16px; text-align: left; display: flex; gap: 12px; align-items: center; }
+    .example:hover { border-color: #749585; }
+    .example[aria-pressed="true"] { border-color: var(--green); background: var(--mint); box-shadow: inset 0 0 0 1px var(--green); }
+    .site-icon { display: grid; place-items: center; flex-shrink: 0; width: 38px; height: 38px; border-radius: 11px; background: #edf1eb; color: var(--ink); font-weight: 800; font-size: 13px; }
+    .example[aria-pressed="true"] .site-icon { background: var(--green); color: white; }
+    .example strong { display: block; font-size: 14px; }
+    .example small { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .viewer { border: 1px solid #cbd6ce; border-radius: 18px; background: white; overflow: hidden; box-shadow: 0 12px 36px #1736290a; }
+    .viewer-top { padding: 18px 22px; background: #203c33; color: white; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+    .viewer-title { display: flex; align-items: center; gap: 16px; }
+    .dots { display: flex; gap: 5px; }
+    .dots i { width: 7px; height: 7px; border-radius: 50%; background: #9caea6; }
+    h2 { font-size: 14px; line-height: 1.3; margin: 0; font-weight: 650; }
+    .viewer-sub { display: block; font-size: 11px; color: #c1d4c8; margin-top: 3px; }
+    .modes { display: flex; gap: 3px; padding: 3px; border-radius: 9px; background: #102920; }
+    .modes button { border: 0; background: transparent; color: #e1eae5; padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 650; }
+    .modes button[aria-pressed="true"] { background: #e5f2ca; color: #173226; }
+    .stage { --split: 84%; position: relative; isolation: isolate; background: #f0f2ee; user-select: none; }
+    .stage img { display: block; width: 100%; height: auto; -webkit-user-drag: none; }
+    .stage.reveal { cursor: ew-resize; touch-action: pan-y; }
+    .stage.reveal .before-image { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--split)) 0 0); }
+    .stage.reveal .after-image { position: relative; }
+    .divider { position: absolute; inset: 0 auto 0 var(--split); width: 2px; background: #174d38; transform: translateX(-50%); pointer-events: none; box-shadow: 0 0 0 1px #fff9; }
+    .handle { position: absolute; top: 44%; left: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--green); color: white; border: 3px solid white; font-size: 22px; box-shadow: 0 3px 16px #0003; }
+    .image-label { position: absolute; top: 14px; z-index: 2; border-radius: 6px; padding: 5px 10px; font-size: 11px; font-weight: 750; pointer-events: none; box-shadow: 0 1px 6px #0002; }
+    .before-label { left: 14px; color: #4e3023; background: #fff1e4; }
+    .after-label { right: 14px; color: #164931; background: #e0f4db; }
+    .stage.side-by-side { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--line); }
+    .stage.side-by-side .image-panel { position: relative; align-self: start; padding-top: 40px; background: white; }
+    .stage.side-by-side .image-label { top: 8px; left: 12px; right: auto; box-shadow: none; }
+    .stage.single .image-panel { position: relative; }
+    .stage.single .image-label { top: 14px; }
+    .compare-tools { padding: 15px 22px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 24px; }
+    .hint { color: var(--muted); font-size: 12px; margin: 0; flex: 1; }
+    .range-group { display: flex; gap: 12px; align-items: center; width: min(350px, 44%); font-size: 11px; font-weight: 650; }
+    input[type="range"] { width: 100%; min-width: 70px; height: 28px; accent-color: var(--green); cursor: ew-resize; }
+    .explanation { display: grid; grid-template-columns: 1fr 1.4fr; gap: 30px; padding: 25px 22px; border-top: 1px solid var(--line); background: #fcfdf9; }
+    .explanation h3 { margin: 0 0 7px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+    .explanation p { margin: 0; font-size: 14px; line-height: 1.6; }
+    #removed { font-weight: 650; }
+    .retained { border-left: 1px solid var(--line); padding-left: 30px; }
+    .retained h3 { color: var(--green); }
+    .source-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--muted); padding: 16px 2px 0; }
+    .source-links { display: flex; gap: 16px; }
+    .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; padding: 36px 0; }
+    .principles strong { font-size: 14px; }
+    .principles p { font-size: 13px; color: var(--muted); margin: 8px 0 0; max-width: 350px; }
+    footer { padding: 21px 0 26px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .notice { background: #fff1e4; padding: 16px; border-radius: 8px; }
+    @media (max-width: 740px) {
+      .wrap { width: calc(100% - 32px); }
+      .topbar .wrap { min-height: 68px; }
+      .brand { font-size: 14px; }
+      .top-link { font-size: 11px; }
+      .hero { grid-template-columns: 1fr; gap: 20px; padding: 32px 0 24px; }
+      h1 { letter-spacing: -1.5px; }
+      .hero-copy { max-width: none; justify-self: start; }
+      .hero-copy p { font-size: 14px; }
+      .examples { grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px; }
+      .example { padding: 10px 13px; border-radius: 11px; }
+      .example strong, .example small { display: inline; }
+      .example small { margin-left: 8px; }
+      .site-icon { width: 32px; height: 32px; font-size: 11px; }
+      .viewer-top { flex-wrap: wrap; padding: 14px; gap: 14px; }
+      .modes { width: 100%; }
+      .modes button { flex: 1; min-height: 36px; }
+      .dots { display: none; }
+      .image-label { font-size: 9px; padding: 3px 6px; top: 7px; }
+      .before-label { left: 7px; }
+      .after-label { right: 7px; }
+      .handle { width: 38px; height: 38px; font-size: 18px; }
+      .stage.side-by-side { grid-template-columns: 1fr; }
+      .compare-tools { flex-direction: column; align-items: stretch; padding: 12px 14px; gap: 8px; }
+      .range-group { width: 100%; }
+      .explanation { grid-template-columns: 1fr; padding: 18px 14px; gap: 18px; }
+      .retained { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 16px; }
+      .source-row { font-size: 11px; }
+      .principles { grid-template-columns: 1fr; gap: 22px; padding: 28px 0; }
+      .principles p { max-width: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <div class="brand"><span class="brand-icon" aria-hidden="true">♠</span> Spades UX-Shield</div>
+      <a class="top-link" href="https://github.com/vinayak509143/spades-ux-shield" target="_blank" rel="noopener noreferrer">View project ↗</a>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="hero" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">An interactive look at UX-Shield</p>
+        <h1 id="page-title">See the pressure<br><span>disappear.</span></h1>
+      </div>
+      <div class="hero-copy">
+        <p>Explore how selected urgency messages are hidden, with prices and booking details still visible in these real screenshots.</p>
+        <div class="facts"><span>2 websites</span><span>3 before &amp; after examples</span><span>Works offline</span></div>
+      </div>
+    </section>
+
+    <div class="examples" role="group" aria-label="Choose a screenshot example">
+      <button class="example" type="button" data-example="getyourguide" aria-label="GetYourGuide Tour booking panel" aria-pressed="true" aria-controls="comparison">
+        <span class="site-icon" aria-hidden="true">GYG</span><span><strong>GetYourGuide</strong><small>Tour booking panel</small></span>
+      </button>
+      <button class="example" type="button" data-example="booking-rooms" aria-label="Booking.com Room selection" aria-pressed="false" aria-controls="comparison">
+        <span class="site-icon" aria-hidden="true">B.</span><span><strong>Booking.com</strong><small>Room selection</small></span>
+      </button>
+      <button class="example" type="button" data-example="booking-results" aria-label="Booking.com Search results" aria-pressed="false" aria-controls="comparison">
+        <span class="site-icon" aria-hidden="true">B.</span><span><strong>Booking.com</strong><small>Search results</small></span>
+      </button>
+    </div>
+
+    <noscript><p class="notice">Enable JavaScript to switch examples and drag the comparison. You can also view the original images using the links below.</p></noscript>
+    <section class="viewer" id="comparison" aria-labelledby="example-title">
+      <div class="viewer-top">
+        <div class="viewer-title"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><div><h2 id="example-title">GetYourGuide · Tour booking panel</h2><span class="viewer-sub" id="example-sub">getyourguide.com · “Likely to sell out”</span></div></div>
+        <div class="modes" role="group" aria-label="Screenshot view">
+          <button type="button" data-mode="before" aria-pressed="false">Before</button>
+          <button type="button" data-mode="compare" aria-pressed="true">Compare</button>
+          <button type="button" data-mode="after" aria-pressed="false">After</button>
+        </div>
+      </div>
+      <div class="stage reveal" id="stage">
+        <div class="image-panel after-image" id="after-panel"><img id="after-image" src="getyourguide-options/after.png" width="1360" height="900" alt="GetYourGuide after UX-Shield: the sell-out badge is hidden; the ₹11,300 price, date selector, availability button and booking terms remain visible." draggable="false"><span class="image-label after-label">AFTER · UX-SHIELD</span></div>
+        <div class="image-panel before-image" id="before-panel"><img id="before-image" src="getyourguide-options/before.png" width="1360" height="900" alt="GetYourGuide before UX-Shield: a red Likely to sell out badge appears above the ₹11,300 tour price." draggable="false"><span class="image-label before-label">BEFORE</span></div>
+        <div class="divider" id="divider" aria-hidden="true"><span class="handle">↔</span></div>
+      </div>
+      <div class="compare-tools">
+        <p class="hint" id="view-hint">Drag the divider left to reveal the after screenshot. You can also use the slider or Before / After buttons.</p>
+        <div class="range-group" id="range-group">
+          <span aria-hidden="true">After</span><label class="sr-only" for="reveal">Amount of before screenshot visible</label><input type="range" id="reveal" min="0" max="100" value="84" aria-describedby="view-hint" aria-valuetext="84% before, 16% after"><span aria-hidden="true">Before</span>
+        </div>
+      </div>
+      <div class="explanation">
+        <div><h3>Hidden in this example</h3><p id="removed">The red “Likely to sell out” badge above the booking panel.</p></div>
+        <div class="retained"><h3>Still visible</h3><p id="kept">₹11,300 per person, participant and date selectors, Check availability, free cancellation, and reserve now &amp; pay later terms.</p></div>
+      </div>
+    </section>
+    <p class="sr-only" role="status" id="status"></p>
+    <div class="source-row">
+      <span id="capture-note">Original captures. This demo displays screenshots; it does not run the extension.</span>
+      <div class="source-links"><a id="before-link" href="getyourguide-options/before.png" target="_blank" rel="noopener">Open before ↗</a><a id="after-link" href="getyourguide-options/after.png" target="_blank" rel="noopener">Open after ↗</a></div>
+    </div>
+    <section class="principles" aria-label="How UX-Shield works">
+      <div><strong>Specific, reviewed rules</strong><p>UX-Shield uses deterministic cosmetic filters to hide listed pressure elements on supported sites.</p></div>
+      <div><strong>Booking details matter</strong><p>These examples keep prices, selection controls, cancellation details and booking buttons visible.</p></div>
+      <div><strong>Local by design</strong><p>The extension has no runtime AI or telemetry. This demo uses only the supplied screenshots, with no external assets.</p></div>
+    </section>
+  </main>
+  <footer><div class="wrap">Spades UX-Shield · Screenshot demonstration · Website names identify the examples shown; no affiliation is implied.</div></footer>
+  <script>
+    'use strict';
+    const examples = {
+      getyourguide: {
+        title: 'GetYourGuide · Tour booking panel',
+        sub: 'getyourguide.com · “Likely to sell out”',
+        before: 'getyourguide-options/before.png', after: 'getyourguide-options/after.png',
+        width: 1360, beforeHeight: 900, afterHeight: 900, aligned: true,
+        removed: 'The red “Likely to sell out” badge above the booking panel.',
+        kept: '₹11,300 per person, participant and date selectors, Check availability, free cancellation, and reserve now & pay later terms.',
+        beforeAlt: 'GetYourGuide before UX-Shield: a red Likely to sell out badge appears above the ₹11,300 tour price.',
+        afterAlt: 'GetYourGuide after UX-Shield: the sell-out badge is hidden; the ₹11,300 price, date selector, availability button and booking terms remain visible.'
+      },
+      'booking-rooms': {
+        title: 'Booking.com · Room selection', sub: 'booking.com · Room scarcity messages',
+        before: 'Booking.com/booking.com (before).png', after: 'Booking.com/booking.com (after).png',
+        width: 1920, beforeHeight: 897, afterHeight: 901, aligned: false,
+        removed: 'The red “We have 2 left” and “We have 1 left” messages beside the apartment options.',
+        kept: 'Room descriptions, prices and taxes, apartment quantity selectors, cancellation and payment terms, and the “I’ll reserve” button.',
+        beforeAlt: 'Booking.com room selection before UX-Shield: red We have 2 left and We have 1 left messages appear beside the apartment options.',
+        afterAlt: 'Booking.com room selection after UX-Shield: scarcity messages are hidden; prices, taxes, quantity selectors, cancellation terms and the reserve button remain visible.'
+      },
+      'booking-results': {
+        title: 'Booking.com · Search results', sub: 'booking.com · “Left at this price” messages',
+        before: 'Booking.com/booking.com(1)before.png', after: 'Booking.com/booking.com (1) after.png',
+        width: 1920, beforeHeight: 907, afterHeight: 925, aligned: false,
+        removed: 'The red “We have 5 left at this price” and “We have 6 left at this price” messages on the hotel cards.',
+        kept: 'Hotel names, ratings, room descriptions, prices and taxes, cancellation terms, search filters and See availability buttons.',
+        beforeAlt: 'Booking.com search results before UX-Shield: hotel cards show red We have 5 left at this price and We have 6 left at this price messages.',
+        afterAlt: 'Booking.com search results after UX-Shield: scarcity messages are hidden; hotel details, prices, ratings and See availability buttons remain visible. The capture has a different scroll position.'
+      }
+    };
+    const byId = (id) => document.getElementById(id);
+    const stage = byId('stage');
+    const reveal = byId('reveal');
+    const beforePanel = byId('before-panel');
+    const afterPanel = byId('after-panel');
+    const exampleButtons = document.querySelectorAll('[data-example]');
+    const modeButtons = document.querySelectorAll('[data-mode]');
+    let activeExample = examples.getyourguide;
+    let mode = 'compare';
+    let draggingPointer = null;
+
+    function setReveal(value) {
+      const position = Math.round(Math.max(0, Math.min(100, value)));
+      reveal.value = String(position);
+      reveal.setAttribute('aria-valuetext', `${position}% before, ${100 - position}% after`);
+      stage.style.setProperty('--split', `${position}%`);
+      stage.querySelector('.before-label').hidden = mode === 'compare' && activeExample.aligned && position === 0;
+      stage.querySelector('.after-label').hidden = mode === 'compare' && activeExample.aligned && position === 100;
+    }
+
+    function setMode(nextMode, announce = true) {
+      mode = nextMode;
+      const comparing = mode === 'compare';
+      const sliding = comparing && activeExample.aligned;
+      stage.className = `stage ${sliding ? 'reveal' : comparing ? 'side-by-side' : 'single'}`;
+      beforePanel.hidden = mode === 'after';
+      afterPanel.hidden = mode === 'before';
+      // Keep before first in the side-by-side reading order; the slider layers it last.
+      stage.insertBefore(sliding ? afterPanel : beforePanel, stage.firstChild);
+      byId('divider').hidden = !sliding;
+      byId('range-group').hidden = !sliding;
+      setReveal(Number(reveal.value));
+      modeButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.mode === mode)));
+      byId('view-hint').textContent = sliding
+        ? 'Drag the divider left to reveal the after screenshot. You can also use the slider or Before / After buttons.'
+        : comparing
+          ? 'Compare the original captures side by side (stacked on small screens). Their scroll positions differ. Open either original below for a closer look.'
+          : `Showing the full ${mode} screenshot. Select Compare to view both, or open the original below to zoom in.`;
+      if (announce) byId('status').textContent = `${activeExample.title}. ${comparing ? 'Comparison view.' : `Showing ${mode}.`}`;
+    }
+
+    function selectExample(key) {
+      activeExample = examples[key];
+      byId('example-title').textContent = activeExample.title;
+      byId('example-sub').textContent = activeExample.sub;
+      byId('removed').textContent = activeExample.removed;
+      byId('kept').textContent = activeExample.kept;
+      for (const state of ['before', 'after']) {
+        const img = byId(`${state}-image`);
+        img.src = activeExample[state];
+        img.alt = activeExample[`${state}Alt`];
+        img.width = activeExample.width;
+        img.height = activeExample[`${state}Height`];
+        byId(`${state}-link`).href = activeExample[state];
+      }
+      exampleButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.example === key)));
+      setReveal(84);
+      setMode('compare');
+    }
+
+    exampleButtons.forEach((button) => button.addEventListener('click', () => selectExample(button.dataset.example)));
+    modeButtons.forEach((button) => button.addEventListener('click', () => setMode(button.dataset.mode)));
+    reveal.addEventListener('input', () => setReveal(Number(reveal.value)));
+
+    function moveDivider(event) {
+      const bounds = stage.getBoundingClientRect();
+      setReveal((event.clientX - bounds.left) / bounds.width * 100);
+    }
+    stage.addEventListener('pointerdown', (event) => {
+      if (mode !== 'compare' || !activeExample.aligned || !event.isPrimary || event.button !== 0) return;
+      draggingPointer = event.pointerId;
+      stage.setPointerCapture(event.pointerId);
+      moveDivider(event);
+    });
+    stage.addEventListener('pointermove', (event) => {
+      if (event.pointerId === draggingPointer) moveDivider(event);
+    });
+    for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) {
+      stage.addEventListener(type, () => { draggingPointer = null; });
+    }
+    for (const img of [byId('before-image'), byId('after-image')]) {
+      img.addEventListener('error', () => {
+        byId('status').textContent = 'A screenshot could not load.';
+        byId('capture-note').textContent = 'A screenshot could not load. Keep index.html beside the Booking.com and getyourguide-options folders, or extract the complete demo ZIP.';
+      });
+    }
+  </script>
+</body>
+</html>

@@ -22,6 +22,10 @@ const vis = () => {
     /we have \d+ left/i.test((el.textContent || '').trim()),
   );
   const scarcity = scarcityNodes.filter(visible).length;
+  const serpLeft = [...document.querySelectorAll('div')].filter((el) => {
+    const t = (el.textContent || '').replace(/\s+/g, ' ').trim();
+    return visible(el) && /^We have \d+ left at this price$/i.test(t);
+  }).length;
   const reserve = document.querySelector('#hp_book_now_button');
   const price = document.querySelector('[data-testid="price-and-discounted-price"], .bui-price-display__value, .prco-valign-middle-helper');
   const signIn = document.querySelector('[data-testid="header-sign-in-button"]');
@@ -29,6 +33,7 @@ const vis = () => {
     dataOp: document.documentElement.getAttribute('data-op'),
     dataOpH: document.documentElement.getAttribute('data-op-h'),
     scarcity,
+    serpLeft,
     scarcityTotal: scarcityNodes.length,
     reserveVisible: visible(reserve),
     priceVisible: visible(price),
@@ -62,6 +67,10 @@ if (serp.dataOp !== '1') {
 }
 if (!serp.dataOpH?.includes('www.booking.com')) {
   console.error('FAIL: data-op-h missing www.booking.com');
+  failed = true;
+}
+if (serp.serpLeft > 0) {
+  console.error('FAIL: SERP "We have N left at this price" still visible', serp.serpLeft);
   failed = true;
 }
 

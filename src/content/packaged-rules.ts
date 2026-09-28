@@ -313,6 +313,137 @@ const SERIALIZED = [
     }
   },
   {
+    "ruleId": 2521944857,
+    "hosts": [
+      "www.booking.com"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "[data-testid=\"recommended-units\"] div",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^\\s*We have \\d+ left at this price\\s*$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 1545353599,
+    "hosts": [
+      "www.agoda.com",
+      "www.agoda.co.in"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "h5",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^Hurry!.*fully booked!",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 2684320632,
+    "hosts": [
+      "www.agoda.com",
+      "www.agoda.co.in"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "p.kite-js-Typography",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "in high demand on your selected dates",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 1500119733,
+    "hosts": [
+      "www.agoda.com",
+      "www.agoda.co.in"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "[data-testid=\"room-offer\"] span:not(:has(button, a, input, select, textarea, [role=\"button\"]))",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^\\s*Last booked \\d+\\s+(?:minutes?|hours?|hrs?)\\s+ago\\s*$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 1016508069,
+    "hosts": [
+      "www.agoda.com",
+      "www.agoda.co.in"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "#roomGridContent span",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^Limited availability$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
+    "ruleId": 736052258,
+    "hosts": [
+      "www.agoda.com",
+      "www.agoda.co.in"
+    ],
+    "entity": false,
+    "pathRe": null,
+    "selector": "#roomGridContent span",
+    "procedural": [
+      {
+        "type": "has-text",
+        "needle": {
+          "source": "^Last \\d+ rooms!$",
+          "flags": "i"
+        }
+      }
+    ],
+    "action": {
+      "type": "hide"
+    }
+  },
+  {
     "ruleId": 319608009,
     "hosts": [
       "www.expedia.com"

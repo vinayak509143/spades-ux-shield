@@ -15,6 +15,14 @@ Locale `en-US`, timezone `America/New_York`. No sign-in, no book click. Final ho
 
 | Text | Where | Selector from the dump | Decision |
 |------|--------|------------------------|----------|
+| `Hurry! N% of properties… fully booked!` | SERP site banner | `h5` + `:has-text(/^Hurry!.*fully booked!/i)` | **Rule** (2026-09-28) |
+| `Booked N times today` | SERP card | `[data-element-name="ssr-property-card-today-book"]`, `[data-testid="property-badge-today-booking-container"]`, `[data-badge-id="today-booking"]`. `data-selenium` on these nodes is empty. | **Rule** (static) |
+| `Popular! Last booked …` | SERP card aside | `[data-badge-id="lbk"]` only. Do not hide the parent `aside[data-element-name="property-info-icon-message"]`. | **Rule** |
+| `Last booked N minutes/hours ago` | Property room header | `[data-testid="room-badge-last_booked_x_hours_ago"]` | **Rule** |
+| `Last booked N minutes ago` | Property room offer (the `kDAUGs` span) | `[data-testid="room-offer"] span` + exact last-booked text. Do not hide the offer card. | **Rule** |
+| `Rooms in {city} are in high demand…` | SERP site banner | `[data-element-name="hero-banner-container"]` (+ procedural `p.kite-js-Typography` fallback) | **Rule** |
+| `Cheapest price you've seen!` | Property room grid | `[data-element-name="room-grid-urgency-message"]` (any tag, not only `p`) | **Rule** |
+| `Limited availability` / `Last N rooms!` | Property room grid | `span` exact-text rules | **Rule** |
 | `Booked N times in last 24 hr` | SERP property card | `[data-selenium="ssr-property-card-booking-last-24h"]`. Inner span classes are styled-components (`sc-aXZVg`). Parents `property-badge-today-booking-container`, `ssr-property-card-today-book`. | **Rule** on the `data-selenium` hook only. |
 | `This property is in high demand!` | Property, above the room grid | `article.UserEngagement.UserEngagement--demand` / `h4.UserEngagement__Title` inside `.UserEngagementContainer`. | **Rule** on `article.UserEngagement--demand`. BEM, not a hash. |
 | `Hurry up! 3 room types have already sold out for your dates!` | Property room grid | Element has `data-selenium="hurry-up-sold-out-message"` (audit hint also saw a sibling attribute `sold-out-urgency`). Inner span is `sc-`. Parent `#roomGridContent`. | **Rule** on `[data-selenium="hurry-up-sold-out-message"]`. |
@@ -32,4 +40,4 @@ Not on this load: “X people are looking”.
 
 ## Host
 
-Rules use `www.agoda.com` only. Apex `agoda.com` would also match partner and admin hosts.
+Rules use `www.agoda.com` and `www.agoda.co.in` (same DOM hooks). Do not use bare `agoda.com` — partner/admin hosts.
