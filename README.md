@@ -18,13 +18,15 @@ A small Chrome extension that hides cookie walls, newsletter pop-ups, fake count
 
 ## Install
 
-Not in the Chrome Web Store yet.
+**Chrome Web Store (recommended):** [Spades UX-Shield](https://chromewebstore.google.com/detail/spades-ux-shield/dmchnhnkofleiokmffmkigfnoeodpemf) — updates after Google approves each version.
 
-From a release zip:
+**From a release zip** (developers / sideload):
 
-1. Download `spades-ux-shield-v1.0.6.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest).
+1. Download `spades-ux-shield-v1.0.8.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest) (filename tracks `manifest.json`).
 2. Unzip it. `manifest.json` should be at the top level of the folder.
-3. Open `chrome://extensions`, turn on Developer mode, click Load unpacked and pick that folder.
+3. Open `chrome://extensions`, turn on Developer mode, click **Load unpacked** and pick that folder.
+
+Sideloaded builds may show Chrome’s “can’t verify where this extension comes from” warning; store installs do not.
 
 From source:
 
@@ -61,6 +63,8 @@ Filter syntax is the usual `host##selector` with a few procedural extras. Detail
 Site rules go in [spades-ux-shield-filters](https://github.com/vinayak509143/spades-ux-shield-filters), either as an issue or a PR to `lists/darklist.txt`. Engine changes go here; run `npm test` first, and `npm run test:e2e` if you touch injection.
 
 [CONTRIBUTING.md](CONTRIBUTING.md) lists what is off limits: checkout, payment, login and account-cancellation flows. Before calling a site fixed, go through [docs/HOLDOUT_PROTOCOL.md](docs/HOLDOUT_PROTOCOL.md).
+
+**Growing the project:** [docs/COMMUNITY.md](docs/COMMUNITY.md) (outreach, good-first issues, response time). **How rules reach users:** [docs/RULE_SHIPPING.md](docs/RULE_SHIPPING.md). **Maintainers:** [MAINTAINERS.md](MAINTAINERS.md).
 
 ## Licence
 
