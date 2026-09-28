@@ -32,7 +32,7 @@ export async function buildBreakageReportUrl(tabId: number, pageUrl: string): Pr
 
   const params = new URLSearchParams();
   params.set('template', 'breakage.yml');
-  params.set('title', `[breakage] ${etld1}`);
+  params.set('title', `[dark pattern / broken page] ${etld1}`);
   params.set('site', etld1);
   params.set('path', anonymizedPath);
   params.set('version', version);

@@ -7,7 +7,7 @@ A small Chrome extension that hides cookie walls, newsletter pop-ups, fake count
 - Hides elements with CSS. A rule looks like `example.com##.newsletter-overlay`. If the site and selector are on the list, the element is hidden before the page paints. If they aren't, nothing happens.
 - Ships with a cosmetic-only extract of Fanboy's Annoyance List, EasyList Cookie List and AdGuard Annoyances, plus [Spades Darklist](https://github.com/vinayak509143/spades-ux-shield-filters) (Shopify urgency apps, Amazon retail PDP social-proof, Amazon.in homepage promos, and other hostname-scoped rules).
 - Pulls updates to my list from GitHub about twice a day. The third-party extract is baked in at build time.
-- Has a popup with two switches (this tab, this domain) and a "Report broken page" link that opens a pre-filled GitHub issue.
+- Has a popup with two switches (this tab, this domain) and a "Report Dark Pattern & Broken Page" link that opens a pre-filled GitHub issue.
 
 ## What it doesn't do
 

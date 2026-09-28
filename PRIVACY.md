@@ -22,9 +22,9 @@ I cannot see which sites you visit.
 
 ## What leaves your device (only if you choose, or for list updates)
 
-### Optional breakage report
+### Optional report
 
-If you click Report broken page in the popup, Chrome opens a GitHub issue form. The extension fills:
+If you click Report Dark Pattern & Broken Page in the popup, Chrome opens a GitHub issue form. The extension fills:
 
 - Registrable domain (e.g. `amazon.in`)
 - An anonymized path template (IDs and tokens stripped)

@@ -22,7 +22,7 @@ It is not an ad blocker and does not intercept network requests. It does not use
 
 Checkout, payment, and login pages are frozen: we do not ship rules that uncheck or hide those surfaces.
 
-Pause per tab or per domain from the popup. Optional “Report broken page” opens a GitHub issue (domain + path template only — no DOM upload).
+Pause per tab or per domain from the popup. Optional “Report Dark Pattern & Broken Page” opens a GitHub issue (domain + path template only — no DOM upload).
 
 Support: https://ko-fi.com/spadesxx
 
@@ -42,7 +42,7 @@ Hide manipulative or interruptive cosmetic UI on the web using static CSS and a 
 ## Screenshots (take before submit)
 
 1. Amazon.in or amazon.com PDP — social-proof / deal badge hidden; Add to cart still visible
-2. Extension popup (Active on this tab / domain + Report broken page)
+2. Extension popup (Active on this tab / domain + Report Dark Pattern & Broken Page)
 
 ## Promotional images (repo)
 
