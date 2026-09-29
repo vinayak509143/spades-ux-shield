@@ -30,7 +30,7 @@ Pause removes `data-op*` and restores procedural hides (inline `display` and `op
 |-------|--------|--------|
 | Vendor prefixes | `cosmetic-vendors.css` | Any site that loads those Shopify/Woo apps |
 | Hostname list | `lists/darklist.txt` (filters repo is source of truth; engine copies for boot) | Named hosts; `! Version:` must match `packagedRev` |
-| SW shards | `chrome.storage.local` via `src/background/sync.ts` | Fetched public list; `insertCSS` after commit |
+| SW shards | `chrome.storage.local` via `src/background/sync.ts` | Fetched public list; `insertCSS` for static hides and, from 1.0.8, procedural rules for the current host |
 
 Theme-native leftovers (e.g. mloshoes timers) stay hostname-scoped. Do not copy them into vendor CSS.
 
@@ -62,7 +62,7 @@ A selector list cannot tell a fake countdown from a real one, cannot fix basket-
 
 ## Known limits (not yet implemented)
 
-- Downloaded **procedural** rules are stored in the service worker but content boot uses packaged procedural rules only; remote retraction of a packaged rule is not supported.
+- Downloaded procedural rules are applied on the page when the synced darklist `! Version:` is at least `packagedRev` (1.0.8+). A stale sync does not replace a newer packaged list. Fixture and third-party procedural rules stay packaged.
 - Packaged host CSS is always concatenated with synced shard CSS.
 - Subscription sync deletes old storage shards before writing replacements (crash mid-write can leave gaps).
 - `op:route` is broadcast to all frames; iframes may match procedural paths against the top-frame URL.

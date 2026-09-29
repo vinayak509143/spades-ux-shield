@@ -16,7 +16,7 @@ Fix the public “front door” so strangers do not bounce:
 
 | Channel | Why |
 |---------|-----|
-| [FilterLists.com](https://filterlists.com/) | List authors and uBO-adjacent contributors already write `host##` rules. |
+| [FilterLists.com](https://filterlists.com/) | List authors who already write `host##` rules. |
 | Show HN | One post: deterministic lists, no AI, no telemetry, checkout freeze — stay in thread to answer false-positive questions. |
 | [deceptive.design](https://www.deceptive.design/) | Ask to be listed as a consumer tool; cite [REGULATORY_EVIDENCE.md](./REGULATORY_EVIDENCE.md). |
 | Privacy / FOSS communities (Fediverse, Bluesky, r/privacy, r/opensource) | Short post + before/after screenshot. |

@@ -1,6 +1,6 @@
 # Spades UX-Shield
 
-A small Chrome extension that hides cookie walls, newsletter pop-ups, fake countdown timers, app-install nags, and other dark patterns. It works from plain-text filter lists, the same way uBlock Origin's cosmetic filters do. There is no AI in it and no browsing telemetry server; filter lists update over HTTPS when the extension checks GitHub/jsDelivr.
+A small Chrome extension that hides cookie walls, newsletter pop-ups, fake countdown timers, app-install nags, and other dark patterns. It works from plain-text filter lists: a line names a site and a selector, and that element is hidden. There is no AI in it and no browsing telemetry server; filter lists update over HTTPS when the extension checks GitHub/jsDelivr.
 
 ## Before / after
 
@@ -70,7 +70,7 @@ Checks `amazon.in` holdout targets and retail `data-op-amz` on `.com` / `.co.uk`
 
 Three content scripts run at `document_start` on every page. The first stamps `<html>` with hostname suffixes (`data-op-h`) and, on the 23 Amazon **retail** storefronts only, `data-op-amz` / `data-op-amz-en` (not `aws.amazon.com` or other Amazon subdomains). Bundled CSS uses `html[data-op-h~="host"]` for normal sites and `amazon-retail` / `amazon-en` list aliases for shared PDP rules. A small boot stylesheet and optional `MutationObserver` apply procedural rules (`:has-text`, `:uncheck`) only where the list requires them.
 
-The service worker keeps my list in `chrome.storage.local`, split into shards by domain, and injects the matching CSS with `chrome.scripting.insertCSS` when a page commits.
+The service worker keeps the list in `chrome.storage.local`, split into shards by domain. It injects matching CSS with `chrome.scripting.insertCSS` when a page commits. From version 1.0.8 the page also runs synced procedural rules (`:has-text`, `:replace-text`, and the rest) for that hostname when the synced `! Version:` is at least the packaged revision. A label rewritten by `:replace-text` is not restored if that rule disappears until the next full page load.
 
 Filter syntax is the usual `host##selector` with a few procedural extras. Details in [ARCHITECTURE.md](ARCHITECTURE.md).
 

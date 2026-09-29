@@ -60,7 +60,7 @@ export class ProceduralEngine {
 
   private static readonly CRITICAL_ACTIONS = new Set<Action['type']>(['hide', 'replace-text']);
   private readonly pendingShadowHosts: HTMLElement[] = [];
-  private readonly procedurallyHidden = new Set<Element>();
+  private readonly procedurallyHidden = new Map<Element, Set<number>>();
 
   start(rules: CompiledProc[], opts: ProceduralEngineOptions): void {
     this.rules = rules;
@@ -87,11 +87,50 @@ export class ProceduralEngine {
   }
 
   private restoreProceduralHides(): void {
-    for (const el of this.procedurallyHidden) {
+    for (const el of this.procedurallyHidden.keys()) {
       el.classList.remove(HIDE_CLASS);
       (el as HTMLElement).style.removeProperty('display');
     }
     this.procedurallyHidden.clear();
+  }
+
+  /**
+   * Swap the active rule set. Hides whose every rule id was removed are restored.
+   * Unchanged ids stay hidden. Returns false when the id set did not change.
+   */
+  replaceRules(next: CompiledProc[]): boolean {
+    const nextIds = new Set(next.map((rule) => rule.ruleId));
+    if (nextIds.size === this.rules.length && this.rules.every((rule) => nextIds.has(rule.ruleId))) {
+      return false;
+    }
+
+    const removed = new Set(this.rules.map((rule) => rule.ruleId).filter((id) => !nextIds.has(id)));
+    for (const [el, ids] of this.procedurallyHidden) {
+      for (const id of removed) {
+        ids.delete(id);
+      }
+      if (ids.size === 0) {
+        el.classList.remove(HIDE_CLASS);
+        (el as HTMLElement).style.removeProperty('display');
+        this.procedurallyHidden.delete(el);
+        this.actedHide.delete(el);
+      }
+    }
+
+    this.rules = next;
+    if (this.stopped) {
+      return true;
+    }
+    this.rebindRoute(this.path);
+    if (this.activeRules.length === 0) {
+      this.disconnectObservers();
+      return true;
+    }
+    this.applyCriticalActions(document);
+    this.attachObserver();
+    this.schedule();
+    this.scheduleCriticalBeforePaint();
+    return true;
   }
 
   onRoute(path: string): void {
@@ -462,7 +501,7 @@ export class ProceduralEngine {
     const acted = this.actedSetFor(action);
     if (acted.has(el)) {
       if (action.type === 'hide' && !this.isEffectivelyHidden(el)) {
-        this.hide(el);
+        this.hide(el, rule.ruleId);
         return true;
       }
       if (action.type === 'replace-text' && !this.hasReplacementText(el, action.text)) {
@@ -473,7 +512,7 @@ export class ProceduralEngine {
 
     switch (action.type) {
       case 'hide':
-        this.hide(el);
+        this.hide(el, rule.ruleId);
         acted.add(el);
         return true;
       case 'uncheck':
@@ -526,10 +565,15 @@ export class ProceduralEngine {
     }
   }
 
-  private hide(el: Element): void {
+  private hide(el: Element, ruleId: number): void {
     el.classList.add(HIDE_CLASS);
     (el as HTMLElement).style.setProperty('display', 'none', 'important');
-    this.procedurallyHidden.add(el);
+    let ids = this.procedurallyHidden.get(el);
+    if (!ids) {
+      ids = new Set();
+      this.procedurallyHidden.set(el, ids);
+    }
+    ids.add(ruleId);
   }
 
   private hasReplacementText(el: Element, text: string): boolean {

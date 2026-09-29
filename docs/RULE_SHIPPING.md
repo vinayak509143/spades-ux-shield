@@ -6,23 +6,22 @@ Contributors need this split — otherwise PRs look “merged” but nothing cha
 
 | Rule kind | Example | Reaches store installs | Reaches via list sync (~12 h) |
 |-----------|---------|------------------------|--------------------------------|
-| **Static hide** | `host##.badge` (no `:has-text`) | After next **Chrome Web Store** release that bundles the list | Yes — service worker `insertCSS` from synced shards |
-| **Procedural** | `:has-text`, `:replace-text`, `:uncheck`, path-scoped procedural | Only after next **store release** (`boot.js` / packaged rules) | **No** — content script uses `revivePackagedRules()` at build time, not storage shards |
+| **Static hide** | `host##.badge` (no `:has-text`) | After next **Chrome Web Store** release that bundles the list, and on the ~12 h sync | Yes — service worker `insertCSS` from synced shards |
+| **Procedural** | `:has-text`, `:replace-text`, `:uncheck`, path-scoped procedural | Packaged copy at install. From **1.0.8** onward, a newer synced `! Version:` replaces the packaged darklist rules on the ~12 h sync | Yes, on 1.0.8 and later |
 
-Site-specific Temu, Agoda, and Booking fixes in the darklist are mostly procedural. They ship in the **extension zip**, not from jsDelivr alone.
+Users still on a store build older than 1.0.8 keep running the procedural rules that were packaged with that build.
+
+Site-specific Temu, Agoda, and Booking fixes are mostly procedural. After 1.0.8 they follow the filters repo without another store upload, as long as `! Version:` is bumped.
 
 ## Maintainer release pairing
 
-1. Merge PR on **spades-ux-shield-filters** (`! Version:` bumped).
-2. Copy `lists/darklist.txt` into the engine repo (or merge submodule policy you use) and match `packagedRev` in `src/background/subscriptions.json`.
-3. Bump `manifest.json` version (Chrome rejects re-upload of the same version).
+1. Merge PR on **spades-ux-shield-filters** (`! Version:` bumped). That bump is what makes installed 1.0.8+ copies prefer the synced rules over the packaged copy.
+2. Copy `lists/darklist.txt` into the engine repo and match `packagedRev` in [src/background/subscriptions.json](../src/background/subscriptions.json) when you ship an engine release, so a fresh install matches the list.
+3. Bump `manifest.json` only for engine changes (Chrome rejects re-upload of the same version).
 4. `npm run package` → upload zip → submit for review.
 
-## Roadmap (help wanted)
+A synced list older than `packagedRev` is ignored, so a stale cache cannot undo a newer store build.
 
-Applying **synced procedural rules** in the content script would let `:has-text` updates land without a store review after one engine release. Tracked as a future engine change — not implemented yet.
+## Not in this release
 
-## Contributor takeaway
-
-- **Easiest win for community:** static CSS lines that CI accepts and that sync can inject.
-- **Still valuable:** procedural rules in the darklist — they require a maintainer store release to reach most users until the roadmap item above ships.
+Removing a `:replace-text` rule mid-session does not restore the original button label. The label stays until the next page load. The extension does not keep the original string.

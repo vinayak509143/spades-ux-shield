@@ -352,4 +352,57 @@ describe('ProceduralEngine', () => {
     expect(spans).toEqual(['Add to cart', 'Fastest delivery in 5 business days']);
     engine.stop();
   });
+
+  it('replaceRules restores only elements whose hiding rules were all removed', () => {
+    document.body.innerHTML = '<div class="a">only 2 left</div><div class="b">hurry now</div>';
+    const a = document.querySelector('.a') as HTMLElement;
+    const b = document.querySelector('.b') as HTMLElement;
+    const ruleA = { ...hideRule('.a', /only 2 left/), ruleId: 11 };
+    const ruleB = { ...hideRule('.b', /hurry/), ruleId: 12 };
+    const both = { ...hideRule('.a', /only/), ruleId: 13 };
+
+    const engine = new ProceduralEngine();
+    engine.start([ruleA, both, ruleB], { pierceShadow: false });
+    engine.flush();
+    expect(a.classList.contains('op-hide')).toBe(true);
+    expect(b.classList.contains('op-hide')).toBe(true);
+
+    engine.replaceRules([both, ruleB]);
+    expect(a.classList.contains('op-hide')).toBe(true);
+
+    engine.replaceRules([ruleB]);
+    expect(a.classList.contains('op-hide')).toBe(false);
+    engine.flush();
+    expect(b.classList.contains('op-hide')).toBe(true);
+    expect(a.classList.contains('op-hide')).toBe(false);
+    engine.stop();
+  });
+
+  it('does not toggle a hide when the rule id set is unchanged', () => {
+    document.body.innerHTML = '<div class="urgency-banner">only 2 left in stock</div>';
+    const banner = document.querySelector('.urgency-banner') as HTMLElement;
+    const rule = hideRule('.urgency-banner', /only 2 left/);
+    const engine = new ProceduralEngine();
+    engine.start([rule], { pierceShadow: false });
+    engine.flush();
+    expect(banner.classList.contains('op-hide')).toBe(true);
+    expect(engine.replaceRules([{ ...rule }])).toBe(false);
+    expect(banner.classList.contains('op-hide')).toBe(true);
+    engine.stop();
+  });
+
+  it('re-hides an element when a removed rule is added again', () => {
+    document.body.innerHTML = '<div class="urgency-banner">only 2 left in stock</div>';
+    const banner = document.querySelector('.urgency-banner') as HTMLElement;
+    const rule = hideRule('.urgency-banner', /only 2 left/);
+    const engine = new ProceduralEngine();
+    engine.start([rule], { pierceShadow: false });
+    engine.flush();
+    engine.replaceRules([]);
+    expect(banner.classList.contains('op-hide')).toBe(false);
+    engine.replaceRules([rule]);
+    engine.flush();
+    expect(banner.classList.contains('op-hide')).toBe(true);
+    engine.stop();
+  });
 });

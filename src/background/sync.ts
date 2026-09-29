@@ -134,7 +134,11 @@ export async function ensureSubscriptionMeta(): Promise<SubscriptionMeta[]> {
   return seeded;
 }
 
-async function persistCompiledRules(rules: Rule[], compiledRev: number): Promise<number> {
+async function persistCompiledRules(
+  rules: Rule[],
+  compiledRev: number,
+  syncedListVersion: number,
+): Promise<number> {
   const compiled = compileRules(rules);
   const shards = groupBucketsByShard(compiled.hostBuckets);
   const settings = await getMetaSettings();
@@ -155,9 +159,19 @@ async function persistCompiledRules(rules: Rule[], compiledRev: number): Promise
     packagedRev: getSubscriptionManifest().packagedRev,
     compiledRev,
     shardKeys,
+    syncedListVersion,
   });
 
   return compiled.errors.length;
+}
+
+export function parseListVersion(directives: Record<string, string>): number {
+  const raw = directives.Version ?? '';
+  if (!/^\d+$/.test(raw)) {
+    return 0;
+  }
+  const version = Number(raw);
+  return Number.isSafeInteger(version) ? version : 0;
 }
 
 export async function syncAllSubscriptions(): Promise<void> {
@@ -167,6 +181,7 @@ export async function syncAllSubscriptions(): Promise<void> {
   const updated: SubscriptionMeta[] = [];
 
   const allRules: Rule[] = [];
+  let syncedListVersion: number | null = null;
 
   for (const entry of spec.lists) {
     const current = byId.get(entry.id) ?? {
@@ -206,6 +221,9 @@ export async function syncAllSubscriptions(): Promise<void> {
     if (result.status === 200 && result.body !== null) {
       const parsed = parseList(result.body);
       allRules.push(...parsed.rules);
+      if (entry.id === 'darklist') {
+        syncedListVersion = parseListVersion(parsed.directives);
+      }
       updated.push({
         ...current,
         etag: result.etag,
@@ -222,7 +240,8 @@ export async function syncAllSubscriptions(): Promise<void> {
 
   if (allRules.length > 0) {
     const compiledRev = Date.now();
-    const totalParseErrors = await persistCompiledRules(allRules, compiledRev);
+    const version = syncedListVersion ?? (await getMetaSettings()).syncedListVersion;
+    const totalParseErrors = await persistCompiledRules(allRules, compiledRev, version);
     for (const row of updated) {
       if (row.enabled) {
         row.parseErrors = totalParseErrors;

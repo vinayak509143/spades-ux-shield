@@ -5,10 +5,10 @@ Copy-paste text for each channel in [COMMUNITY.md](./COMMUNITY.md). Every number
 Facts used (keep them true):
 
 - Engine: MIT. List: GPL-3.0-or-later. Manifest V3, Chrome 111+.
-- Spades Darklist: 108 rules across about 15 shopping and travel sites (Amazon retail on 23 storefronts, Amazon.in, Agoda, Booking.com, Etsy, Expedia, Flipkart, GetYourGuide, Hotels.com, Shein, Temu, ThredUp, Travelocity, one Shopify store) plus a cosmetic-only extract of Fanboy's Annoyance List, EasyList Cookie List, and AdGuard Annoyances.
+- Spades Darklist: 108 rules across about 15 shopping and travel sites (Amazon retail on 23 storefronts, Amazon.in, Agoda, Booking.com, Etsy, Expedia, Flipkart, GetYourGuide, Hotels.com, Shein, Temu, ThredUp, Travelocity, one Shopify store) plus a cosmetic-only extract of Fanboy's Annoyance List, EasyList Cookie List, and AdGuard Annoyances. Those three lists are named because their licences require attribution; they are inputs, not a claim of affiliation.
 - No network blocking. No AI. No telemetry server. The only outbound requests are the list download from GitHub/jsDelivr and, if the user clicks it, a GitHub issue page.
 - Safety: rules on checkout, cart, payment, login, 2FA, and account cancellation are rejected at list build and in review. At runtime the engine refuses `:uncheck` and other state mutation on those surfaces (`src/engine/critical-flow.ts`). Plain cosmetic hides rely on list review and tests, not a runtime guard. Say it this way; do not claim the runtime blocks every hide.
-- Rule delivery: static `host##selector` lines reach installed users within about 12 hours through list sync. `:has-text` and other procedural rules ship with the next Chrome Web Store version. See [RULE_SHIPPING.md](./RULE_SHIPPING.md).
+- Rule delivery: on 1.0.8 and later, static `host##selector` lines and text rules (`:has-text`) both reach installed users within about 12 hours through list sync, once `! Version:` is bumped. A store release is still required for engine changes and for anyone still on an older build. See [RULE_SHIPPING.md](./RULE_SHIPPING.md).
 - Store: version 1.0.7 is published; 1.0.8 is the current zip. Replace `[STORE STATUS]` below with whichever is live on the day you post.
 
 Links:
@@ -28,15 +28,15 @@ Post once, weekday, 8–10 am US Eastern. Stay in the thread for six hours. Do n
 **Title (78 chars, under the 80 limit):**
 
 ```
-Show HN: Spades UX-Shield – uBlock-style filter lists for dark patterns
+Show HN: Spades UX-Shield – filter lists that hide dark patterns
 ```
 
 **Text:**
 
 ```
 Spades UX-Shield is a Chrome extension that hides fake urgency, scarcity chips,
-and consent nags using plain-text filter lists, the same way uBlock Origin's
-cosmetic filters work. A rule looks like:
+and consent nags using plain-text filter lists. A rule names a site and a
+selector. A rule looks like:
 
   www.booking.com##[data-testid="recommended-units"] div:has-text(/^We have \d+ left at this price$/i)
 
@@ -67,10 +67,9 @@ ask is for rules, not stars:
   and a URL where it must not (price row, Add to cart).
 - Or file a rule request with the site and the phrase you see.
 
-Honest limitation: static CSS rules reach installed users in about 12 hours
-through list sync. Rules that match text (:has-text) ship with the next store
-version until the content script reads synced procedural rules, which is the
-open engine issue I most want help with.
+A merged rule reaches installed copies of 1.0.8 and later within about 12
+hours, after `! Version:` is bumped. Engine changes still need a store release.
+See docs/RULE_SHIPPING.md.
 
 Engine: https://github.com/vinayak509143/spades-ux-shield
 List:   https://github.com/vinayak509143/spades-ux-shield-filters
@@ -79,7 +78,7 @@ Store:  [STORE STATUS]
 
 **Prepared answers for the thread** (write them as replies, not in the post):
 
-- *"Why not just use uBlock Origin with a custom list?"* — You can paste the list into uBO and most static lines will work. Two things differ: uBO has no checkout/payment/login freeze, so a bad procedural rule can hide a Pay button; and Spades ships `:replace-text` (for example "ADD THE LAST 1!" becomes "Add to cart") which uBO does not do. If uBO ever adds those, this list should still be useful there.
+- *"Why not an existing ad blocker with a custom list?"* — Do not name another product unless the commenter does. If they do: most static `host##` lines are ordinary cosmetic syntax and will load elsewhere. Two things are specific to this extension. It refuses rules and state changes on checkout, payment, and login, and it can rewrite a label (`:replace-text`, so "ADD THE LAST 1!" becomes "Add to cart") instead of hiding the button. Pasting the raw list into a general blocker does not get that freeze.
 - *"Sites will rotate class names."* — They do. Hashed classes are never shipped; rules key on analytics attributes (`data-testid`, `data-element-name`) or exact sentence text inside a stable container. Temu rotates class hashes per surface and the text rules survived three audits. When a site changes structure a rule dies and needs a person, same as any filter list.
 - *"How do you know you are not hiding legitimate stock information?"* — Each site has a holdout doc with URLs where the rule must not fire and a false-positive matrix. Examples that stay visible on purpose: prices, "56% OFF", "Pay $N today", real delivery estimates, Sign in, Book. The Temu rule for "Fastest delivery in N business days" only fires on the deal-timer copy, not on a normal shipping line.
 - *"Is this legal / is hiding site content a ToS problem?"* — It is client-side CSS in the user's own browser, the same category as ad blockers and reader mode. It does not alter requests or scrape.
@@ -96,8 +95,8 @@ Subject: `A filter-list extension that hides listed dark patterns, for your tool
 Hi Harry,
 
 I maintain Spades UX-Shield, a non-profit open source Chrome extension that
-hides dark-pattern UI from plain-text filter lists, the way uBlock Origin's
-cosmetic filters hide page elements. It targets the patterns you document:
+hides dark-pattern UI from plain-text filter lists. A rule names a site and
+a selector, and that element is hidden. It targets the patterns you document:
 fake urgency, fake scarcity, confirmshaming labels on buy buttons, and
 consent nags. It does not touch checkout, payment, or login, does not block
 ads, and sends no browsing data anywhere.
@@ -169,7 +168,7 @@ One post, no thread needed. Attach the Booking.com before/after image from `scre
 
 ```
 Spades UX-Shield: a Chrome extension that hides fake urgency and scarcity
-("Only 3 left!", "Booked 27 times today") using uBlock-style filter lists.
+("Only 3 left!", "Booked 27 times today") from plain-text filter lists.
 
 No AI. No telemetry. Never touches checkout, payment, or login.
 MIT engine, GPL list, non-profit.
@@ -188,7 +187,7 @@ Post to one subreddit per day. Read each subreddit's self-promotion rule first; 
 **r/opensource** — title:
 
 ```
-I built a uBlock-style filter list engine for dark patterns and hit the one-maintainer wall. Looking for rule contributors.
+I built a filter-list engine for dark patterns and hit the one-maintainer wall. Looking for rule contributors.
 ```
 
 Body: reuse the Show HN text, drop the first paragraph's code example, keep the "what it refuses to do" list and the ask.
@@ -272,7 +271,7 @@ Use as the summary field for NLnet, Sovereign Tech Fund, Mozilla Open Source Sup
 Spades UX-Shield is a non-profit open source browser extension and filter
 list that hides deceptive interface patterns (fake urgency, fake scarcity,
 confirmshaming, consent nags) using deterministic, community-maintained
-rules. It works like an ad blocker's cosmetic filters but is scoped to
+rules. A rule names a site and a selector. The list is scoped to
 manipulation rather than advertising, and it is designed to be safe by
 construction: rules on checkout, payment, login, and account-cancellation
 flows are rejected at build and review time, and the runtime refuses to

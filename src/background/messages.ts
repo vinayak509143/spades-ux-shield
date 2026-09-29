@@ -1,3 +1,4 @@
+import { readProceduralForHostname } from './inject-css.js';
 import {
   getMetaSettings,
   isHostDisabled,
@@ -71,7 +72,18 @@ export function registerMessageHandlers(): void {
           const hostname = sender.tab?.url ? new URL(sender.tab.url).hostname : '';
           const state = await isExtensionActiveForTab(tabId, hostname);
           const active = state.tabActive && state.domainActive;
-          sendResponse({ active, ...state });
+          if (!active || !hostname) {
+            sendResponse({ active, ...state });
+            return;
+          }
+          const settings = await getMetaSettings();
+          const procedural = await readProceduralForHostname(hostname, new Map());
+          sendResponse({
+            active,
+            ...state,
+            procedural,
+            listVersion: settings.syncedListVersion,
+          });
         } catch {
           sendResponse({ active: true, tabActive: true, domainActive: true });
         }

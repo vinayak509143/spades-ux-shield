@@ -1,8 +1,9 @@
-import { bindEngine, handlePageShow, isPageActive, onPageActiveChange, setPageActive } from './lifecycle.js';
+import { bindEngine, handlePageShow, isPageActive, onPageActiveChange, setPageActive, updateBoundRules } from './lifecycle.js';
 import { ProceduralEngine } from './dom-mutator.js';
 import { applyHostMark } from './host-mark.js';
-import { revivePackagedRules } from './packaged-rules.js';
+import { PACKAGED_REV, revivePackagedRules } from './packaged-rules.js';
 import { ruleMatchesHost } from './procedural-match.js';
+import { mergeRuntimeRules } from './runtime-rules.js';
 import { sendRuntimeMessage } from './runtime-safe.js';
 import { initSpaRouting } from './spa.js';
 import { applyTemuOverlayPass, startTemuOverlayGuard } from './temu-overlay.js';
@@ -10,7 +11,8 @@ import { applyTemuOverlayPass, startTemuOverlayGuard } from './temu-overlay.js';
 (function boot(): void {
   applyHostMark();
 
-  const rules = revivePackagedRules();
+  const packaged = revivePackagedRules();
+  let rules = packaged.map((row) => row.rule);
   const engine = new ProceduralEngine();
   const engineOpts = {
     pierceShadow: true,
@@ -47,8 +49,20 @@ import { applyTemuOverlayPass, startTemuOverlayGuard } from './temu-overlay.js';
     if (!response || typeof response !== 'object') {
       return;
     }
+    const merged = mergeRuntimeRules(
+      packaged,
+      'procedural' in response ? response.procedural : undefined,
+      'listVersion' in response ? response.listVersion : undefined,
+      PACKAGED_REV,
+    );
+    rules = merged;
+    updateBoundRules(merged);
     if ('active' in response && response.active === false) {
       setPageActive(false);
+      return;
+    }
+    if (isPageActive()) {
+      engine.replaceRules(merged);
     }
   });
 

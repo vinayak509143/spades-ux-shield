@@ -15,6 +15,10 @@ export function onPageActiveChange(listener: () => void): () => void {
   };
 }
 
+export function updateBoundRules(compiled: CompiledProc[]): void {
+  rules = compiled;
+}
+
 export function bindEngine(
   instance: ProceduralEngine,
   compiled: CompiledProc[],

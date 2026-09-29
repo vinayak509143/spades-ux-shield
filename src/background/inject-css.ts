@@ -1,7 +1,8 @@
 import { hostBucketToCss } from '../engine/compiler.js';
-import { hostSuffixes } from '../engine/util.js';
+import { isValidCosmeticSelector } from '../engine/selector-valid.js';
+import type { StoredCompiledProc } from '../engine/serialized.js';
 import {
-  matchingHostsInShard,
+  listHostsForHostname,
   readHostShard,
   reviveHostBucket,
   shardKeyForHost,
@@ -49,24 +50,26 @@ export async function buildUserCssForHostname(
   hostname: string,
   shardCache: Map<string, HostShardRecord>,
 ): Promise<string> {
-  const shardKey = shardKeyForHost(hostname);
-  let shard = shardCache.get(shardKey);
-  if (!shard) {
-    shard = await readHostShard(shardKey);
-    shardCache.set(shardKey, shard);
-  }
-
   const chunks: string[] = [];
   const packaged = await loadPackagedHostCss();
-  for (const host of hostSuffixes(hostname)) {
+  const hosts = listHostsForHostname(hostname);
+  for (const host of hosts) {
     const css = packaged[host];
     if (css) {
       chunks.push(css);
     }
   }
 
-  for (const host of matchingHostsInShard(hostname, shard)) {
-    const bucket = shard[host];
+  const seenShards = new Set<string>();
+  for (const host of hosts) {
+    const key = shardKeyForHost(host);
+    if (!seenShards.has(key)) {
+      seenShards.add(key);
+      if (!shardCache.has(key)) {
+        shardCache.set(key, await readHostShard(key));
+      }
+    }
+    const bucket = shardCache.get(key)?.[host];
     if (!bucket) {
       continue;
     }
@@ -74,4 +77,36 @@ export async function buildUserCssForHostname(
   }
 
   return chunks.filter(Boolean).join('\n');
+}
+
+/** Procedural rules for this hostname only. Invalid selectors are dropped. */
+export async function readProceduralForHostname(
+  hostname: string,
+  shardCache: Map<string, HostShardRecord>,
+): Promise<StoredCompiledProc[]> {
+  const hosts = listHostsForHostname(hostname);
+  const out: StoredCompiledProc[] = [];
+  const seen = new Set<number>();
+  const seenShards = new Set<string>();
+  for (const host of hosts) {
+    const key = shardKeyForHost(host);
+    if (!seenShards.has(key)) {
+      seenShards.add(key);
+      if (!shardCache.has(key)) {
+        shardCache.set(key, await readHostShard(key));
+      }
+    }
+    const bucket = shardCache.get(key)?.[host];
+    if (!bucket) {
+      continue;
+    }
+    for (const rule of bucket.procedural) {
+      if (seen.has(rule.ruleId) || !isValidCosmeticSelector(rule.selector)) {
+        continue;
+      }
+      seen.add(rule.ruleId);
+      out.push(rule);
+    }
+  }
+  return out;
 }
