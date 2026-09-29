@@ -2,6 +2,22 @@
 
 A small Chrome extension that hides cookie walls, newsletter pop-ups, fake countdown timers, app-install nags, and other dark patterns. It works from plain-text filter lists, the same way uBlock Origin's cosmetic filters do. There is no AI in it and no browsing telemetry server; filter lists update over HTTPS when the extension checks GitHub/jsDelivr.
 
+## Before / after
+
+Booking.com search — scarcity chip removed; property name and price stay visible:
+
+| Before | After |
+|--------|-------|
+| ![Booking.com search before](screenshots/Booking.com/booking.com%20(before).png) | ![Booking.com search after](screenshots/Booking.com/booking.com%20(after).png) |
+
+GetYourGuide options step — urgency copy removed:
+
+| Before | After |
+|--------|-------|
+| ![GetYourGuide before](screenshots/getyourguide-options/before.png) | ![GetYourGuide after](screenshots/getyourguide-options/after.png) |
+
+More pairs live under [`screenshots/`](screenshots/). Open [`screenshots/index.html`](screenshots/index.html) locally for an interactive before/after demo (no extension install).
+
 ## What it does
 
 - Hides elements with CSS. A rule looks like `example.com##.newsletter-overlay`. If the site and selector are on the list, the element is hidden before the page paints. If they aren't, nothing happens.

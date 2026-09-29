@@ -22,6 +22,8 @@ Fix the public “front door” so strangers do not bounce:
 | Privacy / FOSS communities (Fediverse, Bluesky, r/privacy, r/opensource) | Short post + before/after screenshot. |
 | Academic dark-pattern researchers | Offer [data/temu-pattern-catalog-2026-09-26.json](./data/temu-pattern-catalog-2026-09-26.json) as structured evidence, not just the extension. |
 
+Ready-to-paste text for every channel: [OUTREACH_DRAFTS.md](./OUTREACH_DRAFTS.md).
+
 ## Message that works
 
 Lead with **refusal**: no checkout/payment/login tampering, no browsing log, no AI guessing. Then: “Add a line to `darklist.txt`” or “Report Dark Pattern & Broken Page” in the popup.
@@ -44,3 +46,5 @@ Maintainers can turn these into labeled issues — audits live under `docs/*-aud
 - Documented but thinner coverage: AliExpress, eBay, Myntra, fashion retailers — see audit notes in repo
 
 Each issue should name: hostname, example phrase, proof URL, and one must-not URL (checkout or price row).
+
+Before/after PNGs for outreach: `screenshots/` (store-sized 1280×800 under `Booking.com/` and `getyourguide-options/`). Regenerate `screenshots/ux-shield-demo.zip` after changing images if you share the zip demo.
