@@ -1,5 +1,5 @@
 ! Title: Spades Darklist
-! Version: 202610012315
+! Version: 202610012340
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
 sneaky-news.example.com##button:has-text("I hate saving money")
@@ -120,15 +120,15 @@ www.etsy.com##span.wt-text-body-small.wt-sem-text-critical
 www.etsy.com##p[data-24-hour-sale-wrapper]
 
 ! Shein — us.shein.com and www.shein.com. First-paint chip, not the whole label class.
-! The 12px icon alt is the phrase ("9k+ user add to cart", "900+ sold"). Hide that icon and the label-text beside it.
-! Do not hide span.label-text alone. The :has-text line is only for a chip that has no icon.
+! The 12px icon alt is the phrase ("9k+ user add to cart", "900+ sold"). Hide that icon and the label-text that is its next sibling.
+! Do not hide every span.label-text under an ancestor that merely contains the icon. The :has-text line is only for a chip that has no icon.
 ! Keep: price, percent off, Save $N, free-shipping threshold, points-if-late, qty, checkout.
 us.shein.com,www.shein.com##img[width="12"][height="12"][alt*="user add to cart"]
 us.shein.com,www.shein.com##img[width="12"][height="12"][alt*="+ sold"]
 us.shein.com,www.shein.com##span.label-text:has(img[width="12"][height="12"][alt*="user add to cart"])
 us.shein.com,www.shein.com##span.label-text:has(img[width="12"][height="12"][alt*="+ sold"])
-us.shein.com,www.shein.com##:has(img[width="12"][height="12"][alt*="user add to cart"]) > span.label-text
-us.shein.com,www.shein.com##:has(img[width="12"][height="12"][alt*="+ sold"]) > span.label-text
+us.shein.com,www.shein.com##img[width="12"][height="12"][alt*="user add to cart"] + span.label-text
+us.shein.com,www.shein.com##img[width="12"][height="12"][alt*="+ sold"] + span.label-text
 us.shein.com,www.shein.com##span.label-text:has-text(/(\d+k?\+\s+sold|user add to cart)/i)
 ! PDP scarcity and cart promo lines (bsc-* cart slots). First-paint where the node is the nag text.
 ! Keep: price, size/color picker, Add to cart, qty, checkout, free-shipping threshold.
@@ -146,8 +146,10 @@ euqs.shein.com##span.tags-text:has-text(/(sold recently|returning customers|(sal
 ! Hide a span or the chip wrapper whose entire text is the badge: "ONLY N LEFT",
 ! "3.5K+sold" / "2.3K+ sold", "Limited stock", "Almost out!", "ALMOST SOLD OUT", "Last day",
 ! "Ends in" and a lone HH:MM(:SS) countdown digit span (PDP flash timer, 2026-09-26 sneaker PDP),
-! or a rank line ("#1 BEST-SELLING ITEM", "#1 TOP RATED", "#3 MOST REPURCHASED BRAND ITEM",
-! including "in {category}"). Logged-in home, best-sellers, and a socks PDP, 2026-09-26.
+! Rank lines ("#1 BEST-SELLING ITEM", "#1 TOP RATED", "#3 MOST REPURCHASED BRAND ITEM",
+! optional "in {category}") are separate rules. The category is letters, spaces, apostrophes,
+! ampersands, and hyphens. A digit or a price in that element stays visible. A node that
+! contains a button, link, or role=button stays visible. Logged-in home, best-sellers, and a socks PDP, 2026-09-26.
 ! Urgency buy labels on span[data-type="0"]: relabel, do not hide. "Add now! Almost out!" → Add to cart;
 ! "ADD THE LAST N!" on span[data-type="0"] or span[role="button"] (hashed class) → Add to cart.
 ! Plain "Buy now!" / "Add now!" alone stay. Clock cells are hashed <i> digits; hide the wrapper
@@ -157,9 +159,12 @@ euqs.shein.com##span.tags-text:has-text(/(sold recently|returning customers|(sal
 ! The deal-timer line "Fastest delivery in N business days" (white, after the clock is opened) is hidden.
 ! A different shipping sentence stays.
 ! Classless orange chips are span[data-type="0"] (class attribute absent or empty). span[class] does not see those.
-www.temu.com##span[class]:has-text(/^\s*(?:only\s+\d+\s+left|\d+(?:\.\d+)?[kK]?\+?\s*sold|limited stock|almost\s+sold\s+out!?|almost out!?|last day!?|ends\s+in!?|\d{1,2}:\d{2}(?::\d{2})?|#?\d*\s*(?:best-selling(?:\s+brand)?\s+item|top rated|most repurchased(?:\s+brand)?\s+item)(?:\s*in\s+.+)?|(?:\d{1,2}\s*:\s*){1,5}\d{1,2}(?:\s+ends\s+in!?)?)\s*$/i)
-www.temu.com##div[class]:has-text(/^\s*(?:only\s+\d+\s+left|\d+(?:\.\d+)?[kK]?\+?\s*sold|limited stock|almost\s+sold\s+out!?|almost out!?|last day!?|ends\s+in!?|\d{1,2}:\d{2}(?::\d{2})?|#?\d*\s*(?:best-selling(?:\s+brand)?\s+item|top rated|most repurchased(?:\s+brand)?\s+item)(?:\s*in\s+.+)?|(?:\d{1,2}\s*:\s*){1,5}\d{1,2}(?:\s+ends\s+in!?)?)\s*$/i)
-www.temu.com##span[data-type="0"]:has-text(/^\s*(?:only\s+\d+\s+left|\d+(?:\.\d+)?[kK]?\+?\s*sold|limited stock|almost\s+sold\s+out!?|almost out!?|last day!?|ends\s+in!?|\d{1,2}:\d{2}(?::\d{2})?|#?\d*\s*(?:best-selling(?:\s+brand)?\s+item|top rated|most repurchased(?:\s+brand)?\s+item)(?:\s*in\s+.+)?|(?:\d{1,2}\s*:\s*){1,5}\d{1,2}(?:\s+ends\s+in!?)?)\s*$/i)
+www.temu.com##span[class]:has-text(/^\s*(?:only\s+\d+\s+left|\d+(?:\.\d+)?[kK]?\+?\s*sold|limited stock|almost\s+sold\s+out!?|almost out!?|last day!?|ends\s+in!?|\d{1,2}:\d{2}(?::\d{2})?|(?:\d{1,2}\s*:\s*){1,5}\d{1,2}(?:\s+ends\s+in!?)?)\s*$/i)
+www.temu.com##div[class]:has-text(/^\s*(?:only\s+\d+\s+left|\d+(?:\.\d+)?[kK]?\+?\s*sold|limited stock|almost\s+sold\s+out!?|almost out!?|last day!?|ends\s+in!?|\d{1,2}:\d{2}(?::\d{2})?|(?:\d{1,2}\s*:\s*){1,5}\d{1,2}(?:\s+ends\s+in!?)?)\s*$/i)
+www.temu.com##span[data-type="0"]:has-text(/^\s*(?:only\s+\d+\s+left|\d+(?:\.\d+)?[kK]?\+?\s*sold|limited stock|almost\s+sold\s+out!?|almost out!?|last day!?|ends\s+in!?|\d{1,2}:\d{2}(?::\d{2})?|(?:\d{1,2}\s*:\s*){1,5}\d{1,2}(?:\s+ends\s+in!?)?)\s*$/i)
+www.temu.com##span[class]:not(:has(button, a, input, select, textarea, [role="button"])):has-text(/^\s*#?\d*\s*(?:best-selling(?:\s+brand)?\s+item|top rated|most repurchased(?:\s+brand)?\s+item)(?:\s*in\s+[A-Za-z][A-Za-z\x27 &-]{0,40})?\s*$/i)
+www.temu.com##div[class]:not(:has(button, a, input, select, textarea, [role="button"])):has-text(/^\s*#?\d*\s*(?:best-selling(?:\s+brand)?\s+item|top rated|most repurchased(?:\s+brand)?\s+item)(?:\s*in\s+[A-Za-z][A-Za-z\x27 &-]{0,40})?\s*$/i)
+www.temu.com##span[data-type="0"]:not(:has(button, a, input, select, textarea, [role="button"])):has-text(/^\s*#?\d*\s*(?:best-selling(?:\s+brand)?\s+item|top rated|most repurchased(?:\s+brand)?\s+item)(?:\s*in\s+[A-Za-z][A-Za-z\x27 &-]{0,40})?\s*$/i)
 www.temu.com##span[data-type="0"]:has-text(/^\s*fastest delivery in \d+ business days\s*$/i)
 www.temu.com##span[data-type="0"]:has-text(/^\s*add now!\s*almost out!?\s*$/i):replace-text("Add to cart")
 www.temu.com##span[data-type="0"]:has-text(/^\s*buy now!\s*almost out!?\s*$/i):replace-text("Buy now")

@@ -86,6 +86,27 @@ describe('Temu PDP urgency', () => {
     expect(document.getElementById('ship')?.classList.contains('op-hide')).toBe(false);
   });
 
+  it('hides a rank chip and leaves a card that also contains the price and Add to cart', () => {
+    render(`
+      <span class="rank" id="rank">#1 TOP RATED</span>
+      <span class="rank" id="socks">#1 TOP RATED in Women's Socks</span>
+      <a href="/goods.html">
+        <div class="tile" id="tile">
+          <span class="chip" id="left">ONLY 3 LEFT</span>
+          <span class="price" id="tile-price">₹500</span>
+        </div>
+      </a>
+      <div class="card" id="card">#1 TOP RATED in Shoes ₹500 <button id="atc">Add to cart</button></div>
+    `);
+    apply();
+    expect(document.getElementById('rank')?.classList.contains('op-hide')).toBe(true);
+    expect(document.getElementById('socks')?.classList.contains('op-hide')).toBe(true);
+    expect(document.getElementById('left')?.classList.contains('op-hide')).toBe(true);
+    for (const id of ['tile', 'tile-price', 'card', 'atc']) {
+      expect(document.getElementById(id)?.classList.contains('op-hide')).toBe(false);
+    }
+  });
+
   it('relabels Add now! Almost out! instead of hiding it', () => {
     render(`<span id="buy" data-type="0">Add now! Almost out!</span>`);
     apply();

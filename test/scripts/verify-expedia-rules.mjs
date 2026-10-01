@@ -21,7 +21,7 @@ const vis = () => {
   const scarcity = [...document.querySelectorAll('div.uitk-text.uitk-type-end')].filter(
     (el) => visible(el) && /we have \d+ left at this price/i.test((el.textContent || '').trim()),
   );
-  const price = document.querySelector('[data-testid="nightly_price"], [data-stid="content-hotel-title"]');
+  const price = document.querySelector('[data-testid="nightly_price"]');
   const signIn = [...document.querySelectorAll('a, button')].find(
     (el) => visible(el) && /sign in/i.test((el.textContent || '').trim()),
   );
@@ -32,7 +32,8 @@ const vis = () => {
     scarcityTotal: [...document.querySelectorAll('div.uitk-text.uitk-type-end')].filter((el) =>
       /we have \d+ left at this price/i.test((el.textContent || '').trim()),
     ).length,
-    priceVisible: visible(price) || /\$\d+/.test(document.body?.innerText || ''),
+    priceFound: !!price,
+    priceVisible: visible(price),
     signInVisible: !!signIn,
   };
 };
@@ -65,10 +66,15 @@ if (serp.scarcityTotal > 0 && serp.scarcityVisible > 0) {
   console.error('FAIL: scarcity chip still visible', serp.scarcityVisible);
   failed = true;
 }
-if (!serp.priceVisible) {
-  console.error('FAIL: price not visible');
-  failed = true;
-}
+  if (!serp.priceFound) {
+    console.error('UNVERIFIED: nightly price element missing');
+    await context.close();
+    process.exit(failed ? 1 : 2);
+  }
+  if (!serp.priceVisible) {
+    console.error('FAIL: nightly price not visible');
+    failed = true;
+  }
 
-await context.close();
-process.exit(failed ? 1 : 0);
+  await context.close();
+  process.exit(failed ? 1 : 0);

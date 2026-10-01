@@ -13,8 +13,8 @@ describe('parseList', () => {
 
     expect(errors).toHaveLength(0);
     expect(directives.Title).toBe('Spades Darklist');
-    expect(directives.Version).toBe('202610012315');
-    expect(rules).toHaveLength(103);
+    expect(directives.Version).toBe('202610012340');
+    expect(rules).toHaveLength(106);
 
     const sheinRules = rules.filter((r) => r.hosts.includes('us.shein.com'));
     expect(sheinRules).toHaveLength(12);
@@ -28,39 +28,42 @@ describe('parseList', () => {
     const sheinText = sheinRules.find((r) => r.procedural[0]?.type === 'has-text');
     expect(sheinText?.selector).toBe('span.label-text');
     const temuRules = rules.filter((r) => r.hosts.includes('www.temu.com'));
-    expect(temuRules).toHaveLength(10);
+    expect(temuRules).toHaveLength(13);
     const temuChips = temuRules.filter((r) => r.action.type === 'hide');
-    expect(temuChips).toHaveLength(4);
+    expect(temuChips).toHaveLength(7);
     expect(temuChips.map((r) => r.selector).sort()).toEqual([
       'div[class]',
+      'div[class]:not(:has(button, a, input, select, textarea, [role="button"]))',
       'span[class]',
+      'span[class]:not(:has(button, a, input, select, textarea, [role="button"]))',
       'span[data-type="0"]',
       'span[data-type="0"]',
+      'span[data-type="0"]:not(:has(button, a, input, select, textarea, [role="button"]))',
     ]);
-    const temuChip = temuChips[0];
-    expect(temuChip?.procedural[0]?.type).toBe('has-text');
-    const temuNeedle = temuChip?.procedural[0];
-    if (temuNeedle?.type === 'has-text' && temuNeedle.needle instanceof RegExp) {
+    const scarcity = temuChips.find((rule) => {
+      const op = rule.procedural[0];
+      return op?.type === 'has-text' && op.needle instanceof RegExp && op.needle.test('ONLY 8 LEFT');
+    })?.procedural[0];
+    const rank = temuChips.find((rule) => {
+      const op = rule.procedural[0];
+      return op?.type === 'has-text' && op.needle instanceof RegExp && op.needle.test('#1 TOP RATED');
+    })?.procedural[0];
+    if (scarcity?.type === 'has-text' && scarcity.needle instanceof RegExp) {
       for (const phrase of [
         'ALMOST SOLD OUT',
         'ONLY 8 LEFT',
         'Last day',
         'Ends in',
         '12:34:56',
-        '#1 BEST-SELLING ITEM',
-        '#1 BEST-SELLING ITEM in Electric Bikes',
-        '#1 BEST-SELLING ITEMin Office Electronics',
-        '#1 TOP RATED',
-        '#1 TOP RATED in Bedding',
-        '#3 MOST REPURCHASED BRAND ITEM in Bedding',
         '2.3K+ sold',
         '105sold',
         '03 : 10 : 40 : 41 Ends in',
-        '12:34:56',
       ]) {
-        expect(temuNeedle.needle.test(phrase)).toBe(true);
+        expect(scarcity.needle.test(phrase)).toBe(true);
       }
       for (const phrase of [
+        '#1 BEST-SELLING ITEM',
+        '#1 TOP RATED in Bedding',
         'Fastest delivery in 5 business days',
         '5 BUSINESS DAYS',
         'Add to cart',
@@ -73,8 +76,33 @@ describe('parseList', () => {
         'Free shipping',
         'in Electric Bikes',
       ]) {
-        expect(temuNeedle.needle.test(phrase)).toBe(false);
+        expect(scarcity.needle.test(phrase)).toBe(false);
       }
+    } else {
+      expect(scarcity).toBeTruthy();
+    }
+    if (rank?.type === 'has-text' && rank.needle instanceof RegExp) {
+      for (const phrase of [
+        '#1 BEST-SELLING ITEM',
+        '#1 BEST-SELLING ITEM in Electric Bikes',
+        '#1 BEST-SELLING ITEMin Office Electronics',
+        "#1 TOP RATED in Women's Socks",
+        '#1 TOP RATED',
+        '#1 TOP RATED in Bedding',
+        '#3 MOST REPURCHASED BRAND ITEM in Bedding',
+      ]) {
+        expect(rank.needle.test(phrase)).toBe(true);
+      }
+      for (const phrase of [
+        '#1 TOP RATED in Shoes ₹500 Add to cart',
+        'ONLY 8 LEFT',
+        'Best-Selling Items',
+        'in Electric Bikes',
+      ]) {
+        expect(rank.needle.test(phrase)).toBe(false);
+      }
+    } else {
+      expect(rank).toBeTruthy();
     }
     const temuRelabels = temuRules.filter((r) => r.action.type === 'replace-text');
     expect(temuRelabels).toHaveLength(6);
