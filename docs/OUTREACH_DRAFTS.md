@@ -73,7 +73,7 @@ See docs/RULE_SHIPPING.md.
 
 Engine: https://github.com/vinayak509143/spades-ux-shield
 List:   https://github.com/vinayak509143/spades-ux-shield-filters
-Store:  [STORE STATUS]
+Store:  https://chromewebstore.google.com/detail/spades-ux-shield/dmchnhnkofleiokmffmkigfnoeodpemf
 ```
 
 **Prepared answers for the thread** (write them as replies, not in the post):

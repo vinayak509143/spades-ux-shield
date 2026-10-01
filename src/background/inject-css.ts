@@ -9,8 +9,36 @@ import {
   type HostShardRecord,
 } from './storage.js';
 
+const HOST_CSS_INDEX = 'dist/packaged-host-css-index.json';
+const HOST_CSS_FILE = 'dist/packaged-host-css.json';
+const HOST_CSS_PART = /^packaged-host-css-part-\d{2}\.json$/;
+
 let packagedHostCss: Record<string, string> | null = null;
 let packagedHostCssPromise: Promise<Record<string, string>> | null = null;
+
+export function clearPackagedHostCssCache(): void {
+  packagedHostCss = null;
+  packagedHostCssPromise = null;
+}
+
+async function readExtensionJson(path: string): Promise<unknown | null> {
+  try {
+    const response = await fetch(chrome.runtime.getURL(path));
+    if (!response.ok) {
+      return null;
+    }
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+function isHostCssMap(value: unknown): value is Record<string, string> {
+  if (value == null || typeof value !== 'object' || Array.isArray(value)) {
+    return false;
+  }
+  return Object.values(value).every((entry) => typeof entry === 'string');
+}
 
 async function loadPackagedHostCss(): Promise<Record<string, string>> {
   if (packagedHostCss) {
@@ -18,16 +46,33 @@ async function loadPackagedHostCss(): Promise<Record<string, string>> {
   }
   if (!packagedHostCssPromise) {
     packagedHostCssPromise = (async () => {
-      try {
-        const url = chrome.runtime.getURL('dist/packaged-host-css.json');
-        const response = await fetch(url);
-        if (!response.ok) {
+      const index = await readExtensionJson(HOST_CSS_INDEX);
+      const files =
+        index != null &&
+        typeof index === 'object' &&
+        !Array.isArray(index) &&
+        Array.isArray((index as { files?: unknown }).files)
+          ? (index as { files: unknown[] }).files
+          : null;
+      if (files) {
+        const partNames = files.filter(
+          (file): file is string => typeof file === 'string' && HOST_CSS_PART.test(file),
+        );
+        if (partNames.length !== files.length) {
           return {};
         }
-        return (await response.json()) as Record<string, string>;
-      } catch {
-        return {};
+        const merged: Record<string, string> = {};
+        for (const file of partNames) {
+          const part = await readExtensionJson(`dist/${file}`);
+          if (!isHostCssMap(part)) {
+            return {};
+          }
+          Object.assign(merged, part);
+        }
+        return merged;
       }
+      const single = await readExtensionJson(HOST_CSS_FILE);
+      return isHostCssMap(single) ? single : {};
     })();
   }
   packagedHostCss = await packagedHostCssPromise;

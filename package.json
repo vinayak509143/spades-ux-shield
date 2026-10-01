@@ -28,7 +28,8 @@
     "verify:etsy": "npm run build && node test/scripts/verify-etsy-rules.mjs",
     "capture:screenshots": "npm run build && node scripts/capture-store-screenshots.mjs",
     "verify:zip": "node scripts/verify-release-zip.mjs",
-    "package": "npm run build && npm run zip && npm run verify:zip"
+    "package": "npm run build && npm run zip && npm run verify:zip",
+    "package:firefox": "npm run build && node scripts/package-firefox.mjs && node scripts/verify-firefox-zip.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",

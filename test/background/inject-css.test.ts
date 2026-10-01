@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { compileRules } from '../../src/engine/compiler.js';
 import { parseList } from '../../src/engine/parser.js';
-import { cssInjectionTarget, buildUserCssForHostname } from '../../src/background/inject-css.js';
+import { cssInjectionTarget, buildUserCssForHostname, clearPackagedHostCssCache } from '../../src/background/inject-css.js';
 import {
   groupBucketsByShard,
   shardKeyForHost,
@@ -29,6 +29,7 @@ describe('buildUserCssForHostname after SW restart', () => {
 
   afterEach(() => {
     memory.clear();
+    clearPackagedHostCssCache();
     vi.unstubAllGlobals();
   });
 
@@ -71,5 +72,41 @@ describe('buildUserCssForHostname after SW restart', () => {
     const css = await buildUserCssForHostname('www.post-sync.example.com', new Map());
     expect(css).toContain('.after-update-nag');
     expect(css).toContain('data-op-h~="post-sync.example.com"');
+  });
+
+  it('merges packaged CSS from the Firefox part index', async () => {
+    vi.stubGlobal('chrome', {
+      runtime: {
+        getURL: (path: string) => `https://extension.invalid/${path}`,
+      },
+      storage: {
+        local: {
+          get: async () => ({}),
+          set: async () => undefined,
+        },
+      },
+    });
+    vi.stubGlobal('fetch', async (url: string) => {
+      const path = String(url);
+      if (path.endsWith('packaged-host-css-index.json')) {
+        return {
+          ok: true,
+          json: async () => ({
+            files: ['packaged-host-css-part-01.json', 'packaged-host-css-part-02.json'],
+          }),
+        } as Response;
+      }
+      if (path.endsWith('packaged-host-css-part-01.json')) {
+        return { ok: true, json: async () => ({ 'www.example.com': '.from-part-one{}' }) } as Response;
+      }
+      if (path.endsWith('packaged-host-css-part-02.json')) {
+        return { ok: true, json: async () => ({ 'www.other.test': '.from-part-two{}' }) } as Response;
+      }
+      return { ok: false, json: async () => ({}) } as Response;
+    });
+
+    const css = await buildUserCssForHostname('www.example.com', new Map());
+    expect(css).toContain('.from-part-one{}');
+    expect(css).not.toContain('.from-part-two{}');
   });
 });

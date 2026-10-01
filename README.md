@@ -44,6 +44,8 @@ More pairs live under [`screenshots/`](screenshots/). Open [`screenshots/index.h
 
 Sideloaded builds may show Chrome’s “can’t verify where this extension comes from” warning; store installs do not.
 
+**Firefox:** Node.js 22 or newer, then `npm ci` and `npm run package:firefox`. Load `dist-firefox/manifest.json` from `about:debugging`. Rebuild steps for the submitted zip are in [docs/FIREFOX.md](docs/FIREFOX.md).
+
 From source:
 
 ```bash

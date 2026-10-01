@@ -35,6 +35,10 @@ npm run verify:flipkart
 
 `npm run zip` includes `dist/` (service worker, popup, subscriptions), `boot.js`, `host-mark.js`, `host-mark-main.js`, cosmetic CSS, icons — **not** `temp/`, test profiles, or intel outputs.
 
+## Firefox local package
+
+`npm run package:firefox` writes `dist-firefox/` and `spades-ux-shield-firefox-v1.0.8.zip`. It does not change `manifest.json` or the Chrome zip. Load steps: [FIREFOX.md](./FIREFOX.md).
+
 ## Post-release
 
 - Tag engine repo release and attach the zip.
