@@ -19,12 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-This MIT license covers original Spades UX-Shield source in this repository
-(engine, DSL, popup, MV3 shell, and original rules in lists/darklist.txt).
-
-It does **not** cover third-party filter extracts (`third-party-rules.txt` and
-compiled cosmetics derived from Fanboy/EasyList and AdGuard). Those remain
-GPL-3.0 and/or CC BY-SA 3.0. See ATTRIBUTION.md.
