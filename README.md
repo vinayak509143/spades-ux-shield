@@ -38,7 +38,7 @@ More pairs live under [`screenshots/`](screenshots/). Open [`screenshots/index.h
 
 **From a release zip** (developers / sideload):
 
-1. Download `spades-ux-shield-v1.0.8.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest) (filename tracks `manifest.json`).
+1. Download `spades-ux-shield-v1.0.9.zip` from [Releases](https://github.com/vinayak509143/spades-ux-shield/releases/latest) (filename tracks `manifest.json`).
 2. Unzip it. `manifest.json` should be at the top level of the folder.
 3. Open `chrome://extensions`, turn on Developer mode, click **Load unpacked** and pick that folder.
 

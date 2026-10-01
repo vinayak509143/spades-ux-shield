@@ -71,6 +71,20 @@ describe('Temu overlay guard', () => {
         }),
       ),
     ).toBe(false);
+    expect(
+      shouldSuppressTemuOverlay(
+        facts({
+          className: 'hurry-claim-timer',
+          role: 'dialog',
+          position: 'fixed',
+          width: 1000,
+          height: 700,
+          text: 'Hurry, claim your gift',
+          textLength: 23,
+          hasCheckoutControl: true,
+        }),
+      ),
+    ).toBe(false);
   });
 
   it('hides a countdown iframe and a hurry dialog', () => {

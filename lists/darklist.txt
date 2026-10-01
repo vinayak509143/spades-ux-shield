@@ -1,5 +1,5 @@
 ! Title: Spades Darklist
-! Version: 202609290215
+! Version: 202610012315
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
 sneaky-news.example.com##button:has-text("I hate saving money")
@@ -42,9 +42,9 @@ amazon-retail###dealBadge_feature_div
 amazon-en##.a-badge:has-text(/limited time deal/i)
 amazon-en##.a-badge:has-text(/ends in/i)
 
-! Flipkart — www only (audit docs/flipkart-audit.md); SERP scarcity chips, not Bank Offer / price labels
+! Flipkart — www only (audit docs/flipkart-audit.md).
+! The old scarcity chip used a hashed class (HZ0E6r) and was removed. No Flipkart rule until a non-hashed selector is proven.
 ! Keep: price, seller, Add to cart / Buy now, real variant stock, cart & checkout
-www.flipkart.com##div.HZ0E6r.Rm9_cy:has-text(/^Only (few|\d+ left)/i)
 
 ! Booking.com — www only (audit docs/booking-audit.md).
 ! Property room table: stable BUI list row. SERP chip has no class of its own that survives a deploy;
@@ -92,18 +92,14 @@ in.hotels.com##div.uitk-text.uitk-type-end:has-text(/we have \d+ left at this pr
 www.travelocity.com##div.uitk-text.uitk-type-end:has-text(/we have \d+ left at this price/i)
 
 ! MLO Shoes (mloshoes.com) — manipulative Shopify theme widgets; shopping flow untouched
-! Hide: fake countdowns (header, cart, announcement, sticky promo ribbon), inflated "compare" MSRP, every-SKU "Best Seller"
-! Keep: hero sale copy, current prices, add-to-cart, cart/checkout, free-shipping announcement slide
+! Hide: fake countdowns (header, cart, announcement, sticky promo ribbon), every-SKU "Best Seller"
+! Keep: hero sale copy, current prices, crossed-out and compare prices, add-to-cart, cart/checkout, free-shipping announcement slide
 ! Do not copy these selectors into cosmetic-vendors.css — they are theme-native, not app prefixes.
 mloshoes.com,www.mloshoes.com###header-timer-box
 mloshoes.com,www.mloshoes.com###cart-timer-box
 mloshoes.com,www.mloshoes.com##.promo-price-card__ribbon-right
 mloshoes.com,www.mloshoes.com##.promo-countdown
 mloshoes.com,www.mloshoes.com##.announcement__slide:has-text(/ends in/i)
-mloshoes.com,www.mloshoes.com##.promo-price-card__compare
-mloshoes.com,www.mloshoes.com##.js-promo-compare
-mloshoes.com,www.mloshoes.com##.product__price--strike
-mloshoes.com,www.mloshoes.com##.price.sale s
 mloshoes.com,www.mloshoes.com##.badge-box.custom-box:has-text(/best seller/i)
 
 ! Hurrier demo (Anvanto theme) — fake stock + delivery countdown + visitor count; not hurrify- app prefixes

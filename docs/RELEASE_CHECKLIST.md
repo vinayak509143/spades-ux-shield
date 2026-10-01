@@ -37,7 +37,7 @@ npm run verify:flipkart
 
 ## Firefox local package
 
-`npm run package:firefox` writes `dist-firefox/` and `spades-ux-shield-firefox-v1.0.8.zip`. It does not change `manifest.json` or the Chrome zip. Load steps: [FIREFOX.md](./FIREFOX.md).
+`npm run package:firefox` writes `dist-firefox/` and `spades-ux-shield-firefox-v1.0.9.zip`. It does not change `manifest.json` or the Chrome zip. Load steps: [FIREFOX.md](./FIREFOX.md).
 
 ## Post-release
 
@@ -49,5 +49,5 @@ npm run verify:flipkart
 While an older build is **In review**, do **not** cancel that submission. Ship engineering on `main`; upload the next zip only after the in-flight version shows **Published**.
 
 1. Wait until dashboard shows **1.0.4 Published** (or whatever is currently in review).
-2. Same store item → upload `spades-ux-shield-v1.0.8.zip` (Temu urgency copy and gamification overlays).
+2. Same store item → upload `spades-ux-shield-v1.0.9.zip` (Temu checkout stays visible; Flipkart hashed selector and MLO price hides removed). Do not upload this zip while Firefox 1.0.8 is still in Mozilla review, and do not upload it to Mozilla as 1.0.8.
 3. `npm run package` / `npm run verify:zip` before upload; list `packagedRev` must match filters repo `darklist.txt` `! Version:`.

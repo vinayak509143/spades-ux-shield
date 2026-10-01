@@ -8,9 +8,7 @@ Use **`www.flipkart.com` only** — `flipkart.com` in `data-op-h` would suffix-m
 
 ## Hide (from DOM)
 
-| Surface | Selector | Notes |
-|---------|----------|--------|
-| Search / listing scarcity chips | `div.HZ0E6r.Rm9_cy` + `:has-text(/^Only (few\|\d+ left)/i)` | Same class also shows “Bank Offer”, “Lowest price since launch” — **must** text-filter. |
+No shipped selector. The 2026-09-20 scarcity chip used hashed classes `div.HZ0E6r.Rm9_cy`. That rule was removed on 2026-10-01. Do not ship a Flipkart scarcity line until a non-hashed selector is proven on a fresh capture. The same class also showed “Bank Offer” and “Lowest price since launch”.
 
 ## Must-not (verified on probe PDP)
 

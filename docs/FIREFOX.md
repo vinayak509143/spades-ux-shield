@@ -15,7 +15,7 @@ npm ci
 npm run package:firefox
 ```
 
-`npm run package:firefox` is the build script. It installs nothing by itself. `npm ci` installs the exact dependency versions from `package-lock.json`, including esbuild. The script then bundles the TypeScript and writes `spades-ux-shield-firefox-v1.0.8.zip`.
+`npm run package:firefox` is the build script. It installs nothing by itself. `npm ci` installs the exact dependency versions from `package-lock.json`, including esbuild. The script then bundles the TypeScript and writes `spades-ux-shield-firefox-v1.0.9.zip`.
 
 Do not run `npm run update-filters` when reproducing the submitted zip. That command downloads third-party lists again, and those lists change.
 
@@ -28,7 +28,7 @@ npm run package:firefox
 That writes:
 
 - `dist-firefox/` — unpacked extension
-- `spades-ux-shield-firefox-v1.0.8.zip` — the same files, for a later Mozilla submission
+- `spades-ux-shield-firefox-v1.0.9.zip` — the same files, for a later Mozilla submission
 
 The filename follows `manifest.json`. The Chrome zip is a different file and does not get a Firefox id.
 

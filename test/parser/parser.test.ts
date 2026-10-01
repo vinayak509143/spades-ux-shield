@@ -13,8 +13,8 @@ describe('parseList', () => {
 
     expect(errors).toHaveLength(0);
     expect(directives.Title).toBe('Spades Darklist');
-    expect(directives.Version).toBe('202609290215');
-    expect(rules).toHaveLength(108);
+    expect(directives.Version).toBe('202610012315');
+    expect(rules).toHaveLength(103);
 
     const sheinRules = rules.filter((r) => r.hosts.includes('us.shein.com'));
     expect(sheinRules).toHaveLength(12);

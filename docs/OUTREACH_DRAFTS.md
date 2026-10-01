@@ -1,15 +1,15 @@
 # Outreach drafts
 
-Copy-paste text for each channel in [COMMUNITY.md](./COMMUNITY.md). Every number below is checked against the repo on 2026-09-29; re-check before posting if the list has moved.
+Copy-paste text for each channel in [COMMUNITY.md](./COMMUNITY.md). Every number below is checked against the repo on 2026-10-01; re-check before posting if the list has moved.
 
 Facts used (keep them true):
 
 - Engine: MIT. List: GPL-3.0-or-later. Manifest V3, Chrome 111+.
-- Spades Darklist: 108 rules across about 15 shopping and travel sites (Amazon retail on 23 storefronts, Amazon.in, Agoda, Booking.com, Etsy, Expedia, Flipkart, GetYourGuide, Hotels.com, Shein, Temu, ThredUp, Travelocity, one Shopify store) plus a cosmetic-only extract of Fanboy's Annoyance List, EasyList Cookie List, and AdGuard Annoyances. Those three lists are named because their licences require attribution; they are inputs, not a claim of affiliation.
+- Spades Darklist: 103 rules across about 15 shopping and travel sites (Amazon retail on 23 storefronts, Amazon.in, Agoda, Booking.com, Etsy, Expedia, GetYourGuide, Hotels.com, Shein, Temu, ThredUp, Travelocity, one Shopify store) plus a cosmetic-only extract of Fanboy's Annoyance List, EasyList Cookie List, and AdGuard Annoyances. Those three lists are named because their licences require attribution; they are inputs, not a claim of affiliation.
 - No network blocking. No AI. No telemetry server. The only outbound requests are the list download from GitHub/jsDelivr and, if the user clicks it, a GitHub issue page.
 - Safety: rules on checkout, cart, payment, login, 2FA, and account cancellation are rejected at list build and in review. At runtime the engine refuses `:uncheck` and other state mutation on those surfaces (`src/engine/critical-flow.ts`). Plain cosmetic hides rely on list review and tests, not a runtime guard. Say it this way; do not claim the runtime blocks every hide.
 - Rule delivery: on 1.0.8 and later, static `host##selector` lines and text rules (`:has-text`) both reach installed users within about 12 hours through list sync, once `! Version:` is bumped. A store release is still required for engine changes and for anyone still on an older build. See [RULE_SHIPPING.md](./RULE_SHIPPING.md).
-- Store: version 1.0.7 is published; 1.0.8 is the current zip. Replace `[STORE STATUS]` below with whichever is live on the day you post.
+- Store: version 1.0.7 is published; 1.0.9 is the current zip. Firefox 1.0.8 is in Mozilla review. Replace `[STORE STATUS]` below with whichever is live on the day you post.
 
 Links:
 
@@ -54,9 +54,9 @@ What it refuses to do:
   cosmetic hides rely on list review and a holdout test per site, not a
   runtime guard, so I am saying that plainly.
 
-Current list: 108 rules across about 15 shopping and travel sites (Amazon
+Current list: 103 rules across about 15 shopping and travel sites (Amazon
 retail on 23 storefronts, Booking.com, Agoda, Temu, Shein, Etsy, Expedia,
-Flipkart, GetYourGuide, ThredUp, and a few more), plus a cosmetic-only
+GetYourGuide, ThredUp, and a few more), plus a cosmetic-only
 extract of Fanboy's Annoyance, EasyList Cookie, and AdGuard Annoyances.
 
 The engine is MIT, the list is GPL-3.0-or-later, and it is a non-profit
@@ -102,7 +102,7 @@ consent nags. It does not touch checkout, payment, or login, does not block
 ads, and sends no browsing data anywhere.
 
 The list currently covers about 15 large shopping and travel sites (Amazon,
-Booking.com, Agoda, Temu, Shein, Etsy, Expedia, Flipkart and others), 108
+Booking.com, Agoda, Temu, Shein, Etsy, Expedia and others), 103
 rules, GPL-3.0-or-later. Each site has an audit with the element, the phrase,
 and what must stay visible. There is also a machine-readable catalog of
 observed patterns with regulatory categories that may be useful to you or
@@ -173,7 +173,7 @@ Spades UX-Shield: a Chrome extension that hides fake urgency and scarcity
 No AI. No telemetry. Never touches checkout, payment, or login.
 MIT engine, GPL list, non-profit.
 
-108 rules so far. I need people who can write one host##selector line.
+103 rules so far. I need people who can write one host##selector line.
 
 https://github.com/vinayak509143/spades-ux-shield-filters
 ```

@@ -88,10 +88,7 @@ for (const url of urls) {
     console.error('FAIL: .promo-countdown still visible', r.promoCountdown);
     failed = true;
   }
-  if (r.compareVisible > 0 || r.strikeInGrid > 0) {
-    console.error('FAIL: compare-at strike still visible', r.compareVisible, r.strikeInGrid);
-    failed = true;
-  }
+  // Compare-at and strike prices stay visible. Do not treat them as a failure.
   if (r.bestSeller > 0) {
     console.error('FAIL: Best Seller badges still visible', r.bestSeller);
     failed = true;

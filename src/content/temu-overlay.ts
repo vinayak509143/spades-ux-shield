@@ -71,7 +71,8 @@ export function shouldSuppressTemuOverlay(facts: OverlayFacts): boolean {
   if (facts.hasProductZoom && !gamifyAttr && !gamifyText) {
     return false;
   }
-  if (facts.hasCheckoutControl && !gamifyAttr && !gamifyText) {
+  // A purchase control stays, even when the same box also looks like a game or a dialog.
+  if (facts.hasCheckoutControl) {
     return false;
   }
 

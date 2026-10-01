@@ -65,6 +65,6 @@ describe('repo manifest', () => {
   it('stays free of browser_specific_settings', () => {
     const manifest = JSON.parse(readFileSync(resolve('manifest.json'), 'utf8'));
     expect(manifest.browser_specific_settings).toBeUndefined();
-    expect(manifest.version).toBe('1.0.8');
+    expect(manifest.version).toBe('1.0.9');
   });
 });
