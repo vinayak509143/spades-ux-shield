@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Security fixes are applied to the latest release on the `main` branch and to the version currently published on the [Chrome Web Store](https://chromewebstore.google.com/detail/spades-ux-shield/dmchnhnkofleiokmffmkigfnoeodpemf) when it differs.
+Security fixes are applied to the latest release on the `main` branch and to the versions currently published on the [Chrome Web Store](https://chromewebstore.google.com/detail/spades-ux-shield/dmchnhnkofleiokmffmkigfnoeodpemf) and [Firefox Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/spades-ux-shield/) when they differ.
 
 ## Reporting a vulnerability
 

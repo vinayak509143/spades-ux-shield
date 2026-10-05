@@ -1,6 +1,6 @@
 # Spades UX-Shield
 
-A small Chrome extension that hides cookie walls, newsletter pop-ups, fake countdown timers, app-install nags, and other dark patterns. It works from plain-text filter lists: a line names a site and a selector, and that element is hidden. There is no AI in it and no browsing telemetry server; filter lists update over HTTPS when the extension checks GitHub/jsDelivr.
+A small browser extension for Chrome and Firefox that hides cookie walls, newsletter pop-ups, fake countdown timers, app-install nags, and other dark patterns. It works from plain-text filter lists: a line names a site and a selector, and that element is hidden. There is no AI in it and no browsing telemetry server; filter lists update over HTTPS when the extension checks GitHub/jsDelivr.
 
 ## Before / after
 
@@ -34,7 +34,9 @@ More pairs live under [`screenshots/`](screenshots/). Open [`screenshots/index.h
 
 ## Install
 
-**Chrome Web Store (recommended):** [Spades UX-Shield](https://chromewebstore.google.com/detail/spades-ux-shield/dmchnhnkofleiokmffmkigfnoeodpemf) — updates after Google approves each version.
+**Chrome Web Store:** [Spades UX-Shield](https://chromewebstore.google.com/detail/spades-ux-shield/dmchnhnkofleiokmffmkigfnoeodpemf) — updates after Google approves each version.
+
+**Firefox:** [Spades UX-Shield on Firefox Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/spades-ux-shield/) — version 1.0.8, including Firefox for Android. Updates after Mozilla approves each version.
 
 **From a release zip** (developers / sideload):
 
@@ -44,7 +46,7 @@ More pairs live under [`screenshots/`](screenshots/). Open [`screenshots/index.h
 
 Sideloaded builds may show Chrome’s “can’t verify where this extension comes from” warning; store installs do not.
 
-**Firefox:** Node.js 22 or newer, then `npm ci` and `npm run package:firefox`. Load `dist-firefox/manifest.json` from `about:debugging`. Rebuild steps for the submitted zip are in [docs/FIREFOX.md](docs/FIREFOX.md).
+**Firefox, from source:** Node.js 22 or newer, then `npm ci` and `npm run package:firefox`. Load `dist-firefox/manifest.json` from `about:debugging`. The public listing is the link above. Rebuild steps for a local zip are in [docs/FIREFOX.md](docs/FIREFOX.md).
 
 From source:
 

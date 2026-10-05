@@ -1,6 +1,6 @@
-# Firefox local install
+# Firefox
 
-This package is for loading Spades UX-Shield in Firefox on your machine. It is not listed on addons.mozilla.org.
+[Spades UX-Shield on Firefox Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/spades-ux-shield/) is the public install. The published version is 1.0.8, including Firefox for Android. The steps below rebuild a local package for development. That zip is not a second copy of the store listing.
 
 ## Rebuild the submitted zip
 
@@ -28,7 +28,7 @@ npm run package:firefox
 That writes:
 
 - `dist-firefox/` — unpacked extension
-- `spades-ux-shield-firefox-v1.0.9.zip` — the same files, for a later Mozilla submission
+- `spades-ux-shield-firefox-v1.0.9.zip` — the same files, for a later Mozilla update. Do not upload it as 1.0.8. That version is already published.
 
 The filename follows `manifest.json`. The Chrome zip is a different file and does not get a Firefox id.
 
@@ -38,9 +38,9 @@ The filename follows `manifest.json`. The Chrome zip is a different file and doe
 2. Click **Load Temporary Add-on**.
 3. Select `dist-firefox/manifest.json`.
 
-Firefox 140 or newer is required. Firefox for Android requires 142. The extension id inside the package is `spades-ux-shield@vinayak509143`. The package tells Firefox this extension collects no personal data. Keep that id if this is later submitted to Mozilla.
+Firefox 140 or newer is required. Firefox for Android requires 142. The extension id inside the package is `spades-ux-shield@vinayak509143`. The package tells Firefox this extension collects no personal data. Keep that id. The published add-on uses it.
 
-Firefox removes a temporary add-on when it quits. An install that stays after restart needs a Mozilla listing.
+Firefox removes a temporary add-on when it quits. The public listing stays installed: [Firefox Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/spades-ux-shield/).
 
 ## What is different on Firefox
 

@@ -4,7 +4,7 @@ Effective: 18 September 2026
 Product: Spades UX-Shield browser extension  
 Contact: GitHub issues on [vinayak509143/spades-ux-shield](https://github.com/vinayak509143/spades-ux-shield/issues)
 
-Paste this URL into the Chrome Web Store privacy policy field:
+Paste this URL into the Chrome Web Store and Firefox Add-ons privacy policy fields:
 
 https://github.com/vinayak509143/spades-ux-shield/blob/main/PRIVACY.md
 

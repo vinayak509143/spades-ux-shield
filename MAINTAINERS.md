@@ -2,7 +2,7 @@
 
 | Role | Person | Scope |
 |------|--------|--------|
-| Lead maintainer | Vinayak Patankar ([@vinayak509143](https://github.com/vinayak509143)) | Engine, releases, list review, Chrome Web Store |
+| Lead maintainer | Vinayak Patankar ([@vinayak509143](https://github.com/vinayak509143)) | Engine, releases, list review, Chrome Web Store, Firefox Add-ons |
 
 Spades UX-Shield is a **non-profit, volunteer-run** open source project (MIT engine, GPL-3.0-or-later darklist). There is no company behind it.
 
@@ -19,7 +19,7 @@ Open a discussion on either repo or email via GitHub profile if you want to help
 ## Decision process
 
 - **List changes:** PR + green CI + at least one hit URL and one must-not URL in the description. Maintainer merges to filters `main`; bump `! Version:` every time.
-- **Engine releases:** Tag matches `manifest.json`; zip attached to GitHub Releases; Chrome Web Store upload is a separate manual step.
+- **Engine releases:** Tag matches `manifest.json`; zip attached to GitHub Releases. Chrome Web Store and [Firefox Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/spades-ux-shield/) uploads are separate manual steps. The live Firefox listing is 1.0.8.
 - **Safety overrides:** Checkout, payment, login, and account cancellation stay frozen — see [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/HOLDOUT_PROTOCOL.md](docs/HOLDOUT_PROTOCOL.md). No exceptions without a documented holdout proof.
 
 ## Bus factor

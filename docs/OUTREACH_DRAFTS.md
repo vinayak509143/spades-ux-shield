@@ -9,11 +9,12 @@ Facts used (keep them true):
 - No network blocking. No AI. No telemetry server. The only outbound requests are the list download from GitHub/jsDelivr and, if the user clicks it, a GitHub issue page.
 - Safety: rules on checkout, cart, payment, login, 2FA, and account cancellation are rejected at list build and in review. At runtime the engine refuses `:uncheck` and other state mutation on those surfaces (`src/engine/critical-flow.ts`). Plain cosmetic hides rely on list review and tests, not a runtime guard. Say it this way; do not claim the runtime blocks every hide.
 - Rule delivery: on 1.0.8 and later, static `host##selector` lines and text rules (`:has-text`) both reach installed users within about 12 hours through list sync, once `! Version:` is bumped. A store release is still required for engine changes and for anyone still on an older build. See [RULE_SHIPPING.md](./RULE_SHIPPING.md).
-- Store: version 1.0.7 is published; 1.0.9 is the current zip. Firefox 1.0.8 is in Mozilla review. Replace `[STORE STATUS]` below with whichever is live on the day you post.
+- Store: Chrome 1.0.7 is published; 1.0.9 is the current Chrome zip. Firefox 1.0.8 is published on addons.mozilla.org. Replace `[STORE STATUS]` below with whichever is live on the day you post.
 
 Links:
 
-- Store: https://chromewebstore.google.com/detail/spades-ux-shield/dmchnhnkofleiokmffmkigfnoeodpemf
+- Chrome: https://chromewebstore.google.com/detail/spades-ux-shield/dmchnhnkofleiokmffmkigfnoeodpemf
+- Firefox: https://addons.mozilla.org/en-GB/firefox/addon/spades-ux-shield/
 - Engine: https://github.com/vinayak509143/spades-ux-shield
 - List: https://github.com/vinayak509143/spades-ux-shield-filters
 - Rule request form: https://github.com/vinayak509143/spades-ux-shield-filters/issues/new?template=rule-request.yml
@@ -34,7 +35,7 @@ Show HN: Spades UX-Shield – filter lists that hide dark patterns
 **Text:**
 
 ```
-Spades UX-Shield is a Chrome extension that hides fake urgency, scarcity chips,
+Spades UX-Shield is a browser extension for Chrome and Firefox that hides fake urgency, scarcity chips,
 and consent nags using plain-text filter lists. A rule names a site and a
 selector. A rule looks like:
 
@@ -73,7 +74,8 @@ See docs/RULE_SHIPPING.md.
 
 Engine: https://github.com/vinayak509143/spades-ux-shield
 List:   https://github.com/vinayak509143/spades-ux-shield-filters
-Store:  https://chromewebstore.google.com/detail/spades-ux-shield/dmchnhnkofleiokmffmkigfnoeodpemf
+Chrome:  https://chromewebstore.google.com/detail/spades-ux-shield/dmchnhnkofleiokmffmkigfnoeodpemf
+Firefox: https://addons.mozilla.org/en-GB/firefox/addon/spades-ux-shield/
 ```
 
 **Prepared answers for the thread** (write them as replies, not in the post):
@@ -82,7 +84,7 @@ Store:  https://chromewebstore.google.com/detail/spades-ux-shield/dmchnhnkofleio
 - *"Sites will rotate class names."* — They do. Hashed classes are never shipped; rules key on analytics attributes (`data-testid`, `data-element-name`) or exact sentence text inside a stable container. Temu rotates class hashes per surface and the text rules survived three audits. When a site changes structure a rule dies and needs a person, same as any filter list.
 - *"How do you know you are not hiding legitimate stock information?"* — Each site has a holdout doc with URLs where the rule must not fire and a false-positive matrix. Examples that stay visible on purpose: prices, "56% OFF", "Pay $N today", real delivery estimates, Sign in, Book. The Temu rule for "Fastest delivery in N business days" only fires on the deal-timer copy, not on a normal shipping line.
 - *"Is this legal / is hiding site content a ToS problem?"* — It is client-side CSS in the user's own browser, the same category as ad blockers and reader mode. It does not alter requests or scrape.
-- *"Firefox?"* — Not yet. MV3 on Firefox is possible; it is a wanted contribution, not a roadmap promise.
+- *"Firefox?"* — Yes. Version 1.0.8 is on Firefox Add-ons, including Firefox for Android: https://addons.mozilla.org/en-GB/firefox/addon/spades-ux-shield/
 - *"Why GPL for the list and MIT for the engine?"* — The list includes extracts of GPL-3.0 and CC BY-SA lists and keeps those licences. The engine has no such dependency.
 
 ---
@@ -94,7 +96,7 @@ Subject: `A filter-list extension that hides listed dark patterns, for your tool
 ```
 Hi Harry,
 
-I maintain Spades UX-Shield, a non-profit open source Chrome extension that
+I maintain Spades UX-Shield, a non-profit open source extension for Chrome and Firefox that
 hides dark-pattern UI from plain-text filter lists. A rule names a site and
 a selector, and that element is hidden. It targets the patterns you document:
 fake urgency, fake scarcity, confirmshaming labels on buy buttons, and
@@ -116,7 +118,8 @@ names so the two can be cross-referenced.
 
 Engine: https://github.com/vinayak509143/spades-ux-shield
 List:   https://github.com/vinayak509143/spades-ux-shield-filters
-Store:  [STORE STATUS]
+Chrome:  https://chromewebstore.google.com/detail/spades-ux-shield/dmchnhnkofleiokmffmkigfnoeodpemf
+Firefox: https://addons.mozilla.org/en-GB/firefox/addon/spades-ux-shield/
 
 Thank you for the work on the taxonomy; it is the reason the list has a
 vocabulary at all.
@@ -167,7 +170,7 @@ https://github.com/vinayak509143/spades-ux-shield
 One post, no thread needed. Attach the Booking.com before/after image from `screenshots/Booking.com/`.
 
 ```
-Spades UX-Shield: a Chrome extension that hides fake urgency and scarcity
+Spades UX-Shield: a Chrome and Firefox extension that hides fake urgency and scarcity
 ("Only 3 left!", "Booked 27 times today") from plain-text filter lists.
 
 No AI. No telemetry. Never touches checkout, payment, or login.
@@ -176,6 +179,7 @@ MIT engine, GPL list, non-profit.
 106 rules so far. I need people who can write one host##selector line.
 
 https://github.com/vinayak509143/spades-ux-shield-filters
+Firefox: https://addons.mozilla.org/en-GB/firefox/addon/spades-ux-shield/
 ```
 
 ---
@@ -276,9 +280,11 @@ manipulation rather than advertising, and it is designed to be safe by
 construction: rules on checkout, payment, login, and account-cancellation
 flows are rejected at build and review time, and the runtime refuses to
 mutate controls on those surfaces. It collects no browsing data. The engine
-is MIT and the list is GPL-3.0-or-later. Funding would pay for (1) the
+is MIT and the list is GPL-3.0-or-later. Firefox 1.0.8 is published at
+https://addons.mozilla.org/en-GB/firefox/addon/spades-ux-shield/.
+Funding would pay for (1) the
 engine change that lets community rules reach users without a store review,
-(2) a Firefox build, and (3) a part-time reviewer so breakage reports are
+and (2) a part-time reviewer so breakage reports are
 answered within a day. The project is maintained by one person and is
 seeking co-maintainers.
 ```

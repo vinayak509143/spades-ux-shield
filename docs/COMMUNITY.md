@@ -6,7 +6,7 @@ Spades UX-Shield is built like a **filter list + engine**, not a bespoke scraper
 
 Fix the public “front door” so strangers do not bounce:
 
-1. **Install instructions** match reality — Chrome Web Store + current GitHub Release zip ([README](../README.md)).
+1. **Install instructions** match reality — [Chrome Web Store](https://chromewebstore.google.com/detail/spades-ux-shield/dmchnhnkofleiokmffmkigfnoeodpemf), [Firefox Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/spades-ux-shield/) (1.0.8), and the current GitHub Release zip ([README](../README.md)).
 2. **GitHub Releases** tag matches `manifest.json` and includes the zip.
 3. **Issue tracker** — close test/spam issues; leave real `[rule]` / `[dark pattern / broken page]` items open.
 4. **`good first issue` labels** on concrete sites (URL + phrase to hide + must-not checkout/login).
