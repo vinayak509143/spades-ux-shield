@@ -86,6 +86,25 @@ describe('Temu PDP urgency', () => {
     expect(document.getElementById('ship')?.classList.contains('op-hide')).toBe(false);
   });
 
+  it('hides the October 2026 orange chips: ONLY N LEFT, BEST-SELLING BRAND ITEM, TOP RATED', () => {
+    render(`
+      <span id="left" class="_2h8Ne7BR" aria-hidden="true" style="color: rgb(251, 119, 1);">ONLY 6 LEFT</span>
+      <span id="brand" class="" data-type="0" aria-hidden="true" style="font-weight: 400; color: rgb(251, 119, 1); font-size: 14px; display: inline-block;">#2 BEST-SELLING BRAND ITEM</span>
+      <span id="rated" class="" data-type="0" aria-hidden="true" style="font-weight: 400; color: rgb(251, 119, 1); font-size: 14px; display: inline-block;">#2 TOP RATED</span>
+      <span id="warehouse" class="_14lZMPb3" style="color:#4B2309;font-size:14px;">#11 Best Selling Local Warehouse Store</span>
+      <span id="heading">Best-Selling Items</span>
+      <span id="price" data-type="0">$12.40</span>
+    `);
+    apply();
+    expect(document.getElementById('left')?.classList.contains('op-hide')).toBe(true);
+    expect(document.getElementById('brand')?.classList.contains('op-hide')).toBe(true);
+    expect(document.getElementById('rated')?.classList.contains('op-hide')).toBe(true);
+    expect(document.getElementById('warehouse')?.classList.contains('op-hide')).toBe(true);
+    expect(document.getElementById('heading')?.classList.contains('op-hide')).toBe(false);
+    expect(document.getElementById('price')?.classList.contains('op-hide')).toBe(false);
+    expect((document.getElementById('left') as HTMLElement).style.display).toBe('none');
+  });
+
   it('hides a rank chip and leaves a card that also contains the price and Add to cart', () => {
     render(`
       <span class="rank" id="rank">#1 TOP RATED</span>

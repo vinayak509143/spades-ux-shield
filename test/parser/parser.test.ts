@@ -13,7 +13,7 @@ describe('parseList', () => {
 
     expect(errors).toHaveLength(0);
     expect(directives.Title).toBe('Spades Darklist');
-    expect(directives.Version).toBe('202610012340');
+    expect(directives.Version).toBe('202610082345');
     expect(rules).toHaveLength(106);
 
     const sheinRules = rules.filter((r) => r.hosts.includes('us.shein.com'));
@@ -90,6 +90,8 @@ describe('parseList', () => {
         '#1 TOP RATED',
         '#1 TOP RATED in Bedding',
         '#3 MOST REPURCHASED BRAND ITEM in Bedding',
+        '#11 Best Selling Local Warehouse Store',
+        '#11 Best-Selling Local Warehouse',
       ]) {
         expect(rank.needle.test(phrase)).toBe(true);
       }
@@ -97,6 +99,8 @@ describe('parseList', () => {
         '#1 TOP RATED in Shoes ₹500 Add to cart',
         'ONLY 8 LEFT',
         'Best-Selling Items',
+        'Best Selling Items',
+        '#11 Best Selling Local Warehouse Store ₹500',
         'in Electric Bikes',
       ]) {
         expect(rank.needle.test(phrase)).toBe(false);
