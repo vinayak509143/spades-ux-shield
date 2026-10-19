@@ -211,10 +211,15 @@ describe('ProceduralEngine', () => {
     Reflect.deleteProperty(globalThis, 'chrome');
   });
 
-  it('replaces an urgency button label and keeps the control', () => {
+  it('does not rewrite a purchase label, and the click still reaches the parent', () => {
     document.body.innerHTML =
-      '<span data-type="0" class="" style="font-weight:600">Add now! Almost out!</span>';
+      '<div id="bar"><span data-type="0" class="" style="font-weight:600">Add now! Almost out!</span></div>';
     const label = document.querySelector('span') as HTMLElement;
+    const bar = document.getElementById('bar') as HTMLElement;
+    let clicks = 0;
+    bar.addEventListener('click', () => {
+      clicks += 1;
+    });
 
     const engine = new ProceduralEngine();
     engine.start(
@@ -223,43 +228,44 @@ describe('ProceduralEngine', () => {
     );
     engine.flush();
 
-    expect(label.textContent).toBe('Add to cart');
+    expect(label.textContent).toBe('Add now! Almost out!');
     expect(label.style.display).not.toBe('none');
     expect(label.classList.contains('op-hide')).toBe(false);
+    label.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(clicks).toBe(1);
     engine.stop();
   });
 
-  it('keeps an icon inside a relabeled control', () => {
-    document.body.innerHTML =
-      '<span data-type="0" class=""><svg id="cart"></svg>Add now! Almost out!</span>';
+  it('keeps an icon inside a relabeled non-purchase chip', () => {
+    document.body.innerHTML = '<span class="chip"><svg id="wheel"></svg>Spin the wheel</span>';
     const label = document.querySelector('span') as HTMLElement;
 
     const engine = new ProceduralEngine();
     engine.start(
-      [replaceRule('span[data-type="0"]', /^\s*add now!\s*almost out!?\s*$/i, 'Add to cart')],
+      [replaceRule('span.chip', /^\s*spin the wheel\s*$/i, 'Prize')],
       { pierceShadow: false },
     );
     engine.flush();
 
-    expect(label.querySelector('#cart')).not.toBeNull();
-    expect(label.textContent?.replace(/\s+/g, ' ').trim()).toBe('Add to cart');
+    expect(label.querySelector('#wheel')).not.toBeNull();
+    expect(label.textContent?.replace(/\s+/g, ' ').trim()).toBe('Prize');
     engine.stop();
   });
 
-  it('writes the label again when the site restores the urgency text', () => {
-    document.body.innerHTML = '<span data-type="0">Add now! Almost out!</span>';
+  it('writes a non-purchase label again when the site restores it', () => {
+    document.body.innerHTML = '<span class="chip">Spin the wheel</span>';
     const label = document.querySelector('span') as HTMLElement;
 
     const engine = new ProceduralEngine();
     engine.start(
-      [replaceRule('span[data-type="0"]', /^\s*add now!\s*almost out!?\s*$/i, 'Add to cart')],
+      [replaceRule('span.chip', /^\s*spin the wheel\s*$/i, 'Prize')],
       { pierceShadow: false },
     );
     engine.flush();
-    label.textContent = 'Add now! Almost out!';
+    label.textContent = 'Spin the wheel';
     engine.flush();
 
-    expect(label.textContent).toBe('Add to cart');
+    expect(label.textContent).toBe('Prize');
     engine.stop();
   });
 
@@ -302,40 +308,30 @@ describe('ProceduralEngine', () => {
     engine.stop();
   });
 
-  it('relabels Buy now! Almost out! without hiding the control', () => {
-    document.body.innerHTML =
-      '<span data-type="0" class="" style="font-weight:600">Buy now! Almost out!</span>';
-    const label = document.querySelector('span') as HTMLElement;
-
+  it('leaves Buy now! Almost out! and BUY NOW! LAST N! unchanged', () => {
+    document.body.innerHTML = `
+      <span id="fused" data-type="0" class="" style="font-weight:600;color:#fff;font-size:16px">Buy now! Almost out!</span>
+      <span id="last" data-type="0" class="" style="font-weight:600">BUY NOW! LAST 1!</span>
+      <span id="plain" data-type="0" class="" style="font-weight:600;color:#fff;font-size:16px">Buy now</span>
+    `;
     const engine = new ProceduralEngine();
     engine.start(
-      [replaceRule('span[data-type="0"]', /^\s*buy now!\s*almost out!?\s*$/i, 'Buy now')],
+      [
+        replaceRule('span[data-type="0"]', /^\s*buy now!\s*almost out!?\s*$/i, 'Buy now'),
+        replaceRule('span[data-type="0"]', /^\s*buy now!\s*last\s+\d+!?\s*$/i, 'Buy now'),
+      ],
       { pierceShadow: false },
     );
     engine.flush();
 
-    expect(label.textContent).toBe('Buy now');
+    expect(document.getElementById('fused')?.textContent).toBe('Buy now! Almost out!');
+    expect(document.getElementById('last')?.textContent).toBe('BUY NOW! LAST 1!');
+    expect(document.getElementById('plain')?.textContent).toBe('Buy now');
+    expect(document.getElementById('fused')?.classList.contains('op-hide')).toBe(false);
     engine.stop();
   });
 
-  it('relabels BUY NOW! LAST N! without hiding the control', () => {
-    document.body.innerHTML =
-      '<span data-type="0" class="" style="font-weight:600">BUY NOW! LAST 1!</span>';
-    const label = document.querySelector('span') as HTMLElement;
-
-    const engine = new ProceduralEngine();
-    engine.start(
-      [replaceRule('span[data-type="0"]', /^\s*buy now!\s*last\s+\d+!?\s*$/i, 'Buy now')],
-      { pierceShadow: false },
-    );
-    engine.flush();
-
-    expect(label.textContent).toBe('Buy now');
-    expect(label.classList.contains('op-hide')).toBe(false);
-    engine.stop();
-  });
-
-  it('relabels an inserted button and leaves a delivery estimate', async () => {
+  it('leaves an inserted purchase label and still hides nothing around a delivery estimate', async () => {
     document.body.innerHTML = '<div id="card"></div>';
     const card = document.getElementById('card') as HTMLElement;
     const engine = new ProceduralEngine();
@@ -349,7 +345,7 @@ describe('ProceduralEngine', () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     const spans = [...card.querySelectorAll('span')].map((el) => el.textContent);
-    expect(spans).toEqual(['Add to cart', 'Fastest delivery in 5 business days']);
+    expect(spans).toEqual(['Add now! Almost out!', 'Fastest delivery in 5 business days']);
     engine.stop();
   });
 

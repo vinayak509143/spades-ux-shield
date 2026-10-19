@@ -168,6 +168,19 @@ describe('Temu overlay guard', () => {
     expect(document.getElementById('photo')?.classList.contains('op-temu-overlay')).toBe(false);
     expect(document.getElementById('price')?.classList.contains('op-temu-overlay')).toBe(false);
     expect(document.getElementById('buy')?.classList.contains('op-temu-overlay')).toBe(false);
+  });
+
+  it('does not cover a fixed layer whose label is the fused Buy now span', () => {
+    document.body.innerHTML = `
+      <div id="bar" role="dialog" style="position:fixed">
+        <span class="" data-type="0" style="font-weight: 600; color: rgb(255, 255, 255); font-size: 16px; vertical-align: middle;">Buy now! Almost out!</span>
+      </div>
+    `;
+    const bar = document.getElementById('bar') as HTMLElement;
+    bar.getBoundingClientRect = () =>
+      ({ width: 1280, height: 800, top: 0, left: 0, right: 1280, bottom: 800, x: 0, y: 0, toJSON() {} }) as DOMRect;
+    applyTemuOverlayPass(document, () => true, { width: 1280, height: 800 });
+    expect(bar.classList.contains('op-temu-overlay')).toBe(false);
     const style = document.getElementById('op-temu-overlay-style');
     expect(style?.textContent).toContain('display:none !important');
   });

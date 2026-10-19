@@ -7,6 +7,7 @@ import type {
 } from './types.js';
 import { isAmazonEnAliasHost, isAmazonRetailAliasHost } from './amazon-retail.js';
 import { isBareHasTextSubject } from './util.js';
+import { replaceTextTargetsPurchaseLabel } from './critical-flow.js';
 import { isSafeReplacementText } from './parser.js';
 import { DomainIndex } from './domain-index.js';
 import { cssRuleParses, hasTopLevelCommaInSelector, isValidCosmeticSelector } from './selector-valid.js';
@@ -70,6 +71,17 @@ function validateRule(rule: Rule): ParseError | null {
       return {
         line: rule.line,
         message: ':replace-text label is empty or unsafe',
+        source: rule.source,
+      };
+    }
+    if (
+      rule.procedural.some(
+        (op) => op.type === 'has-text' && replaceTextTargetsPurchaseLabel(op.needle),
+      )
+    ) {
+      return {
+        line: rule.line,
+        message: ':replace-text on a purchase label is not allowed',
         source: rule.source,
       };
     }

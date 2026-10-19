@@ -35,3 +35,42 @@ export function isUncheckFrozen(opts: {
   }
   return false;
 }
+
+const PURCHASE_LABEL =
+  /^\s*(?:add\s+to\s+cart|add\s+now(?:!\s*almost\s+out!?)?|add\s+the\s+last\s+\d+!?|buy\s+now(?:!\s*(?:almost\s+out!?|last\s+\d+!?))?|checkout|check\s+out)\s*!?\s*$/i;
+
+const PURCHASE_LABEL_SAMPLES = [
+  'Buy now',
+  'Buy now!',
+  'Buy now! Almost out!',
+  'Buy now! Almost out',
+  'BUY NOW! LAST 1!',
+  'Add to cart',
+  'Add to cart!',
+  'Add now!',
+  'Add now! Almost out!',
+  'ADD THE LAST 1!',
+  'Checkout',
+  'Check out',
+];
+
+export function isPurchaseLabel(text: string): boolean {
+  return PURCHASE_LABEL.test(text.replace(/\s+/g, ' ').trim());
+}
+
+export function replaceTextTargetsPurchaseLabel(needle: string | RegExp): boolean {
+  return PURCHASE_LABEL_SAMPLES.some((phrase) => {
+    if (typeof needle === 'string') {
+      return phrase.toLowerCase().includes(needle.toLowerCase());
+    }
+    return new RegExp(needle.source, needle.flags.replace('g', '')).test(phrase);
+  });
+}
+
+export function isPurchaseControl(el: Element): boolean {
+  if (isPurchaseLabel(el.textContent ?? '')) {
+    return true;
+  }
+  const button = el.closest('button, [role="button"]');
+  return button !== null && isPurchaseLabel(button.textContent ?? '');
+}

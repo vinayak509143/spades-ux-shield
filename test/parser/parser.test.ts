@@ -13,8 +13,8 @@ describe('parseList', () => {
 
     expect(errors).toHaveLength(0);
     expect(directives.Title).toBe('Spades Darklist');
-    expect(directives.Version).toBe('202610082345');
-    expect(rules).toHaveLength(106);
+    expect(directives.Version).toBe('202610192015');
+    expect(rules).toHaveLength(100);
 
     const sheinRules = rules.filter((r) => r.hosts.includes('us.shein.com'));
     expect(sheinRules).toHaveLength(12);
@@ -28,7 +28,7 @@ describe('parseList', () => {
     const sheinText = sheinRules.find((r) => r.procedural[0]?.type === 'has-text');
     expect(sheinText?.selector).toBe('span.label-text');
     const temuRules = rules.filter((r) => r.hosts.includes('www.temu.com'));
-    expect(temuRules).toHaveLength(13);
+    expect(temuRules).toHaveLength(7);
     const temuChips = temuRules.filter((r) => r.action.type === 'hide');
     expect(temuChips).toHaveLength(7);
     expect(temuChips.map((r) => r.selector).sort()).toEqual([
@@ -53,6 +53,7 @@ describe('parseList', () => {
         'ALMOST SOLD OUT',
         'ONLY 8 LEFT',
         'Last day',
+        'Limited time',
         'Ends in',
         '12:34:56',
         '2.3K+ sold',
@@ -69,6 +70,7 @@ describe('parseList', () => {
         'Add to cart',
         'Add now! Almost out!',
         '56% OFF',
+        '-54% limited time',
         'Best-Selling Items',
         'Low stock items alerts',
         'Pay $2.16 today',
@@ -108,49 +110,7 @@ describe('parseList', () => {
     } else {
       expect(rank).toBeTruthy();
     }
-    const temuRelabels = temuRules.filter((r) => r.action.type === 'replace-text');
-    expect(temuRelabels).toHaveLength(6);
-    expect(
-      temuRelabels.find(
-        (r) =>
-          r.action.type === 'replace-text' &&
-          r.action.text === 'Add to cart' &&
-          r.procedural.some(
-            (op) =>
-              op.type === 'has-text' &&
-              op.needle instanceof RegExp &&
-              op.needle.test('Add now! Almost out!'),
-          ),
-      ),
-    ).toBeDefined();
-    const buyAlmost = temuRelabels.find(
-      (r) =>
-        r.action.type === 'replace-text' &&
-        r.action.text === 'Buy now' &&
-        r.procedural.some(
-          (op) =>
-            op.type === 'has-text' &&
-            op.needle instanceof RegExp &&
-            op.needle.test('Buy now! Almost out!'),
-        ),
-    );
-    expect(buyAlmost?.selector).toBe('span[data-type="0"]');
-    const buyNowLast = temuRelabels.find(
-      (r) =>
-        r.action.type === 'replace-text' &&
-        r.action.text === 'Buy now' &&
-        r.procedural.some(
-          (op) =>
-            op.type === 'has-text' &&
-            op.needle instanceof RegExp &&
-            op.needle.test('BUY NOW! LAST 1!'),
-        ),
-    );
-    expect(buyNowLast?.selector).toBe('span[data-type="0"]');
-    const buyNeedle = buyNowLast?.procedural[0];
-    if (buyNeedle?.type === 'has-text' && buyNeedle.needle instanceof RegExp) {
-      expect(buyNeedle.needle.test('Buy now!')).toBe(false);
-    }
+    expect(temuRules.some((r) => r.action.type === 'replace-text')).toBe(false);
 
     const timerHide = rules.find((r) => r.hosts.includes('scam-shop.example.com'));
     expect(timerHide?.kind).toBe('cosmetic');
@@ -218,6 +178,17 @@ describe('parseLine rejections', () => {
     const { errors } = compileRules(rule ? [rule] : []);
     expect(errors).toHaveLength(1);
     expect(errors[0]?.message).toMatch(/replace-text requires :has-text/);
+  });
+
+  it('rejects :replace-text on a purchase label', () => {
+    const { rule } = parseLine(
+      'www.temu.com##span[data-type="0"]:has-text(/^\\s*buy now!\\s*almost out!?\\s*$/i):replace-text("Buy now")',
+      1,
+    );
+    expect(rule).toBeDefined();
+    const { errors } = compileRules(rule ? [rule] : []);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]?.message).toMatch(/purchase label/);
   });
 
   it('rejects HTML in :replace-text', () => {

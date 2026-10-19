@@ -7,6 +7,8 @@
  * Login, payment, the product zoom, and Add to cart / Buy now / Checkout stay.
  */
 
+import { isPurchaseLabel } from '../engine/critical-flow.js';
+
 const HOST = 'www.temu.com';
 const HIDE_CLASS = 'op-temu-overlay';
 const SCROLL_CLASS = 'op-temu-scroll';
@@ -17,9 +19,9 @@ const CHIP_TEXT = 180;
 const GAMIFY_ATTR = /timer|countdown|wheel|spin|lucky|claim|hurry/i;
 const STRUCT_ATTR = /popup|dialog/i;
 const PAYMENT_SRC = /payment|paypal|stripe|captcha|recaptcha|accounts\.google|adyen|checkout\.com/i;
+
 const GAMIFY_TEXT =
   /^\s*(?:spin(?:\s*(?:to|&|the))?.*|lucky\s+(?:draw|gift|wheel|spin).*|claim(?:\s+\w+){0,4}!?|hurry\b.*|countdown\b.*|ends\s+in\b.*|limited\s+time.*)\s*$/i;
-const CHECKOUT_TEXT = /^\s*(?:add to cart|buy now|checkout|check out)\s*!?\s*$/i;
 
 export interface OverlayFacts {
   tag: string;
@@ -147,11 +149,17 @@ function hasPaymentFrame(el: HTMLElement): boolean {
   return false;
 }
 
+function isCheckoutLabel(el: Element): boolean {
+  return isPurchaseLabel(el.textContent ?? '');
+}
+
 function hasCheckoutControl(el: HTMLElement): boolean {
-  const controls = el.querySelectorAll('button, a, [role="button"]');
+  if (isCheckoutLabel(el)) {
+    return true;
+  }
+  const controls = el.querySelectorAll('button, a, [role="button"], span[data-type="0"]');
   for (const control of controls) {
-    const text = (control.textContent ?? '').replace(/\s+/g, ' ').trim();
-    if (CHECKOUT_TEXT.test(text)) {
+    if (isCheckoutLabel(control)) {
       return true;
     }
   }

@@ -1,5 +1,5 @@
 import type { Action, CompiledProc } from '../engine/types.js';
-import { isUncheckFrozen } from '../engine/critical-flow.js';
+import { isPurchaseControl, isUncheckFrozen } from '../engine/critical-flow.js';
 import {
   collectWatchAttributes,
   elementMatchesProcedural,
@@ -505,6 +505,9 @@ export class ProceduralEngine {
         return true;
       }
       if (action.type === 'replace-text' && !this.hasReplacementText(el, action.text)) {
+        if (isPurchaseControl(el)) {
+          return false;
+        }
         return this.replaceText(el, action.text);
       }
       return false;
@@ -555,6 +558,9 @@ export class ProceduralEngine {
         acted.add(el);
         return true;
       case 'replace-text':
+        if (isPurchaseControl(el)) {
+          return false;
+        }
         if (this.replaceText(el, action.text)) {
           acted.add(el);
           return true;

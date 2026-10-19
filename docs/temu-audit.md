@@ -22,9 +22,9 @@ Anonymous Playwright never got past login or the security check. The logged-in p
 | `ONLY 5 LEFT`, `ONLY 7 LEFT`, `ONLY 4 LEFT` | `span._2h8Ne7BR` on home; own text is only the chip | **Ship** |
 | `ONLY 9 LEFT`, `ONLY 7 LEFT` | `span._1FxJ41PO` on search; own text is only the chip | **Ship** — different hash than home |
 | `Limited stock` | `span._1kXnRPCz` on an earlier logged-in home pass | **Ship** |
-| `Add now! Almost out!` | `span[data-type="0"]` on the add-to-cart control (manual HTML) | **Ship** — replace the label with `Add to cart` before paint; do not hide the control. `Add now!` alone stays |
-| `Buy now! Almost out!` | `span[data-type="0"]`, white 16px (manual HTML) | **Ship** — replace with `Buy now`; plain `Buy now!` alone stays |
-| `BUY NOW! LAST 1!` | `span[data-type="0"]`, white 16px (manual HTML) | **Ship** — replace with `Buy now` |
+| `Add now! Almost out!` | `span[data-type="0"]` on the add-to-cart control (manual HTML) | **Leave the label.** Rewriting it breaks the click |
+| `Buy now! Almost out!` | `span[data-type="0"]`, white 16px (manual HTML) | **Leave the label.** Rewriting it breaks the click. Plain `Buy now` stays too |
+| `BUY NOW! LAST 1!` | `span[data-type="0"]`, white 16px (manual HTML) | **Leave the label.** Rewriting it breaks the click |
 | `Ends in` | white `span[class]` on a sneaker PDP flash timer (manual HTML) | **Ship** — hide the label; hide a sibling span whose whole text is only `HH:MM(:SS)` |
 | `ALMOST SOLD OUT` | `span[data-type="0"]` with an empty or missing class; parent may be a hashed `div` whose text is only that phrase | **Ship** — hide `span[data-type="0"]` as well as `span[class]` / `div[class]` |
 | `Last day` | orange `span` on a recommendation card; parent text is only that phrase | **Ship** |
@@ -41,13 +41,7 @@ Anonymous Playwright never got past login or the security check. The logged-in p
 
 `www.temu.com##span[class],div[class]:has-text(/^\s*(?:only\s+\d+\s+left|\d+(?:\.\d+)?[kK]?\+?\s*sold|limited stock|almost\s+sold\s+out!?|almost out!?|last day!?|ends\s+in!?|\d{1,2}:\d{2}(?::\d{2})?|#?\d*\s*(?:best-selling(?:\s+brand)?\s+item|top rated|most repurchased(?:\s+brand)?\s+item)(?:\s*in\s+.+)?)\s*$/i)`
 
-`www.temu.com##span[data-type="0"]:has-text(/^\s*add now!\s*almost out!?\s*$/i):replace-text("Add to cart")`
-
-`www.temu.com##span[data-type="0"]:has-text(/^\s*buy now!\s*almost out!?\s*$/i):replace-text("Buy now")`
-
-`www.temu.com##span[data-type="0"]:has-text(/^\s*buy now!\s*last\s+\d+!?\s*$/i):replace-text("Buy now")`
-
-The hash classes are not the hook. The regex must match the element's whole text so a card that also contains the price is left alone. The add-to-cart line is the button label, so that span is relabeled instead of hidden. Rank badges are hidden at the wrapper so the gray `in {category}` half does not stay behind.
+The hash classes are not the hook. The regex must match the element's whole text so a card that also contains the price is left alone. Purchase labels are not rewritten and are not hidden: Temu's click reads that text. Rank badges are hidden at the wrapper so the gray `in {category}` half does not stay behind.
 
 ## Verification (reload)
 

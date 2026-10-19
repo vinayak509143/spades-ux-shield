@@ -49,21 +49,24 @@ describe('Temu PDP urgency', () => {
     expect(document.getElementById('price')?.classList.contains('op-hide')).toBe(false);
   });
 
-  it('relabels ADD THE LAST N! on a role=button span', () => {
+  it('leaves ADD THE LAST N! on the purchase control', () => {
     render(`<span id="add" class="_2y4qpjEX" role="button">ADD THE LAST 1!</span>`);
     apply();
     const add = document.getElementById('add');
-    expect(add?.textContent).toBe('Add to cart');
+    expect(add?.textContent).toBe('ADD THE LAST 1!');
     expect(add?.classList.contains('op-hide')).toBe(false);
   });
 
-  it('relabels ADD THE LAST N! on the data-type cart label', () => {
-    render(`<button><span id="cart" data-type="0" style="font-weight:600;color:#ffffff;font-size:16px">ADD THE LAST 1!</span></button>`);
+  it('leaves the Buy now label unchanged so the click still belongs to Temu', () => {
+    render(`
+      <span id="fused" class="" data-type="0" style="font-weight: 600; color: rgb(255, 255, 255); font-size: 16px; vertical-align: middle;">Buy now! Almost out!</span>
+      <span id="plain" class="" data-type="0" style="font-weight: 600; color: rgb(255, 255, 255); font-size: 16px; vertical-align: middle;">Buy now</span>
+    `);
     apply();
-    const cart = document.getElementById('cart');
-    expect(cart?.textContent).toBe('Add to cart');
-    expect(cart?.classList.contains('op-hide')).toBe(false);
-    expect(cart?.closest('button')?.classList.contains('op-hide')).toBe(false);
+    expect(document.getElementById('fused')?.textContent).toBe('Buy now! Almost out!');
+    expect(document.getElementById('plain')?.textContent).toBe('Buy now');
+    expect(document.getElementById('fused')?.classList.contains('op-hide')).toBe(false);
+    expect(document.getElementById('plain')?.classList.contains('op-hide')).toBe(false);
   });
 
   it('hides a split-digit countdown wrapper and leaves the price', () => {
@@ -84,6 +87,16 @@ describe('Temu PDP urgency', () => {
     apply();
     expect(document.getElementById('timer-copy')?.classList.contains('op-hide')).toBe(true);
     expect(document.getElementById('ship')?.classList.contains('op-hide')).toBe(false);
+  });
+
+  it('hides a Limited time chip and leaves the percent-off chip', () => {
+    render(`
+      <div id="limited" class="_3nNuUtEI _3d1o_F7_">Limited time</div>
+      <div id="discount" class="_3nNuUtEI _3d1o_F7_">-54% limited time</div>
+    `);
+    apply();
+    expect(document.getElementById('limited')?.classList.contains('op-hide')).toBe(true);
+    expect(document.getElementById('discount')?.classList.contains('op-hide')).toBe(false);
   });
 
   it('hides the October 2026 orange chips: ONLY N LEFT, BEST-SELLING BRAND ITEM, TOP RATED', () => {
@@ -126,10 +139,10 @@ describe('Temu PDP urgency', () => {
     }
   });
 
-  it('relabels Add now! Almost out! instead of hiding it', () => {
+  it('leaves Add now! Almost out! on the purchase span', () => {
     render(`<span id="buy" data-type="0">Add now! Almost out!</span>`);
     apply();
-    expect(document.getElementById('buy')?.textContent).toBe('Add to cart');
+    expect(document.getElementById('buy')?.textContent).toBe('Add now! Almost out!');
     expect(document.getElementById('buy')?.classList.contains('op-hide')).toBe(false);
   });
 });
