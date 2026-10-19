@@ -44,7 +44,9 @@ Headed Playwright: `node scripts/audit-booking-scarcity.mjs`. Dump: `temp/bookin
 
 ### Property — same hotel, room table
 
-Hits are **`We have 5 left`** (no “at this price”) on `div.bui-list__description` inside existing **`li.bui-list__item.bui-text--color-destructive-dark`** / `ul.hprt-conditions-bui`. That is the shipped rule; no second line needed.
+Hits are **`We have 5 left`** (no “at this price”) on `div.bui-list__description` inside existing **`li.bui-list__item.bui-text--color-destructive-dark`** / `ul.hprt-conditions-bui`. That is the shipped rule.
+
+A later property/search line is `span.only_x_left.urgency_message_red` whose whole text is `We have 4 left`. Hide `span.only_x_left` only when the whole text is that sentence. The price and Reserve stay.
 
 The user-visible **`cc87802d18` + “at this price”** chip on Element Times Square is on **SERP / compact unit cards**, not a new PDP selector in this dump.
 

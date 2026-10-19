@@ -62,4 +62,19 @@ describe('Booking scarcity rules', () => {
     expect(document.getElementById('unit')?.classList.contains('op-hide')).toBe(false);
     expect(document.querySelector('[data-testid="availability-cta"]')?.closest('.op-hide')).toBeNull();
   });
+
+  it('hides the red only_x_left line and leaves the price and Reserve', () => {
+    render(`
+      <div id="card">
+        <span id="left" class="only_x_left urgency_message_red">We have 4 left</span>
+        <span id="price">₹8,500</span>
+        <button id="reserve">Reserve</button>
+      </div>
+    `);
+    apply();
+    expect(document.getElementById('left')?.classList.contains('op-hide')).toBe(true);
+    expect(document.getElementById('price')?.classList.contains('op-hide')).toBe(false);
+    expect(document.getElementById('reserve')?.classList.contains('op-hide')).toBe(false);
+    expect(document.getElementById('card')?.classList.contains('op-hide')).toBe(false);
+  });
 });

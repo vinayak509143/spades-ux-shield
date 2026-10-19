@@ -1,5 +1,5 @@
 ! Title: Spades Darklist
-! Version: 202610192015
+! Version: 202610192100
 scam-shop.example.com##.hurry-up-timer
 generic-ecommerce.com##.urgency-banner:has-text(/only \d+ left in stock/i)
 sneaky-news.example.com##button:has-text("I hate saving money")
@@ -49,8 +49,10 @@ amazon-en##.a-badge:has-text(/ends in/i)
 ! Booking.com — www only (audit docs/booking-audit.md).
 ! Property room table: stable BUI list row. SERP chip has no class of its own that survives a deploy;
 ! hide the exact "We have N left at this price" node inside recommended-units only (not the unit card or price).
+! span.only_x_left is the red "We have N left" line. Hide that span only. Leave the price and Reserve.
 www.booking.com##li.bui-list__item.bui-text--color-destructive-dark:has-text(/we have \d+ left/i)
 www.booking.com##[data-testid="recommended-units"] div:has-text(/^\s*We have \d+ left at this price\s*$/i)
+www.booking.com##span.only_x_left:has-text(/^\s*we have \d+ left\s*$/i)
 
 ! Agoda — www.agoda.com + www.agoda.co.in (audit docs/agoda-audit.md).
 ! Live SERP (2026-09-28 New Delhi): badges are data-element-name / data-testid / data-badge-id.
