@@ -77,4 +77,15 @@ describe('Booking scarcity rules', () => {
     expect(document.getElementById('reserve')?.classList.contains('op-hide')).toBe(false);
     expect(document.getElementById('card')?.classList.contains('op-hide')).toBe(false);
   });
+
+  it('ships selectors for the white icon inside or beside the red line', () => {
+    const bucket = compiled.hostBuckets.get('www.booking.com');
+    expect(bucket?.hideSelectors).toEqual(
+      expect.arrayContaining([
+        'span.only_x_left > svg',
+        'svg:has(+ span.only_x_left)',
+        'span.only_x_left + svg',
+      ]),
+    );
+  });
 });
