@@ -28,7 +28,7 @@ npm run package:firefox
 That writes:
 
 - `dist-firefox/` — unpacked extension
-- `spades-ux-shield-firefox-v1.0.9.zip` — the same files, for a later Mozilla update. Do not upload it as 1.0.8. That version is already published.
+- `spades-ux-shield-firefox-v1.0.10.zip` — the same files, for a later Mozilla update. Do not upload it as 1.0.8 or 1.0.9.
 
 The filename follows `manifest.json`. The Chrome zip is a different file and does not get a Firefox id.
 

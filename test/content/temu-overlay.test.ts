@@ -170,6 +170,19 @@ describe('Temu overlay guard', () => {
     expect(document.getElementById('buy')?.classList.contains('op-temu-overlay')).toBe(false);
   });
 
+  it('leaves the sheet opened by BUY NOW! LAST 5!', () => {
+    document.body.innerHTML = `
+      <div id="sheet" role="dialog" style="position:fixed">
+        <span style="font-weight:600;color:#ffffff;font-size:16px;vertical-align:middle" class="" data-type="0">BUY NOW! LAST 5!</span>
+      </div>
+    `;
+    const sheet = document.getElementById('sheet') as HTMLElement;
+    sheet.getBoundingClientRect = () =>
+      ({ width: 1280, height: 800, top: 0, left: 0, right: 1280, bottom: 800, x: 0, y: 0, toJSON() {} }) as DOMRect;
+    applyTemuOverlayPass(document, () => true, { width: 1280, height: 800 });
+    expect(sheet.classList.contains('op-temu-overlay')).toBe(false);
+  });
+
   it('does not cover a fixed layer whose label is the fused Buy now span', () => {
     document.body.innerHTML = `
       <div id="bar" role="dialog" style="position:fixed">

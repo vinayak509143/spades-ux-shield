@@ -87,9 +87,8 @@ export function shouldSuppressTemuOverlay(facts: OverlayFacts): boolean {
   if (structAttr && (modal || (layer && covers))) {
     return true;
   }
-  if ((modal || (layer && covers)) && facts.textLength <= 400) {
-    return true;
-  }
+  // A short fixed sheet is also how Buy now opens the next step.
+  // Hide it only when it is a game or a named popup.
   return false;
 }
 
